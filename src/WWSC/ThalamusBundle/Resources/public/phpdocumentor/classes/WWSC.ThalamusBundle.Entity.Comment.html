@@ -1,0 +1,1977 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+    <meta charset="utf-8"/>
+    <title>API Documentation</title>
+    <meta name="author" content=""/>
+    <meta name="description" content=""/>
+
+    <link href="../css/bootstrap-combined.no-icons.min.css" rel="stylesheet">
+    <link href="../css/font-awesome.min.css" rel="stylesheet">
+    <link href="../css/prism.css" rel="stylesheet" media="all"/>
+    <link href="../css/template.css" rel="stylesheet" media="all"/>
+    
+    <!--[if lt IE 9]>
+    <script src="../js/html5.js"></script>
+    <![endif]-->
+    <script src="../js/jquery-1.11.0.min.js"></script>
+    <script src="../js/ui/1.10.4/jquery-ui.min.js"></script>
+    <script src="../js/bootstrap.min.js"></script>
+    <script src="../js/jquery.smooth-scroll.js"></script>
+    <script src="../js/prism.min.js"></script>
+    <!-- TODO: Add http://jscrollpane.kelvinluck.com/ to style the scrollbars for browsers not using webkit-->
+    <script type="text/javascript">
+    function loadExternalCodeSnippets() {
+        Array.prototype.slice.call(document.querySelectorAll('pre[data-src]')).forEach(function (pre) {
+            var src = pre.getAttribute('data-src');
+            var extension = (src.match(/\.(\w+)$/) || [, ''])[1];
+            var language = 'php';
+
+            var code = document.createElement('code');
+            code.className = 'language-' + language;
+
+            pre.textContent = '';
+
+            code.textContent = 'Loading…';
+
+            pre.appendChild(code);
+
+            var xhr = new XMLHttpRequest();
+
+            xhr.open('GET', src, true);
+
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState == 4) {
+
+                    if (xhr.status < 400 && xhr.responseText) {
+                        code.textContent = xhr.responseText;
+
+                        Prism.highlightElement(code);
+                    }
+                    else if (xhr.status >= 400) {
+                        code.textContent = '✖ Error ' + xhr.status + ' while fetching file: ' + xhr.statusText;
+                    }
+                    else {
+                        code.textContent = '✖ Error: File does not exist or is empty';
+                    }
+                }
+            };
+
+            xhr.send(null);
+        });
+    }
+
+    $(document).ready(function(){
+        loadExternalCodeSnippets();
+    });
+    $('#source-view').on('shown', function () {
+        loadExternalCodeSnippets();
+    })
+</script>
+
+    <link rel="shortcut icon" href="../images/favicon.ico"/>
+    <link rel="apple-touch-icon" href="../images/apple-touch-icon.png"/>
+    <link rel="apple-touch-icon" sizes="72x72" href="../images/apple-touch-icon-72x72.png"/>
+    <link rel="apple-touch-icon" sizes="114x114" href="../images/apple-touch-icon-114x114.png"/>
+</head>
+<body>
+
+<div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+        <div class="container">
+            <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                <i class="icon-ellipsis-vertical"></i>
+            </a>
+            <a class="brand" href="../index.html">API Documentation</a>
+
+            <div class="nav-collapse">
+                <ul class="nav pull-right">
+                                        <li class="dropdown">
+                        <a href="../index.html" class="dropdown-toggle" data-toggle="dropdown">
+                            API Documentation <b class="caret"></b>
+                        </a>
+                        <ul class="dropdown-menu">
+                                                        <li><a href="../namespaces/WWSC.html">\WWSC</a></li>
+                                                    </ul>
+                    </li>
+                                        <li class="dropdown" id="charts-menu">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                            Charts <b class="caret"></b>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a href="../graphs/class.html">
+                                    <i class="icon-list-alt"></i>&#160;Class hierarchy diagram
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="dropdown" id="reports-menu">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                            Reports <b class="caret"></b>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a href="../reports/errors.html">
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        <i class="icon-list-alt"></i>&#160;Errors <span class="label label-info pull-right">794</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="../reports/markers.html">
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        <i class="icon-list-alt"></i>&#160;Markers <span class="label label-info pull-right">0</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="../reports/deprecated.html">
+                                                                                                            <i class="icon-list-alt"></i>&#160;Deprecated <span class="label label-info pull-right">0</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <!--<div class="go_to_top">-->
+    <!--<a href="#___" style="color: inherit">Back to top&#160;&#160;<i class="icon-upload icon-white"></i></a>-->
+    <!--</div>-->
+</div>
+
+<div id="___" class="container-fluid">
+        <section class="row-fluid">
+        <div class="span2 sidebar">
+                                <div class="accordion" style="margin-bottom: 0">
+        <div class="accordion-group">
+            <div class="accordion-heading">
+                                    <a class="accordion-toggle " data-toggle="collapse" data-target="#namespace-1988661114"></a>
+                                <a href="../namespaces/default.html" style="margin-left: 30px; padding-left: 0">\</a>
+            </div>
+            <div id="namespace-1988661114" class="accordion-body collapse in">
+                <div class="accordion-inner">
+
+                                                    <div class="accordion" style="margin-bottom: 0">
+        <div class="accordion-group">
+            <div class="accordion-heading">
+                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-636652142"></a>
+                                <a href="../namespaces/WWSC.html" style="margin-left: 30px; padding-left: 0">WWSC</a>
+            </div>
+            <div id="namespace-636652142" class="accordion-body collapse ">
+                <div class="accordion-inner">
+
+                                                    <div class="accordion" style="margin-bottom: 0">
+        <div class="accordion-group">
+            <div class="accordion-heading">
+                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-799827313"></a>
+                                <a href="../namespaces/WWSC.ThalamusBundle.html" style="margin-left: 30px; padding-left: 0">ThalamusBundle</a>
+            </div>
+            <div id="namespace-799827313" class="accordion-body collapse ">
+                <div class="accordion-inner">
+
+                                                    <div class="accordion" style="margin-bottom: 0">
+        <div class="accordion-group">
+            <div class="accordion-heading">
+                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-202802860"></a>
+                                <a href="../namespaces/WWSC.ThalamusBundle.Command.html" style="margin-left: 30px; padding-left: 0">Command</a>
+            </div>
+            <div id="namespace-202802860" class="accordion-body collapse ">
+                <div class="accordion-inner">
+
+                    
+                    <ul>
+                                                                                                    <li class="class"><a href="../classes/WWSC.ThalamusBundle.Command.ParsePostRunCommand.html">ParsePostRunCommand</a></li>
+                                            </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+                                                    <div class="accordion" style="margin-bottom: 0">
+        <div class="accordion-group">
+            <div class="accordion-heading">
+                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-1047491153"></a>
+                                <a href="../namespaces/WWSC.ThalamusBundle.Controller.html" style="margin-left: 30px; padding-left: 0">Controller</a>
+            </div>
+            <div id="namespace-1047491153" class="accordion-body collapse ">
+                <div class="accordion-inner">
+
+                    
+                    <ul>
+                                                                                                    <li class="class"><a href="../classes/WWSC.ThalamusBundle.Controller.AccountController.html">AccountController</a></li>
+                                                    <li class="class"><a href="../classes/WWSC.ThalamusBundle.Controller.CategoryController.html">CategoryController</a></li>
+                                                    <li class="class"><a href="../classes/WWSC.ThalamusBundle.Controller.CommentController.html">CommentController</a></li>
+                                                    <li class="class"><a href="../classes/WWSC.ThalamusBundle.Controller.CompanyController.html">CompanyController</a></li>
+                                                    <li class="class"><a href="../classes/WWSC.ThalamusBundle.Controller.FileController.html">FileController</a></li>
+                                                    <li class="class"><a href="../classes/WWSC.ThalamusBundle.Controller.MessageController.html">MessageController</a></li>
+                                                    <li class="class"><a href="../classes/WWSC.ThalamusBundle.Controller.ProjectController.html">ProjectController</a></li>
+                                                    <li class="class"><a href="../classes/WWSC.ThalamusBundle.Controller.SecurityController.html">SecurityController</a></li>
+                                                    <li class="class"><a href="../classes/WWSC.ThalamusBundle.Controller.SortElementsController.html">SortElementsController</a></li>
+                                                    <li class="class"><a href="../classes/WWSC.ThalamusBundle.Controller.SubscribeEmailController.html">SubscribeEmailController</a></li>
+                                                    <li class="class"><a href="../classes/WWSC.ThalamusBundle.Controller.TaskController.html">TaskController</a></li>
+                                                    <li class="class"><a href="../classes/WWSC.ThalamusBundle.Controller.TaskItemController.html">TaskItemController</a></li>
+                                                    <li class="class"><a href="../classes/WWSC.ThalamusBundle.Controller.TimeTrackerController.html">TimeTrackerController</a></li>
+                                                    <li class="class"><a href="../classes/WWSC.ThalamusBundle.Controller.UserController.html">UserController</a></li>
+                                            </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+                                                    <div class="accordion" style="margin-bottom: 0">
+        <div class="accordion-group">
+            <div class="accordion-heading">
+                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-1337504205"></a>
+                                <a href="../namespaces/WWSC.ThalamusBundle.DependencyInjection.html" style="margin-left: 30px; padding-left: 0">DependencyInjection</a>
+            </div>
+            <div id="namespace-1337504205" class="accordion-body collapse ">
+                <div class="accordion-inner">
+
+                    
+                    <ul>
+                                                                                                    <li class="class"><a href="../classes/WWSC.ThalamusBundle.DependencyInjection.Configuration.html">Configuration</a></li>
+                                                    <li class="class"><a href="../classes/WWSC.ThalamusBundle.DependencyInjection.WWSCThalamusExtension.html">WWSCThalamusExtension</a></li>
+                                            </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+                                                    <div class="accordion" style="margin-bottom: 0">
+        <div class="accordion-group">
+            <div class="accordion-heading">
+                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-1490826390"></a>
+                                <a href="../namespaces/WWSC.ThalamusBundle.Entity.html" style="margin-left: 30px; padding-left: 0">Entity</a>
+            </div>
+            <div id="namespace-1490826390" class="accordion-body collapse ">
+                <div class="accordion-inner">
+
+                    
+                    <ul>
+                                                                                                    <li class="class"><a href="../classes/WWSC.ThalamusBundle.Entity.Account.html">Account</a></li>
+                                                    <li class="class"><a href="../classes/WWSC.ThalamusBundle.Entity.Base.html">Base</a></li>
+                                                    <li class="class"><a href="../classes/WWSC.ThalamusBundle.Entity.Category.html">Category</a></li>
+                                                    <li class="class"><a href="../classes/WWSC.ThalamusBundle.Entity.Comment.html">Comment</a></li>
+                                                    <li class="class"><a href="../classes/WWSC.ThalamusBundle.Entity.Company.html">Company</a></li>
+                                                    <li class="class"><a href="../classes/WWSC.ThalamusBundle.Entity.Files.html">Files</a></li>
+                                                    <li class="class"><a href="../classes/WWSC.ThalamusBundle.Entity.Log.html">Log</a></li>
+                                                    <li class="class"><a href="../classes/WWSC.ThalamusBundle.Entity.Message.html">Message</a></li>
+                                                    <li class="class"><a href="../classes/WWSC.ThalamusBundle.Entity.Module.html">Module</a></li>
+                                                    <li class="class"><a href="../classes/WWSC.ThalamusBundle.Entity.Project.html">Project</a></li>
+                                                    <li class="class"><a href="../classes/WWSC.ThalamusBundle.Entity.SubscribeEmail.html">SubscribeEmail</a></li>
+                                                    <li class="class"><a href="../classes/WWSC.ThalamusBundle.Entity.Task.html">Task</a></li>
+                                                    <li class="class"><a href="../classes/WWSC.ThalamusBundle.Entity.TaskItem.html">TaskItem</a></li>
+                                                    <li class="class"><a href="../classes/WWSC.ThalamusBundle.Entity.TimeTracker.html">TimeTracker</a></li>
+                                                    <li class="class"><a href="../classes/WWSC.ThalamusBundle.Entity.User.html">User</a></li>
+                                                    <li class="class"><a href="../classes/WWSC.ThalamusBundle.Entity.UserProfile.html">UserProfile</a></li>
+                                            </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+                                                    <div class="accordion" style="margin-bottom: 0">
+        <div class="accordion-group">
+            <div class="accordion-heading">
+                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-1693727090"></a>
+                                <a href="../namespaces/WWSC.ThalamusBundle.EventListener.html" style="margin-left: 30px; padding-left: 0">EventListener</a>
+            </div>
+            <div id="namespace-1693727090" class="accordion-body collapse ">
+                <div class="accordion-inner">
+
+                    
+                    <ul>
+                                                                                                    <li class="class"><a href="../classes/WWSC.ThalamusBundle.EventListener.UploadListener.html">UploadListener</a></li>
+                                            </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+                                                    <div class="accordion" style="margin-bottom: 0">
+        <div class="accordion-group">
+            <div class="accordion-heading">
+                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-704556752"></a>
+                                <a href="../namespaces/WWSC.ThalamusBundle.Form.html" style="margin-left: 30px; padding-left: 0">Form</a>
+            </div>
+            <div id="namespace-704556752" class="accordion-body collapse ">
+                <div class="accordion-inner">
+
+                    
+                    <ul>
+                                                                                                    <li class="class"><a href="../classes/WWSC.ThalamusBundle.Form.AccountForm.html">AccountForm</a></li>
+                                                    <li class="class"><a href="../classes/WWSC.ThalamusBundle.Form.ActivationUserForm.html">ActivationUserForm</a></li>
+                                                    <li class="class"><a href="../classes/WWSC.ThalamusBundle.Form.CommentForm.html">CommentForm</a></li>
+                                                    <li class="class"><a href="../classes/WWSC.ThalamusBundle.Form.CompanyForm.html">CompanyForm</a></li>
+                                                    <li class="class"><a href="../classes/WWSC.ThalamusBundle.Form.CompanyProjectForm.html">CompanyProjectForm</a></li>
+                                                    <li class="class"><a href="../classes/WWSC.ThalamusBundle.Form.FilesForm.html">FilesForm</a></li>
+                                                    <li class="class"><a href="../classes/WWSC.ThalamusBundle.Form.FilterTaskForm.html">FilterTaskForm</a></li>
+                                                    <li class="class"><a href="../classes/WWSC.ThalamusBundle.Form.FilterTimeTrackerForm.html">FilterTimeTrackerForm</a></li>
+                                                    <li class="class"><a href="../classes/WWSC.ThalamusBundle.Form.MessageForm.html">MessageForm</a></li>
+                                                    <li class="class"><a href="../classes/WWSC.ThalamusBundle.Form.ProjectForm.html">ProjectForm</a></li>
+                                                    <li class="class"><a href="../classes/WWSC.ThalamusBundle.Form.RegistrationForm.html">RegistrationForm</a></li>
+                                                    <li class="class"><a href="../classes/WWSC.ThalamusBundle.Form.TaskForm.html">TaskForm</a></li>
+                                                    <li class="class"><a href="../classes/WWSC.ThalamusBundle.Form.TaskItemForm.html">TaskItemForm</a></li>
+                                                    <li class="class"><a href="../classes/WWSC.ThalamusBundle.Form.TimeTrackerForm.html">TimeTrackerForm</a></li>
+                                                    <li class="class"><a href="../classes/WWSC.ThalamusBundle.Form.UserContactForm.html">UserContactForm</a></li>
+                                                    <li class="class"><a href="../classes/WWSC.ThalamusBundle.Form.UserForm.html">UserForm</a></li>
+                                                    <li class="class"><a href="../classes/WWSC.ThalamusBundle.Form.UserMyContactForm.html">UserMyContactForm</a></li>
+                                                    <li class="class"><a href="../classes/WWSC.ThalamusBundle.Form.UserProfileForm.html">UserProfileForm</a></li>
+                                            </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+                                                    <div class="accordion" style="margin-bottom: 0">
+        <div class="accordion-group">
+            <div class="accordion-heading">
+                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-177627775"></a>
+                                <a href="../namespaces/WWSC.ThalamusBundle.Handler.html" style="margin-left: 30px; padding-left: 0">Handler</a>
+            </div>
+            <div id="namespace-177627775" class="accordion-body collapse ">
+                <div class="accordion-inner">
+
+                    
+                    <ul>
+                                                                                                    <li class="class"><a href="../classes/WWSC.ThalamusBundle.Handler.AuthenticationHandler.html">AuthenticationHandler</a></li>
+                                            </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+                                                    <div class="accordion" style="margin-bottom: 0">
+        <div class="accordion-group">
+            <div class="accordion-heading">
+                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-696162477"></a>
+                                <a href="../namespaces/WWSC.ThalamusBundle.Listener.html" style="margin-left: 30px; padding-left: 0">Listener</a>
+            </div>
+            <div id="namespace-696162477" class="accordion-body collapse ">
+                <div class="accordion-inner">
+
+                    
+                    <ul>
+                                                                                                    <li class="class"><a href="../classes/WWSC.ThalamusBundle.Listener.ExceptionListener.html">ExceptionListener</a></li>
+                                            </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+                                                    <div class="accordion" style="margin-bottom: 0">
+        <div class="accordion-group">
+            <div class="accordion-heading">
+                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-1553114385"></a>
+                                <a href="../namespaces/WWSC.ThalamusBundle.Security.html" style="margin-left: 30px; padding-left: 0">Security</a>
+            </div>
+            <div id="namespace-1553114385" class="accordion-body collapse ">
+                <div class="accordion-inner">
+
+                                                    <div class="accordion" style="margin-bottom: 0">
+        <div class="accordion-group">
+            <div class="accordion-heading">
+                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-2114550490"></a>
+                                <a href="../namespaces/WWSC.ThalamusBundle.Security.Core.html" style="margin-left: 30px; padding-left: 0">Core</a>
+            </div>
+            <div id="namespace-2114550490" class="accordion-body collapse ">
+                <div class="accordion-inner">
+
+                                                    <div class="accordion" style="margin-bottom: 0">
+        <div class="accordion-group">
+            <div class="accordion-heading">
+                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-232946851"></a>
+                                <a href="../namespaces/WWSC.ThalamusBundle.Security.Core.User.html" style="margin-left: 30px; padding-left: 0">User</a>
+            </div>
+            <div id="namespace-232946851" class="accordion-body collapse ">
+                <div class="accordion-inner">
+
+                    
+                    <ul>
+                                                                                                    <li class="class"><a href="../classes/WWSC.ThalamusBundle.Security.Core.User.FOSUBUserProvider.html">FOSUBUserProvider</a></li>
+                                            </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+                    
+                    <ul>
+                                                                                            </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+                    
+                    <ul>
+                                                                                            </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+                                                    <div class="accordion" style="margin-bottom: 0">
+        <div class="accordion-group">
+            <div class="accordion-heading">
+                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-1657462968"></a>
+                                <a href="../namespaces/WWSC.ThalamusBundle.Tests.html" style="margin-left: 30px; padding-left: 0">Tests</a>
+            </div>
+            <div id="namespace-1657462968" class="accordion-body collapse ">
+                <div class="accordion-inner">
+
+                                                    <div class="accordion" style="margin-bottom: 0">
+        <div class="accordion-group">
+            <div class="accordion-heading">
+                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-target="#namespace-1666476732"></a>
+                                <a href="../namespaces/WWSC.ThalamusBundle.Tests.Controller.html" style="margin-left: 30px; padding-left: 0">Controller</a>
+            </div>
+            <div id="namespace-1666476732" class="accordion-body collapse ">
+                <div class="accordion-inner">
+
+                    
+                    <ul>
+                                                                                                    <li class="class"><a href="../classes/WWSC.ThalamusBundle.Tests.Controller.DefaultControllerTest.html">DefaultControllerTest</a></li>
+                                            </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+                    
+                    <ul>
+                                                                                            </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+                    
+                    <ul>
+                                                                                                    <li class="class"><a href="../classes/WWSC.ThalamusBundle.WWSCThalamusBundle.html">WWSCThalamusBundle</a></li>
+                                            </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+                    
+                    <ul>
+                                                                                            </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+                    
+                    <ul>
+                                                                                            </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+        </div>
+    </section>
+    <section class="row-fluid">
+        <div class="span10 offset2">
+            <div class="row-fluid">
+                <div class="span8 content class">
+                    <nav>
+                                                <a href="../namespaces/WWSC.ThalamusBundle.Entity.html">\WWSC\ThalamusBundle\Entity</a> <i class="icon-level-up"></i>
+                                            </nav>
+                    <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal"><i class="icon-code"></i></a>
+
+                    <h1><small>\WWSC\ThalamusBundle\Entity</small>Comment</h1>
+                    <p><em>Comment</em></p>
+                    
+                    
+                                        
+                    <section id="summary">
+                        <h2>Summary</h2>
+                        <section class="row-fluid heading">
+                            <section class="span4">
+                                <a href="#methods">Methods</a>
+                            </section>
+                            <section class="span4">
+                                <a href="#properties">Properties</a>
+                            </section>
+                            <section class="span4">
+                                <a href="#constants">Constants</a>
+                            </section>
+                        </section>
+                        <section class="row-fluid public">
+                            <section class="span4">
+                                                                    <a href="../classes/WWSC.ThalamusBundle.Entity.Base.html#method_saveLog" class="">saveLog()</a><br />
+                                                                    <a href="../classes/WWSC.ThalamusBundle.Entity.Base.html#method_postUpdate" class="">postUpdate()</a><br />
+                                                                    <a href="../classes/WWSC.ThalamusBundle.Entity.Base.html#method_truncation" class="">truncation()</a><br />
+                                                                    <a href="../classes/WWSC.ThalamusBundle.Entity.Comment.html#method_getId" class="">getId()</a><br />
+                                                                    <a href="../classes/WWSC.ThalamusBundle.Entity.Comment.html#method_setDescription" class="">setDescription()</a><br />
+                                                                    <a href="../classes/WWSC.ThalamusBundle.Entity.Comment.html#method_getDescription" class="">getDescription()</a><br />
+                                                                    <a href="../classes/WWSC.ThalamusBundle.Entity.Comment.html#method_setCreated" class="">setCreated()</a><br />
+                                                                    <a href="../classes/WWSC.ThalamusBundle.Entity.Comment.html#method_getCreated" class="">getCreated()</a><br />
+                                                                    <a href="../classes/WWSC.ThalamusBundle.Entity.Comment.html#method_setUpdated" class="">setUpdated()</a><br />
+                                                                    <a href="../classes/WWSC.ThalamusBundle.Entity.Comment.html#method_getUpdated" class="">getUpdated()</a><br />
+                                                                    <a href="../classes/WWSC.ThalamusBundle.Entity.Comment.html#method_setUserCreated" class="">setUserCreated()</a><br />
+                                                                    <a href="../classes/WWSC.ThalamusBundle.Entity.Comment.html#method_getUserCreated" class="">getUserCreated()</a><br />
+                                                                    <a href="../classes/WWSC.ThalamusBundle.Entity.Comment.html#method_setUserUpdated" class="">setUserUpdated()</a><br />
+                                                                    <a href="../classes/WWSC.ThalamusBundle.Entity.Comment.html#method_getUserUpdated" class="">getUserUpdated()</a><br />
+                                                                    <a href="../classes/WWSC.ThalamusBundle.Entity.Comment.html#method_setIsDeleted" class="">setIsDeleted()</a><br />
+                                                                    <a href="../classes/WWSC.ThalamusBundle.Entity.Comment.html#method_getIsDeleted" class="">getIsDeleted()</a><br />
+                                                                    <a href="../classes/WWSC.ThalamusBundle.Entity.Comment.html#method_setType" class="">setType()</a><br />
+                                                                    <a href="../classes/WWSC.ThalamusBundle.Entity.Comment.html#method_getType" class="">getType()</a><br />
+                                                                    <a href="../classes/WWSC.ThalamusBundle.Entity.Comment.html#method_setParentId" class="">setParentId()</a><br />
+                                                                    <a href="../classes/WWSC.ThalamusBundle.Entity.Comment.html#method_getParentId" class="">getParentId()</a><br />
+                                                                    <a href="../classes/WWSC.ThalamusBundle.Entity.Comment.html#method_getParentInfo" class="">getParentInfo()</a><br />
+                                                                    <a href="../classes/WWSC.ThalamusBundle.Entity.Comment.html#method_canBeEdited" class="">canBeEdited()</a><br />
+                                                                    <a href="../classes/WWSC.ThalamusBundle.Entity.Comment.html#method_getFiles" class="">getFiles()</a><br />
+                                                                    <a href="../classes/WWSC.ThalamusBundle.Entity.Comment.html#method_setTimeTracker" class="">setTimeTracker()</a><br />
+                                                                    <a href="../classes/WWSC.ThalamusBundle.Entity.Comment.html#method_getTimeTracker" class="">getTimeTracker()</a><br />
+                                                                    <a href="../classes/WWSC.ThalamusBundle.Entity.Comment.html#method_preUpdate" class="">preUpdate()</a><br />
+                                                                    <a href="../classes/WWSC.ThalamusBundle.Entity.Comment.html#method_postPersist" class="">postPersist()</a><br />
+                                                            </section>
+                            <section class="span4">
+                                                                    <em>No public properties found</em>
+                                                            </section>
+                            <section class="span4">
+                                                                    <em>No constants found</em>
+                                                            </section>
+                        </section>
+                        <section class="row-fluid protected">
+                            <section class="span4">
+                                                                    <em>No protected methods found</em>
+                                                            </section>
+                            <section class="span4">
+                                                                    <a href="../classes/WWSC.ThalamusBundle.Entity.Comment.html#property_time_tracker" class="">$time_tracker</a><br />
+                                                            </section>
+                            <section class="span4">
+                                <em>N/A</em>
+                            </section>
+                        </section>
+                        <section class="row-fluid private">
+                            <section class="span4">
+                                                                    <a href="../classes/WWSC.ThalamusBundle.Entity.Comment.html#method_getLogInfoByComment" class="">getLogInfoByComment()</a><br />
+                                                            </section>
+                            <section class="span4">
+                                                                    <a href="../classes/WWSC.ThalamusBundle.Entity.Comment.html#property_id" class="">$id</a><br />
+                                                                    <a href="../classes/WWSC.ThalamusBundle.Entity.Comment.html#property_description" class="">$description</a><br />
+                                                                    <a href="../classes/WWSC.ThalamusBundle.Entity.Comment.html#property_type" class="">$type</a><br />
+                                                                    <a href="../classes/WWSC.ThalamusBundle.Entity.Comment.html#property_parent_id" class="">$parent_id</a><br />
+                                                                    <a href="../classes/WWSC.ThalamusBundle.Entity.Comment.html#property_created" class="">$created</a><br />
+                                                                    <a href="../classes/WWSC.ThalamusBundle.Entity.Comment.html#property_updated" class="">$updated</a><br />
+                                                                    <a href="../classes/WWSC.ThalamusBundle.Entity.Comment.html#property_user_created" class="">$user_created</a><br />
+                                                                    <a href="../classes/WWSC.ThalamusBundle.Entity.Comment.html#property_user_updated" class="">$user_updated</a><br />
+                                                                    <a href="../classes/WWSC.ThalamusBundle.Entity.Comment.html#property_is_deleted" class="">$is_deleted</a><br />
+                                                            </section>
+                            <section class="span4">
+                                <em>N/A</em>
+                            </section>
+                        </section>
+                    </section>
+                </div>
+                <aside class="span4 detailsbar">
+                                        
+                    
+                    <dl>
+                        <dt>File</dt>
+                            <dd><a href="../files/Entity.Comment.html"><div class="path-wrapper">Entity\Comment.php</div></a></dd>
+                                                <dt>Package</dt>
+                            <dd><div class="namespace-wrapper">Default</div></dd>
+                                                <dt>Class hierarchy</dt>
+                            <dd class="hierarchy">
+                                                                                                                                                                                                                                                                                                
+                                        <div class="namespace-wrapper"><a href="../classes/WWSC.ThalamusBundle.Entity.Base.html">\WWSC\ThalamusBundle\Entity\Base</a></div>
+                                                                                                    <div class="namespace-wrapper">\WWSC\ThalamusBundle\Entity\Comment</div>
+                            </dd>
+
+                        
+                        
+                        
+                        
+                                                                        </dl>
+                    <h2>Tags</h2>
+                    <table class="table table-condensed">
+                                            <tr>
+                            <th>
+                                ORM\Entity
+                            </th>
+                            <td>
+                                                                    
+                                                            </td>
+                        </tr>
+                                            <tr>
+                            <th>
+                                ORM\HasLifecycleCallbacks
+                            </th>
+                            <td>
+                                                                    
+                                                            </td>
+                        </tr>
+                                            <tr>
+                            <th>
+                                ORM\Table
+                            </th>
+                            <td>
+                                                                    <p>(name="comment")</p>
+                                                            </td>
+                        </tr>
+                                        </table>
+                </aside>
+            </div>
+
+                        
+                                    <a id="properties" name="properties"></a>
+            <div class="row-fluid">
+                <div class="span8 content class">
+                    <h2>Properties</h2>
+                </div>
+                <aside class="span4 detailsbar"></aside>
+            </div>
+
+                                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property_time_tracker" name="property_time_tracker" class="anchor"></a>
+            <article class="property">
+                <h3 class="protected ">$time_tracker</h3>
+                <pre class="signature">$time_tracker : </pre>
+                <p><em></em></p>
+                
+
+                                <h4>Type</h4>
+                
+                                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            ORM\OneToOne
+                        </th>
+                        <td>
+                                                            <p>(targetEntity="WWSC\ThalamusBundle\Entity\TimeTracker", mappedBy="comment", cascade={"all"})</p>
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property_id" name="property_id" class="anchor"></a>
+            <article class="property">
+                <h3 class="private ">$id</h3>
+                <pre class="signature">$id : integer</pre>
+                <p><em></em></p>
+                
+
+                                <h4>Type</h4>
+                integer
+                                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            ORM\Column
+                        </th>
+                        <td>
+                                                            <p>(name="id", type="integer")</p>
+                                                    </td>
+                    </tr>
+                                    <tr>
+                        <th>
+                            ORM\Id
+                        </th>
+                        <td>
+                                                            
+                                                    </td>
+                    </tr>
+                                    <tr>
+                        <th>
+                            ORM\GeneratedValue
+                        </th>
+                        <td>
+                                                            <p>(strategy="AUTO")</p>
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property_description" name="property_description" class="anchor"></a>
+            <article class="property">
+                <h3 class="private ">$description</h3>
+                <pre class="signature">$description : string</pre>
+                <p><em></em></p>
+                
+
+                                <h4>Type</h4>
+                string
+                                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            ORM\Column
+                        </th>
+                        <td>
+                                                            <p>(name="description", type="text", nullable=true)</p>
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property_type" name="property_type" class="anchor"></a>
+            <article class="property">
+                <h3 class="private ">$type</h3>
+                <pre class="signature">$type : string</pre>
+                <p><em></em></p>
+                
+
+                                <h4>Type</h4>
+                string
+                                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            ORM\Column
+                        </th>
+                        <td>
+                                                            <p>(name="type", type="string", length=255)</p>
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property_parent_id" name="property_parent_id" class="anchor"></a>
+            <article class="property">
+                <h3 class="private ">$parent_id</h3>
+                <pre class="signature">$parent_id : integer</pre>
+                <p><em></em></p>
+                
+
+                                <h4>Type</h4>
+                integer
+                                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            ORM\Column
+                        </th>
+                        <td>
+                                                            <p>(name="parent_id", type="integer")</p>
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property_created" name="property_created" class="anchor"></a>
+            <article class="property">
+                <h3 class="private ">$created</h3>
+                <pre class="signature">$created : \DateTime</pre>
+                <p><em></em></p>
+                
+
+                                <h4>Type</h4>
+                \DateTime
+                                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            ORM\Column
+                        </th>
+                        <td>
+                                                            <p>(type="datetime")</p>
+                                                    </td>
+                    </tr>
+                                    <tr>
+                        <th>
+                            Gedmo\Timestampable
+                        </th>
+                        <td>
+                                                            <p>(on="create")</p>
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property_updated" name="property_updated" class="anchor"></a>
+            <article class="property">
+                <h3 class="private ">$updated</h3>
+                <pre class="signature">$updated : \DateTime</pre>
+                <p><em></em></p>
+                
+
+                                <h4>Type</h4>
+                \DateTime
+                                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            Gedmo\Timestampable
+                        </th>
+                        <td>
+                                                            <p>(on="update")</p>
+                                                    </td>
+                    </tr>
+                                    <tr>
+                        <th>
+                            ORM\Column
+                        </th>
+                        <td>
+                                                            <p>(type="datetime", nullable=true)</p>
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property_user_created" name="property_user_created" class="anchor"></a>
+            <article class="property">
+                <h3 class="private ">$user_created</h3>
+                <pre class="signature">$user_created : integer</pre>
+                <p><em></em></p>
+                
+
+                                <h4>Type</h4>
+                integer
+                                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            ORM\ManyToOne
+                        </th>
+                        <td>
+                                                            <p>(targetEntity="WWSC\ThalamusBundle\Entity\User")</p>
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property_user_updated" name="property_user_updated" class="anchor"></a>
+            <article class="property">
+                <h3 class="private ">$user_updated</h3>
+                <pre class="signature">$user_updated : integer</pre>
+                <p><em></em></p>
+                
+
+                                <h4>Type</h4>
+                integer
+                                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            ORM\ManyToOne
+                        </th>
+                        <td>
+                                                            <p>(targetEntity="WWSC\ThalamusBundle\Entity\User")</p>
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property_is_deleted" name="property_is_deleted" class="anchor"></a>
+            <article class="property">
+                <h3 class="private ">$is_deleted</h3>
+                <pre class="signature">$is_deleted : </pre>
+                <p><em></em></p>
+                
+
+                                <h4>Type</h4>
+                
+                                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            ORM\Column
+                        </th>
+                        <td>
+                                                            <p>(name="is_deleted", type="boolean", nullable=true)</p>
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                            
+                                    <a id="methods" name="methods"></a>
+            <div class="row-fluid">
+                <div class="span8 content class"><h2>Methods</h2></div>
+                <aside class="span4 detailsbar"></aside>
+            </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_saveLog" name="method_saveLog" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">saveLog()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">saveLog(  <span class="argument">$data</span>) </pre>
+                <p><em></em></p>
+                
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td></td>
+                                <td>$data </td>
+                                <td></td>
+                            </tr>
+                                            </table>
+                
+                
+                				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                    <dt>Inherited from</dt>
+                    <dd><a href="../classes/WWSC.ThalamusBundle.Entity.Base.html"><div class="path-wrapper">\WWSC\ThalamusBundle\Entity\Base</div></a></dd>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_postUpdate" name="method_postUpdate" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">postUpdate()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">postUpdate(\Doctrine\ORM\Event\LifecycleEventArgs  <span class="argument">$args</span>) </pre>
+                <p><em></em></p>
+                
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td>\Doctrine\ORM\Event\LifecycleEventArgs</td>
+                                <td>$args </td>
+                                <td></td>
+                            </tr>
+                                            </table>
+                
+                
+                				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                    <dt>Inherited from</dt>
+                    <dd><a href="../classes/WWSC.ThalamusBundle.Entity.Base.html"><div class="path-wrapper">\WWSC\ThalamusBundle\Entity\Base</div></a></dd>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            ORM\PostUpdate
+                        </th>
+                        <td>
+                                                                                            
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_truncation" name="method_truncation" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">truncation()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">truncation(  <span class="argument">$str</span>,   <span class="argument">$length</span>) </pre>
+                <p><em></em></p>
+                
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td></td>
+                                <td>$str </td>
+                                <td></td>
+                            </tr>
+                                                    <tr>
+                                <td></td>
+                                <td>$length </td>
+                                <td></td>
+                            </tr>
+                                            </table>
+                
+                
+                				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                    <dt>Inherited from</dt>
+                    <dd><a href="../classes/WWSC.ThalamusBundle.Entity.Base.html"><div class="path-wrapper">\WWSC\ThalamusBundle\Entity\Base</div></a></dd>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_getId" name="method_getId" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">getId()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">getId() : integer</pre>
+                <p><em>Get id</em></p>
+                
+
+                
+                
+                                    <h4>Returns</h4>
+                    integer
+                                    				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_setDescription" name="method_setDescription" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">setDescription()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">setDescription(string  <span class="argument">$description</span>) : \WWSC\ThalamusBundle\Entity\Task</pre>
+                <p><em>Set description</em></p>
+                
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td>string</td>
+                                <td>$description </td>
+                                <td></td>
+                            </tr>
+                                            </table>
+                
+                
+                                    <h4>Returns</h4>
+                    <a href="../classes/WWSC.ThalamusBundle.Entity.Task.html">\WWSC\ThalamusBundle\Entity\Task</a>
+                                    				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_getDescription" name="method_getDescription" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">getDescription()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">getDescription() : string</pre>
+                <p><em>Get description</em></p>
+                
+
+                
+                
+                                    <h4>Returns</h4>
+                    string
+                                    				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_setCreated" name="method_setCreated" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">setCreated()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">setCreated(\DateTime  <span class="argument">$created</span>) : \WWSC\ThalamusBundle\Entity\Task</pre>
+                <p><em>Set created</em></p>
+                
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td>\DateTime</td>
+                                <td>$created </td>
+                                <td></td>
+                            </tr>
+                                            </table>
+                
+                
+                                    <h4>Returns</h4>
+                    <a href="../classes/WWSC.ThalamusBundle.Entity.Task.html">\WWSC\ThalamusBundle\Entity\Task</a>
+                                    				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_getCreated" name="method_getCreated" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">getCreated()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">getCreated() : \DateTime</pre>
+                <p><em>Get created</em></p>
+                
+
+                
+                
+                                    <h4>Returns</h4>
+                    \DateTime
+                                    				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_setUpdated" name="method_setUpdated" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">setUpdated()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">setUpdated(\DateTime  <span class="argument">$updated</span>) : \WWSC\ThalamusBundle\Entity\Task</pre>
+                <p><em>Set updated</em></p>
+                
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td>\DateTime</td>
+                                <td>$updated </td>
+                                <td></td>
+                            </tr>
+                                            </table>
+                
+                
+                                    <h4>Returns</h4>
+                    <a href="../classes/WWSC.ThalamusBundle.Entity.Task.html">\WWSC\ThalamusBundle\Entity\Task</a>
+                                    				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_getUpdated" name="method_getUpdated" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">getUpdated()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">getUpdated() : \DateTime</pre>
+                <p><em>Get updated</em></p>
+                
+
+                
+                
+                                    <h4>Returns</h4>
+                    \DateTime
+                                    				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_setUserCreated" name="method_setUserCreated" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">setUserCreated()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">setUserCreated(\WWSC\ThalamusBundle\Entity\User  <span class="argument">$userCreated</span>) : \WWSC\ThalamusBundle\Entity\Company</pre>
+                <p><em>Set user_created</em></p>
+                
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td><a href="../classes/WWSC.ThalamusBundle.Entity.User.html">\WWSC\ThalamusBundle\Entity\User</a></td>
+                                <td>$userCreated </td>
+                                <td></td>
+                            </tr>
+                                            </table>
+                
+                
+                                    <h4>Returns</h4>
+                    <a href="../classes/WWSC.ThalamusBundle.Entity.Company.html">\WWSC\ThalamusBundle\Entity\Company</a>
+                                    				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            ORM\PrePersist
+                        </th>
+                        <td>
+                                                                                            <p>()</p>
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_getUserCreated" name="method_getUserCreated" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">getUserCreated()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">getUserCreated() : \WWSC\ThalamusBundle\Entity\User</pre>
+                <p><em>Get user_created</em></p>
+                
+
+                
+                
+                                    <h4>Returns</h4>
+                    <a href="../classes/WWSC.ThalamusBundle.Entity.User.html">\WWSC\ThalamusBundle\Entity\User</a>
+                                    				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_setUserUpdated" name="method_setUserUpdated" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">setUserUpdated()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">setUserUpdated() : \WWSC\ThalamusBundle\Entity\Company</pre>
+                <p><em></em></p>
+                
+
+                
+                
+                                    <h4>Returns</h4>
+                    <a href="../classes/WWSC.ThalamusBundle.Entity.Company.html">\WWSC\ThalamusBundle\Entity\Company</a>
+                                    				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            ORM\PrePersist
+                        </th>
+                        <td>
+                                                                                            <p>()</p>
+                                                    </td>
+                    </tr>
+                                    <tr>
+                        <th>
+                            ORM\PreUpdate
+                        </th>
+                        <td>
+                                                                                            <p>Set user_updated</p>
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_getUserUpdated" name="method_getUserUpdated" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">getUserUpdated()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">getUserUpdated() : \WWSC\ThalamusBundle\Entity\User</pre>
+                <p><em>Get user_updated</em></p>
+                
+
+                
+                
+                                    <h4>Returns</h4>
+                    <a href="../classes/WWSC.ThalamusBundle.Entity.User.html">\WWSC\ThalamusBundle\Entity\User</a>
+                                    				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_setIsDeleted" name="method_setIsDeleted" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">setIsDeleted()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">setIsDeleted(boolean  <span class="argument">$isDeleted</span>) : \WWSC\ThalamusBundle\Entity\Task</pre>
+                <p><em>Set is_deleted</em></p>
+                
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td>boolean</td>
+                                <td>$isDeleted </td>
+                                <td></td>
+                            </tr>
+                                            </table>
+                
+                
+                                    <h4>Returns</h4>
+                    <a href="../classes/WWSC.ThalamusBundle.Entity.Task.html">\WWSC\ThalamusBundle\Entity\Task</a>
+                                    				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_getIsDeleted" name="method_getIsDeleted" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">getIsDeleted()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">getIsDeleted() : boolean</pre>
+                <p><em>Get is_deleted</em></p>
+                
+
+                
+                
+                                    <h4>Returns</h4>
+                    boolean
+                                    				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_setType" name="method_setType" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">setType()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">setType(string  <span class="argument">$type</span>) : \WWSC\ThalamusBundle\Entity\Comment</pre>
+                <p><em>Set type</em></p>
+                
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td>string</td>
+                                <td>$type </td>
+                                <td></td>
+                            </tr>
+                                            </table>
+                
+                
+                                    <h4>Returns</h4>
+                    <a href="../classes/WWSC.ThalamusBundle.Entity.Comment.html">\WWSC\ThalamusBundle\Entity\Comment</a>
+                                    				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_getType" name="method_getType" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">getType()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">getType() : string</pre>
+                <p><em>Get type</em></p>
+                
+
+                
+                
+                                    <h4>Returns</h4>
+                    string
+                                    				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_setParentId" name="method_setParentId" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">setParentId()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">setParentId(integer  <span class="argument">$parentId</span>) : \WWSC\ThalamusBundle\Entity\Comment</pre>
+                <p><em>Set parent_id</em></p>
+                
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td>integer</td>
+                                <td>$parentId </td>
+                                <td></td>
+                            </tr>
+                                            </table>
+                
+                
+                                    <h4>Returns</h4>
+                    <a href="../classes/WWSC.ThalamusBundle.Entity.Comment.html">\WWSC\ThalamusBundle\Entity\Comment</a>
+                                    				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_getParentId" name="method_getParentId" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">getParentId()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">getParentId() : integer</pre>
+                <p><em>Get parent_id</em></p>
+                
+
+                
+                
+                                    <h4>Returns</h4>
+                    integer
+                                    				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_getParentInfo" name="method_getParentInfo" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">getParentInfo()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">getParentInfo() </pre>
+                <p><em></em></p>
+                
+
+                
+                
+                				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_canBeEdited" name="method_canBeEdited" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">canBeEdited()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">canBeEdited() </pre>
+                <p><em></em></p>
+                
+
+                
+                
+                				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_getFiles" name="method_getFiles" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">getFiles()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">getFiles(  <span class="argument">$formatFile = false</span>) </pre>
+                <p><em></em></p>
+                
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td></td>
+                                <td>$formatFile </td>
+                                <td></td>
+                            </tr>
+                                            </table>
+                
+                
+                				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_setTimeTracker" name="method_setTimeTracker" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">setTimeTracker()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">setTimeTracker(\WWSC\ThalamusBundle\Entity\TimeTracker  <span class="argument">$timeTracker = null</span>) : \WWSC\ThalamusBundle\Entity\Comment</pre>
+                <p><em>Set time_tracker</em></p>
+                
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td><a href="../classes/WWSC.ThalamusBundle.Entity.TimeTracker.html">\WWSC\ThalamusBundle\Entity\TimeTracker</a></td>
+                                <td>$timeTracker </td>
+                                <td></td>
+                            </tr>
+                                            </table>
+                
+                
+                                    <h4>Returns</h4>
+                    <a href="../classes/WWSC.ThalamusBundle.Entity.Comment.html">\WWSC\ThalamusBundle\Entity\Comment</a>
+                                    				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_getTimeTracker" name="method_getTimeTracker" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">getTimeTracker()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">getTimeTracker() : \WWSC\ThalamusBundle\Entity\TimeTracker</pre>
+                <p><em>Get time_tracker</em></p>
+                
+
+                
+                
+                                    <h4>Returns</h4>
+                    <a href="../classes/WWSC.ThalamusBundle.Entity.TimeTracker.html">\WWSC\ThalamusBundle\Entity\TimeTracker</a>
+                                    				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_preUpdate" name="method_preUpdate" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">preUpdate()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">preUpdate(\Doctrine\ORM\Event\LifecycleEventArgs  <span class="argument">$args</span>) </pre>
+                <p><em></em></p>
+                
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td>\Doctrine\ORM\Event\LifecycleEventArgs</td>
+                                <td>$args </td>
+                                <td></td>
+                            </tr>
+                                            </table>
+                
+                
+                				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            ORM\PreUpdate
+                        </th>
+                        <td>
+                                                                                            
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_postPersist" name="method_postPersist" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">postPersist()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">postPersist(\Doctrine\ORM\Event\LifecycleEventArgs  <span class="argument">$args</span>) </pre>
+                <p><em></em></p>
+                
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td>\Doctrine\ORM\Event\LifecycleEventArgs</td>
+                                <td>$args </td>
+                                <td></td>
+                            </tr>
+                                            </table>
+                
+                
+                				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            ORM\PostPersist
+                        </th>
+                        <td>
+                                                                                            
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_getLogInfoByComment" name="method_getLogInfoByComment" class="anchor"></a>
+            <article class="method">
+                <h3 class="private ">getLogInfoByComment()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">getLogInfoByComment(  <span class="argument">$entity</span>) </pre>
+                <p><em></em></p>
+                
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td></td>
+                                <td>$entity </td>
+                                <td></td>
+                            </tr>
+                                            </table>
+                
+                
+                				
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    </div>
+    </section>
+
+    <div id="source-view" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="source-view-label" aria-hidden="true">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            <h3 id="source-view-label">Comment.php</h3>
+        </div>
+        <div class="modal-body">
+            <pre data-src="../files/Entity\Comment.php.txt" class="language-php line-numbers"></pre>
+        </div>
+    </div>
+
+    <footer class="row-fluid">
+        <section class="span10 offset2">
+            <section class="row-fluid">
+                <section class="span10 offset1">
+                    <section class="row-fluid footer-sections">
+                        <section class="span4">
+                                                        <h1><i class="icon-code"></i></h1>
+                            <div>
+                                <ul>
+                                                                            <li><a href="../namespaces/WWSC.html">\WWSC</a></li>
+                                                                    </ul>
+                            </div>
+                        </section>
+                        <section class="span4">
+                                                        <h1><i class="icon-bar-chart"></i></h1>
+                            <div>
+                                <ul>
+                                    <li><a href="../graphs/class.html">Class Hierarchy Diagram</a></li>
+                                </ul>
+                            </div>
+                        </section>
+                        <section class="span4">
+                                                        <h1><i class="icon-pushpin"></i></h1>
+                            <div>
+                                <ul>
+                                    <li><a href="../reports/errors.html">Errors</a></li>
+                                    <li><a href="../reports/markers.html">Markers</a></li>
+                                </ul>
+                            </div>
+                        </section>
+                    </section>
+                </section>
+            </section>
+            <section class="row-fluid">
+                <section class="span10 offset1">
+                    <hr />
+                    Documentation is powered by <a href="http://www.phpdoc.org/">phpDocumentor </a> and authored
+                    on December 17th, 2014 at 10:21.
+                </section>
+            </section>
+        </section>
+    </footer>
+</div>
+
+</body>
+</html>

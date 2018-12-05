@@ -1,0 +1,13 @@
+{% extends "::base.html.twig" %}
+{% block body %}
+    {% for oFile in aImages  %}
+        <div class="comment_image_wrapper">
+            <div class="comment_image">
+                <img src="{{ oFile.fileIcon }}">
+            </div>
+            <div class="comment_image_name">
+                {{ oFile.name }}
+            </div>
+        </div>
+    {% endfor  %}
+{% endblock %}

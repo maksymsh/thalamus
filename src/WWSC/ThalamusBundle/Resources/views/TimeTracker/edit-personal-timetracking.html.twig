@@ -1,0 +1,45 @@
+{% set oTask = oTimeTracking.comment.parentInfo %}
+<div class="form-add-new-entry col-md-10 without-padding margin-top-2x">
+    <div class="col-md-12">
+        <h4>{% trans %}ID{% endtrans %} {{ oTask.id }} {% trans %}Detailview{% endtrans %}</h4>
+    </div>
+    <form accept-charset="UTF-8" id="form-edit-entry" action="/personal_timetracking/edit/{{ oTimeTracking.id }}"  method="post">
+        <div class="col-md-12 margin-top-1x clear-both">
+            <div class="float-left col-md-2 ">{% trans %}Project:{% endtrans %}</div>
+            <div class="float-left col-md-9"><a class="font-bold" href="{{ path ('wwsc_thalamus_project_overview',{'project': oTask.task.project.slug })}}">{{ oTask.task.project.name }}</a></div>
+        </div>
+        <div class="col-md-12 margin-top-1x clear-both">
+            <div class="float-left col-md-2 ">{% trans %}Task:{% endtrans %}</div>
+            <div class="float-left col-md-9"><a class="font-bold" href="{{ path ('wwsc_thalamus_project_task_item_comments',{'project': oTask.task.project.slug, 'task': oTask.task.id , 'id': oTask.id})}}">{{ oTask.description }}</a></div>
+        </div>
+        {% if  app.user.role == 'ROLE_ACCOUNTING' %}
+        <div class="col-md-12 margin-top-1x">
+            {% include 'WWSCThalamusBundle:TaskItem:task-item-responsible.html.twig' with {'oTask': oTask.task, 'responsibleUserId': oTimeTracking.person.id} %}
+        </div>
+        {% endif %}
+        <div class="col-md-12 margin-top-1x clear-both">
+            <div class="float-left col-md-2 label-box">{% trans %}Comment{% endtrans %}</div>
+            <div class="float-left col-md-9"> <input  required type="text" name="personal-timetracking[comment]"  class="form-control" value="{{oTimeTracking.description}}"></div>
+        </div>
+         <div class="col-md-12 margin-top-1x clear-both">
+            <div class="float-left col-md-2 label-box">{% trans %}Billable:{% endtrans %}</div>
+            <div class="float-left col-md-9"> <input type="checkbox"  {% if oTimeTracking.billable == 1 %}  checked="checked"  {% endif %}  name="personal-timetracking[billable]"></div>
+        </div>
+        <div class="col-md-12 margin-top-1x clear-both">
+            <div class="col-md-4">
+                 <div class="float-left label-box">{% trans %}Start: {% endtrans %} </div>
+                 <div class="float-left"> <input  placeholder = "13:30" required required type="text" pattern="([01]?[0-9]|2[0-3]):[0-5][0-9]"  value="{{oTimeTracking.startTime}}" name="personal-timetracking[start-time]"  class="form-control time-input"></div>
+            </div>
+            <div class="col-md-4">
+                 <div class="float-left label-box">{% trans %}End: {% endtrans %}</div>
+                 <div class="float-left"> <input  placeholder = "16:00" required required type="text" pattern="([01]?[0-9]|2[0-3]):[0-5][0-9]" value="{{oTimeTracking.endTime}}"  name="personal-timetracking[end-time]" class="form-control time-input"></div>
+            </div>
+            <div class="col-md-4">
+                 <div class="float-left margin-top-1x ">{% trans %}Duraction: {% endtrans %} {{oTimeTracking.time(false, 'hours')}}</div>
+            </div>     
+        </div>
+        <div class="col-md-12 margin-top-2x clear-both" align="center">
+            <button class="btn btn-sm btn-primary btn-save" type="submit">Save Data & close</button>
+        </div>         
+    </form>
+</div>

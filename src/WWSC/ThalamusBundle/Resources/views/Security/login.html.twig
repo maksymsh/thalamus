@@ -1,0 +1,45 @@
+{% extends "WWSCThalamusBundle::layout.html.twig" %}
+{% block title %}
+    {% trans %}Sign in Thalamus{% endtrans %}
+{% endblock %} 
+{% trans_default_domain 'FOSUserBundle' %}
+{% block fos_user_content %}
+    <div class="signin modal-content container">
+        <form class="form-signin" {% if ajaxLogin %} id="login-form-user" {% endif %} action="{{ path("fos_user_security_check") }}" method="post">
+            <div class="error"></div>
+            {% include 'WWSCThalamusBundle:Content:flash_notice.html.twig' %}
+            <input type="hidden" name="_csrf_token" value="{{ csrf_token }}" />
+            <h2 class="form-signin-heading">{% trans %}Sign in Thalamus{% endtrans %}</h2>   
+            {% if error %}
+                <div class="alert alert-error" role="alert">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+            {% endif %}
+            <div class="form-group">
+                <input type="email" id="username" name="_username"  class="form-control" placeholder="Email"  required="required" />
+            </div>
+            <div class="form-group" >
+                <input type="password" id="password" name="_password" class="form-control" placeholder="Password" required="required" />
+            </div>
+            <div class="checkbox">
+                <input type="checkbox" id="remember_me" name="_remember_me" value="on" />
+                <label for="signin_remember_me">{{ 'security.login.remember_me'|trans }}</label>
+            </div>
+            <div class="form-group">  
+                <button class="btn btn-lg btn-primary" id="_submit" name="_submit"  type="submit">{{ 'security.login.submit'|trans }}</button>
+                {% if ajaxLogin %}
+                    <img src="{{ asset('bundles/wwscthalamus/images/social_google_box.png') }}">
+                    <a href="{{ path('hwi_oauth_service_redirect', {'service': 'google' }) }}" alt="Sign in with Google">{% trans %}Sign in with Google{% endtrans %}</a>
+                {% else %}     
+                    <span>or</span> <a class="btn-cancel" href="http://blog.thalamus.io/register/">{% trans %}Create new account{% endtrans %} </a>
+                {% endif %}
+            </div>
+            {% if ajaxLogin == false %}
+            <div class="form-group">
+                 <img src="{{ asset('bundles/wwscthalamus/images/social_google_box.png') }}">
+                 <a href="{{ path('hwi_oauth_service_redirect', {'service': 'google' }) }}" alt="Sign in with Google">{% trans %}Sign in with Google{% endtrans %}</a>
+            </div>
+            {% endif %}
+            <hr>
+            <div class="forgot_password">{% trans %}Help:{% endtrans %} <a href="{{ path('fos_user_resetting_request')}}">{% trans %}I forgot my password{% endtrans %}</a></div>
+        </form>
+    </div>    
+{% endblock fos_user_content %}

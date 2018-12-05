@@ -1,0 +1,43 @@
+<?php
+
+namespace WWSC\ThalamusBundle\Form;
+
+use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+
+class FilterTimeTrackerForm extends AbstractType {
+
+    /**
+     * @param FormBuilderInterface $builder
+     * @param array $options
+     */
+    
+   private $responsible;
+
+    public function __construct($responsible) {
+        $this->responsible = $responsible;
+    }
+    
+    public function buildForm(FormBuilderInterface $builder, array $options) {
+
+        $aResponsible =array();
+        foreach($this->responsible as $oResponsible){
+            $aResponsible[$oResponsible->getId()] = $oResponsible->getFirstName();
+        }
+
+        $builder
+                ->add('filter_date', 'date', array('widget' => 'single_text', 'format' => 'yyyy-MM-dd', 'required' => false, 'attr' => array('class' => 'form-control')))
+                ->add('filter_person', 'choice', array( 'required' => false, 'choices' => $aResponsible, 'empty_data'  => null, 'empty_value' => "Anyone", 'attr' => array('class' => 'form-control')))
+                ->add('filter_task', 'text', array( 'required' => false,'attr' => array('class' => 'form-control')))
+        ;
+    }
+    /**
+     * @return string
+     */
+    public function getName() {
+        return 'filter_time';
+    }
+
+}
+

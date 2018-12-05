@@ -1,0 +1,94 @@
+{% extends "WWSCThalamusBundle:Content:layout.html.twig" %}
+{% block title %}
+    {% trans %}All People{% endtrans %}
+{% endblock %} 
+{% block content %}   
+    <div class="row">
+        <div class="panel panel-default col-md-12">
+            <div class="panel-heading col-md-12">
+                <div class="col-md-6">
+                    {% trans %}Every company and person in your system{% endtrans %}
+                </div>
+                <div class="col-md-6">
+                    {% if is_granted('ROLE_PROVIDER')  %} 
+                    <div class="btn-add-company btn-right">
+                        <a href="#add-new-company"  data-toggle="modal" class="btn btn-default btn-md">
+                            <i class="glyphicon glyphicon-plus"></i> {% trans %}Add a new company {% endtrans %}
+                        </a>
+                        <small>{% trans %}(you can add people to it next){% endtrans %}</small>
+                    </div>
+                    {% endif %}
+                </div>    
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-md-12 main">
+                        <div class="modal fade" id="add-new-company">
+                            {{ render(controller('WWSCThalamusBundle:Company:add')) }}
+                        </div>
+                    </div>
+                    {% include 'WWSCThalamusBundle:Content:flash_notice.html.twig' %}
+                    <div class="list-company col-md-12">
+                        {% for oCompany in aCompanies %}
+                            {% if is_granted('ROLE_PROVIDER') or  oCompany.id == app.user.company.id %}
+                            <div class="company  col-xs-12">
+                                <div class="title-panel col-xs-12">
+                                    {% if oCompany.id == app.user.company.id %} 
+                                        {% trans %}Your company:{% endtrans %}
+                                    {% endif %}
+                                    {{ oCompany.name }}
+                                    <small>( {{ oCompany.roleName }} )</small>
+                                </div>
+                                {% if is_granted('ROLE_PROVIDER') or oCompany.id == app.user.company.id %}
+                                <div class="btn-add-new-person">
+                                    <a href="{{ path('wwsc_thalamus_user_add', {'company': oCompany.id }) }}" class="btn btn-default btn-md">
+                                        <i class="glyphicon glyphicon-plus"></i> {% trans %}Add a new person{% endtrans %}
+                                    </a>
+                                </div>
+                                {% endif %}        
+                                <div class="item col-md-4">
+                                    <div class="avatar">
+                                        <img src="{{ asset('bundles/wwscthalamus/images/company_icon.png') | imagine_filter('my_thumb',{"thumbnail": {"size": [64, 64] }}) }}">
+                                    </div>
+                                    <div class="desc">
+                                        {% include 'WWSCThalamusBundle:Company:block_info_company.html.twig' with {'company': oCompany} %}
+                                        {% if (oCompany.id == app.user.company.id)  or  (is_granted('ROLE_PROVIDER'))  %}                    
+                                            <a href="{{ path('wwsc_thalamus_company_edit', {'id':  oCompany.id  }) }}">{% trans %}Edit{% endtrans %}</a> <small> {% trans %}this company{% endtrans %}</small>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                {% for companyUser in oCompany.companyUser %}
+                                    {% set oUser = companyUser.user %}
+                                    <div class="item col-md-4">
+                                        <div class="avatar">
+                                            {% if oUser.avatar %}
+                                                {% set icon = (asset('uploads/user/')~ oUser.avatar) %}
+                                            {% else %}
+                                                {% set icon = asset('bundles/wwscthalamus/images/user_icon.png') %}
+                                            {% endif %}
+                                            <img src="{{ icon | imagine_filter('my_thumb',{"thumbnail": {"size": [64, 64] }}) }}">
+                                            {% if companyUser.enabled  %}
+                                                {% if accountOwnerId == oUser.id  %}
+                                                    <div class="badge badge-owner">{% trans %}OWNER{% endtrans %}</div>
+                                                {% endif %}   
+                                            {% else %}
+                                                <div class="badge badge-invited">{% trans %}INVITED{% endtrans %}</div>      
+                                            {% endif %}   
+                                        </div>
+                                        <div class="desc">
+                                            {% include 'WWSCThalamusBundle:User:block_info_user.html.twig' with {'user': oUser} %}
+                                            {% if (oCompany.id == app.user.company.id)  or  (is_granted('ROLE_PROVIDER'))  %}   
+                                                <a href="{{ path('wwsc_thalamus_user_edit', {'id': oUser.id }) }}">{% trans %}Edit{% endtrans %}</a>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                        {% endfor %}                   
+                    </div>            
+                </div><!--/span-->
+            </div>  
+        </div>
+    </div>
+{% endblock %}

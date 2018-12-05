@@ -1,0 +1,105 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: de\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"X-Generator: Poedit 1.7.5\n"
+
+msgid "Please enter your account name."
+msgstr "Please enter your account name."
+
+msgid "Please enter your comment"
+msgstr "Bitte geben Sie Ihren Kommentar ein"
+
+msgid "Please enter your company name."
+msgstr "Please enter your company name."
+
+msgid "Please enter your first Name."
+msgstr "Please enter your first Name."
+
+msgid "Please enter your item description."
+msgstr "Please enter your item description."
+
+msgid "Please enter your last Name."
+msgstr "Please enter your last Name."
+
+msgid "Please enter your project name."
+msgstr "Please enter your project name."
+
+msgid "The First Name is too long."
+msgstr "The First Name is too long."
+
+msgid "The First Name is too short."
+msgstr "The First Name is too short."
+
+msgid "The Last Name is too long."
+msgstr "The Last Name is too long."
+
+msgid "The Last Name is too short."
+msgstr "The Last Name is too short."
+
+msgid "The account name is too long."
+msgstr "The account name is too long."
+
+msgid "The account name is too short."
+msgstr "The account name is too short."
+
+msgid "The comment is too short."
+msgstr "The comment is too short."
+
+msgid "The company name is too long."
+msgstr "The company name is too long."
+
+msgid "The company name is too short."
+msgstr "The company name is too short."
+
+msgid "The description item is too short."
+msgstr "The description item is too short."
+
+msgid "The project name is too long."
+msgstr "The project name is too long."
+
+msgid "The project name is too short."
+msgstr "The project name is too short."
+
+msgid "fos_user.email.already_used"
+msgstr "fos_user.email.already_used"
+
+msgid "fos_user.email.blank"
+msgstr "fos_user.email.blank"
+
+msgid "fos_user.email.invalid"
+msgstr "fos_user.email.invalid"
+
+msgid "fos_user.email.long"
+msgstr "fos_user.email.long"
+
+msgid "fos_user.email.short"
+msgstr "fos_user.email.short"
+
+msgid "fos_user.password.blank"
+msgstr "fos_user.password.blank"
+
+msgid "fos_user.password.mismatch"
+msgstr "fos_user.password.mismatch"
+
+msgid "fos_user.password.short"
+msgstr "fos_user.password.short"
+
+msgid "fos_user.username.already_used"
+msgstr "fos_user.username.already_used"
+
+msgid "fos_user.username.blank"
+msgstr "fos_user.username.blank"
+
+msgid "fos_user.username.long"
+msgstr "fos_user.username.long"
+
+msgid "fos_user.username.short"
+msgstr "fos_user.username.short"

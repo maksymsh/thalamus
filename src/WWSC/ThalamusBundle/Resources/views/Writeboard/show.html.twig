@@ -1,0 +1,85 @@
+{% extends "WWSCThalamusBundle:Content:layout.html.twig" %}
+{% block title %}
+    {{ oWriteboard.name }}
+{% endblock %} 
+{% block content %}
+    <div class="row">
+        <div class="panel panel-default col-md-9">
+            <div class="panel-heading col-xs-12">
+                <div class="title-writeboard">
+                    <div class="name col-xs-6">
+                       {{ oWriteboard.name }}
+                    </div>
+                    <div class="page_header_links-simple col-xs-5">
+                        <a  href="#" class="show-form-etit-name">{% trans %}Edit title{% endtrans %}</a>
+                    </div> 
+                </div>
+                <form class="edit-name-writeboard col-md-10" action="{{ path ('wwsc_thalamus_project_writeboard_update_name',{'project':oWriteboard.project.slug,'id':oWriteboard.id })}}" method="POST">
+                    <div class="col-md-6">
+                        <input type="text" name="name-writeboard" value="{{ oWriteboard.name }}" required="required" class="form-control" value="" pattern=".{3,255}">
+                   </div>
+                   <div class="action col-md-6">
+                    <button class="btn btn-sm btn-primary btn-update" type="submit">{% trans %}Save{% endtrans %}</button>
+                    <span>{% trans %}or{% endtrans %}</span>  <a class="btn-cancel hide-form-etit-name" href="#"> {% trans %}Cancel{% endtrans %} </a>
+                   </div>
+                <form>
+            </div> 
+            <div class="panel-body">
+                <div class="row">
+                    <div class='col-md-12 '>
+                        <div class='col-md-11 writeboard-description info-panel'>
+                            {% include 'WWSCThalamusBundle:Writeboard:writeboard-info.html.twig' with {'oWiteboard': oWriteboard } %}
+                        </div>
+                    </div>
+                    {% if is_granted('ROLE_PROVIDER')  %}
+                        <div class="col-md-12 writeboard-status-user" data-url="{{path('wwsc_thalamus_project_writeboard_status_user',{'project':oWriteboard.project.slug,'id':oWriteboard.id })}}">
+                                {% include 'WWSCThalamusBundle:SubscribeEmail:block-subscribed-people.html.twig'  with {'aSubsCompanies': oWriteboard.project.subspeople , 'activeSubscribed':oWriteboard.activeSubscribed, 'type': 'Writeboard', 'oParent':oWriteboard } %} 
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>            
+        <div class="col-md-3 sidebar">
+            <div class="col">
+                {% if is_granted('ROLE_PROVIDER')  %}
+                    <div class="title-panel">{% trans %}Versions{% endtrans %}</div>    
+                    <div class="info-panel">
+                        {%if oWriteboard.versionsWriteboard|length > 0 %}
+                        <div class="btn-group btn-input open-selectbox selectbox-version">
+                          <button type="button" class="btn btn-default form-control" data-toggle="dropdown">
+                            <span class="label-active" data-bind="label">{{ oWriteboard.created|date("d M Y h:i") }}</span> <span class="caret"></span>
+                          </button>
+                          <ul class="dropdown-menu" class="form-control" >
+                            {% for oVerWrit in oWriteboard.versionsWriteboard %}
+                                <li><a class="id-version-writeboard" href="{{path('wwsc_thalamus_project_writeboard_show_version',{'project':oWriteboard.project.slug,'id':oVerWrit['id'] })}}">{{ oVerWrit['created']|date("d M Y h:i") }} </a></li>
+                             {% endfor %}
+                          </ul>
+                        </div>
+                       {% else %}
+                            <div><a href="#">{{ oWriteboard.created|date("d M Y h:i") }}</a></div>
+                       {% endif %} 
+                    </div> 
+                    <div class="comments_notification-sidebar">
+                            {% include 'WWSCThalamusBundle:SubscribeEmail:comments_notification-sidebar.html.twig' with {'slugProject': oWriteboard.project.slug, 'oParent': oWriteboard, 'type':'Writeboard'} %}
+                    </div>
+                {% endif %}
+            </div>
+        </div><!--/span-->        
+    </div>
+{% include 'WWSCThalamusBundle:File:jQUploadTemplateAttachment.html.twig'%}            
+{% endblock %}
+{% block stylesheets %}
+    <link href="{{ asset('bundles/wwscthalamus/markdown/css/bootstrap-markdown.min.css') }}" type="text/css" rel="stylesheet" />
+    <link href="{{ asset('bundles/wwscthalamus/jQUpload/css/jquery.fileupload.css') }}" type="text/css" rel="stylesheet" />
+    <link href="{{ asset('bundles/wwscthalamus/jQUpload/css/jquery.fileupload-ui.css') }}" type="text/css" rel="stylesheet" />
+{% endblock %}
+{% block javascripts %}
+    <script src="{{ asset('bundles/wwscthalamus/markdown/js/to-markdown.js') }}"></script>
+    <script src="{{ asset('bundles/wwscthalamus/markdown/js/markdown.js') }}"></script>
+    <script src="{{ asset('bundles/wwscthalamus/markdown/js/bootstrap-markdown.js') }}"></script>
+    <script src="{{ asset('bundles/wwscthalamus/js/attachment.js') }}"></script>
+    <script src="{{ asset('bundles/wwscthalamus/js/writeboard.js') }}"></script>
+    {% include 'WWSCThalamusBundle:File:jQUploadAttachmentScript.html.twig'%}
+    <script src="https://apis.google.com/js/client.js?onload=handleGoogleClientLoad"></script>
+    <script src="{{ asset('bundles/wwscthalamus/js/jquery.autogrow-textarea.js') }}"></script>
+{% endblock %}

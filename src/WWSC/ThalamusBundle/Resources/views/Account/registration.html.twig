@@ -1,0 +1,77 @@
+{% extends '::base.html.twig' %}
+{% block title %}
+    {% trans %} Registration{% endtrans %}
+{% endblock %} 
+{% block body %}
+    <div class="container registration">
+        <div class="row">
+            <div class="panel panel-default  col-xs-offset-2  col-lg-7">
+                <div class="panel-heading">
+                   {% trans %}Registration{% endtrans %}
+                </div>
+                <div class="panel-body">
+                    {% include 'WWSCThalamusBundle:Content:flash_notice.html.twig' %}
+                    {% if form_errors(form) %}
+                        <div class="alert alert-error error" role="alert">{{ form_errors(form) }}</div>
+                    {% endif %}
+                    <div class="panel-offer">
+                        {% trans %}Already have a Thalamus account?{% endtrans %}<br>
+                        <a  href="#sigin-modal" data-toggle="modal">{% trans %}Sign in here.{% endtrans %}</a> {% trans %}to skip this form and use the username you already have.{% endtrans %}
+                    </div>
+                    <div class="modal fade" id="sigin-modal">
+                         {{ render(controller('WWSCThalamusBundle:Security:login', {'ajaxLogin':true })) }} }
+                    </div>
+                    <h4>{% trans %}A few details and you're on your way{% endtrans %}</h4> 
+                    <form  class="form-horizontal form-registration" action="{{ path('wwsc_thalamus_registration_account') }}"  method="POST">                              
+                        <div class="form-group">
+                            {{ form_label(form.first_name) }}
+                            <div class="col-md-6">
+                                {{ form_widget(form.first_name) }}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            {{ form_label(form.last_name) }}
+                            <div class="col-md-6">
+                                {{ form_widget(form.last_name) }}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            {{ form_label(form.email) }}
+                            <div class="col-md-6">
+                                {{ form_widget(form.email) }}
+                            </div>
+                        </div>    
+                        <div class="form-group">
+                            {{ form_label(form.account) }}
+                            <div class="col-md-6">
+                                {{ form_widget(form.account) }}
+                                <div class="help">({% trans %}Or non-profit, organization, group, school, etc.{% endtrans %})</div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            {{ form_label(form.timezone) }}
+                            <div class="col-xs-8">
+                                {{ form_widget(form.timezone) }}
+                            </div>
+                        </div>       
+                        <fieldset class="credentials">
+                            <legend>{% trans %}Now choose a password{% endtrans %}</legend>
+                            <div class="form-group plain-password">
+                                <div class="col-xs-offset-1 col-md-6">
+                                    {{form_widget(form.plainPassword)}}
+                                </div>
+                            </div>
+                            {{ form_widget(form._token) }}
+                        </fieldset> 
+                        <hr>
+                        <div class="form-group">
+                            <div class="col-xs-9">
+                                <input type="submit" class="btn btn-primary" value="{% trans %}Create my account{% endtrans %}">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>           
+        </div>    
+    </div><!--/.container-->
+{% endblock %}

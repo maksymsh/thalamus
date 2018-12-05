@@ -1,0 +1,33 @@
+<?php
+
+namespace WWSC\ThalamusBundle\Controller;
+
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\Session;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+
+class SortElementsController extends Controller {
+
+    public function changeSortAction(Request $request) {
+
+        /**
+         *  Method changing sorting items 
+         * 
+         *  This method is responsible for changing the sorting items (Drag-and-drop)
+         */
+        $aElements = $this->getDoctrine()->getRepository('WWSCThalamusBundle:' . $request->get('type'))->findBy(array(
+            $request->get('field') => $request->get('value')
+        ));
+        $aIds = json_decode($request->request->get('order'));
+        $em = $this->getDoctrine()->getManager();
+        foreach ($aIds as $key => $val) {
+            $oElement = $this->getDoctrine()->getRepository('WWSCThalamusBundle:' . $request->get('type'))->find($val);
+            $oElement->setSort($key);
+            $em->flush();
+        }
+        return new Response(1);
+    }
+
+}
+

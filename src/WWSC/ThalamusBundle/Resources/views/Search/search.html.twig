@@ -1,0 +1,135 @@
+{% extends "WWSCThalamusBundle:Content:layout.html.twig" %}
+{% import "WWSCThalamusBundle:Macros:macros.html.twig" as macros %}
+{% block title %}
+    Search
+{% endblock %} 
+{% block content %}
+<div class="row search-page">
+        <div class="panel panel-default col-md-9 task-item-comments-wrapper">
+            <div class="panel-heading col-xs-12">
+                <div class="col-xs-12">
+                    {% if projectSlug == 'all' %}
+                        {% trans %}Search across all projects{% endtrans %}
+                    {% else %}
+                        {% trans %}Search the "my project" project or search{% endtrans %} 
+                        <a href="{{ path ('wwsc_thalamus_search')}}?search={{app.request.get('search')}}&scope={{app.request.get('scope')}}">
+                            {% trans %}all projects{% endtrans %}
+                        </a> 
+                   {% endif %}    
+                   <div class="search-box">
+                       <form action="{{ path ('wwsc_thalamus_search',{'project': projectSlug })}}?scope={{ app.request.get('scope') }}" method="POST">
+                           <input value="{{ app.request.get('search') }}"name="search" type="text"> 
+                           <input type="submit" value="Search">
+                       </form>
+                   </div>
+                </div>
+            </div>
+            <div class="panel-body">
+                <div class="row ">
+                    <div class="col-md-12">
+                        {% if app.request.get('search') %}
+                            <p class="col-md-12 margin-top-1x">{% trans %}Show{% endtrans %}
+                                {% if(app.request.get('scope') == false) %}
+                                    <strong>{% trans %} All matches{% endtrans %}</strong>
+                                {% else %}
+                                    <a href="{{ path ('wwsc_thalamus_search',{'project': projectSlug })}}?search={{app.request.get('search')}}">{% trans %} All matches{% endtrans %}</a> 
+                                {% endif %}    
+                                {% trans %}or filter by{% endtrans %}
+                                {% if(app.request.get('scope') == 'task') %} 
+                                    <strong>{% trans %} To-dos{% endtrans %}</strong>
+                                {% else %}
+                                    <a href="{{ path ('wwsc_thalamus_search',{'project': projectSlug })}}?search={{app.request.get('search')}}&scope=task">{% trans %}To-dos{% endtrans %}</a>,
+                                {% endif %} 
+                                {% if(app.request.get('scope') == 'taskitem') %}
+                                    <strong>{% trans %} Tasks{% endtrans %}</strong>
+                                {% else %}
+                                    <a href="{{ path ('wwsc_thalamus_search',{'project': projectSlug })}}?search={{app.request.get('search')}}&scope=taskitem">{% trans %}Tasks{% endtrans %}</a>,                                    
+                                {% endif %}
+                                {% if(app.request.get('scope') == 'comment') %}
+                                    <strong>{% trans %} Comments{% endtrans %}</strong>
+                                {% else %}
+                                    <a href="{{ path ('wwsc_thalamus_search',{'project': projectSlug })}}?search={{app.request.get('search')}}&scope=comment">{% trans %}Comments{% endtrans %}</a>,
+                                {% endif %} 
+                                {% if(app.request.get('scope') == 'files') %}
+                                    <strong>{% trans %} Files{% endtrans %}</strong>
+                                {% else %}
+                                    <a href="{{ path ('wwsc_thalamus_search',{'project': projectSlug })}}?search={{app.request.get('search')}}&scope=files">{% trans %}Files{% endtrans %}</a> 
+                                {% endif %} 
+                                {% trans %}or{% endtrans %} 
+                                {% if(app.request.get('scope') == 'writeboard') %}
+                                    <strong>{% trans %} Writeboards{% endtrans %}</strong>
+                                {% else %}
+                                    <a href="{{ path ('wwsc_thalamus_search',{'project': projectSlug })}}?search={{app.request.get('search')}}&scope=writeboard">{% trans %}Writeboards{% endtrans %}</a>                                   
+                                {% endif %} 
+                                .</p>
+                            <div class="search-results dashboard-log col-md-12">
+                                {% if(app.request.get('scope') == false) %}
+                                    {% if aSearchResults['Task'] is empty and aSearchResults['Taskitem'] is empty and aSearchResults['Comment'] is empty and aSearchResults['Writeboard'] is empty and aSearchResults['Files'] is empty %}
+                                        <div class="search-result col-md-10">
+                                            <div class="not-found">
+                                                {% trans %}Sorry, your search had no results{% endtrans %}!
+                                            </div>
+                                        </div>
+                                    {% else %}
+                                        {% if projectSlug == 'all' %}
+                                            {% include 'WWSCThalamusBundle:Search:data-search-all.html.twig' with {'aSearchResults': aSearchResults} %}
+                                        {% else %}
+                                            {{ macros.includeResults(aSearchResults, projectSlug) }}
+                                        {% endif %}
+                                    {% endif %}
+                                {% else %}
+                                    {% if(app.request.get('scope') == 'item') and not aSearchResults['Task'] is empty %}
+                                        {{ macros.includeResults(aSearchResults, projectSlug) }}
+                                    {% elseif(app.request.get('scope') == 'taskitem') and not aSearchResults['Taskitem'] is empty %}
+                                        {{ macros.includeResults(aSearchResults, projectSlug) }}
+                                    {% elseif(app.request.get('scope') == 'comment') and not aSearchResults['Comment'] is empty %}
+                                        {{ macros.includeResults(aSearchResults, projectSlug) }}
+                                    {% elseif(app.request.get('scope') == 'files') and not aSearchResults['Files'] is empty %}
+                                        {{ macros.includeResults(aSearchResults, projectSlug) }}
+                                    {% elseif(app.request.get('scope') == 'writeboard') and not aSearchResults['Writeboard'] is empty %}
+                                        {{ macros.includeResults(aSearchResults, projectSlug) }}
+                                    {% else %}
+                                        <div class="search-result col-md-10">
+                                            <div class="not-found">
+                                                {% trans %}Sorry, your search had no results{% endtrans %}!
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                {% endif %}
+                            </div>    
+                        {% else %}
+                            {% if projectSlug == 'all' %}
+                                <p class="blank_slate">
+                                    {% trans %}Enter your search terms above{% endtrans %} 
+                                </p>
+                            {% else %}    
+                                <p class="blank_slate">{% trans %}Enter your search terms above to search the my project project.{% endtrans %} {% trans %}You might also want to search{% endtrans %} 
+                                    <a href="{{ path ('wwsc_thalamus_search')}}?search={{app.request.get('search')}}&scope={{app.request.get('scope')}}">{% trans %}all projects{% endtrans %}</a>.
+                                </p>
+                            {% endif %}
+                        {% endif %}
+                    </div>   
+                </div>
+            </div>
+        </div>            
+        <div class="col-md-3">
+            <div class="col sidebar-filter">
+                <div class="info-panel left-history-search">
+                    {% trans %}Your recent searches in my project{% endtrans %} 
+                    <a class="edit-cat-block" href="{{ path('wwsc_thalamus_search',{'project':projectSlug}) }}">
+                        {% trans %}Clear{% endtrans %}
+                    </a>
+               </div>
+               <ul class="list-history-search">
+                {% for oSearchHistory in aSearchHistory %}
+                        <li>
+                            <a href="{{ path('wwsc_thalamus_search',{'project':projectSlug}) }}?search={{ oSearchHistory.search }}&scope={{ oSearchHistory.scope }}">
+                                {{ oSearchHistory.search }}
+                            </a>
+                        </li>
+                {% endfor %} 
+                </ul>
+            </div>
+        </div><!--/span-->          
+    </div>
+{% endblock %} 

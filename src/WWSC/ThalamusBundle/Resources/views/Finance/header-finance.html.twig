@@ -1,0 +1,125 @@
+<table class="table table-striped  finance-table finance-header-project  finance-table-dashboard ">
+    <tr class="font-bold">
+       <td>
+           {% trans %}Project budget{% endtrans %}:
+                <img height="14px" class="tooltip-msg"
+                title="{% trans %}Project budget as defined in the project settings{% endtrans %}"
+                src="{{ asset('bundles/wwscthalamus/images/information-icon.png') }}">
+       </td>
+       <td class="show-currency price"> {{ app.user.formatPrice(aFinancesProject['project_budget']) }}</td>
+    </tr>
+    {% if app.request.attributes.get('_route') != 'wwsc_thalamus_project_overview' %}
+    <tr>
+       <td>
+           {% trans %}Billable personnel cost{% endtrans %}:
+           <img height="14px" class="tooltip-msg"
+                title="{% trans %}All billable hours of the users with the agency role multiplied with the internal hourly rate. The hourly rate is set within the company settings.{% endtrans %}"
+                src="{{ asset('bundles/wwscthalamus/images/information-icon.png') }}">
+       </td>
+       <td class="show-currency">{{ app.user.formatPrice(aFinancesProject['billable_personnel_cost']) }}</td>
+    </tr>
+    <tr>
+       <td>
+           {% trans %}Billable sub-contractor cost{% endtrans %}:
+           <img height="14px" class="tooltip-msg"
+                title="{% trans %}All billable hours of the users with the sub-contractor role multiplied with the internal hourly rate, that is set in the company settings{% endtrans %}"
+                src="{{ asset('bundles/wwscthalamus/images/information-icon.png') }}">
+       </td>
+       <td class="show-currency"> {{ app.user.formatPrice(aFinancesProject['billable_sub_contractor_cost']) }}</td>
+    </tr>
+    <tr>
+       <td>
+           {% trans %}Billable third party cost{% endtrans %}:
+            <img height="14px" class="tooltip-msg"
+                title="{% trans %}All billable costs of finance section.{% endtrans %}"
+                src="{{ asset('bundles/wwscthalamus/images/information-icon.png') }}">
+       </td>
+       <td class="show-currency">{{ app.user.formatPrice(aFinancesProject['billable_third_party']) }}</td>
+    </tr>
+    {% endif %}
+    <tr class="font-bold">
+       <td>
+           {% trans %}Billable costs sum{% endtrans %}:
+           <img height="14px" class="tooltip-msg"
+                title="{% trans %}Sum of billable costs{% endtrans %}"
+                src="{{ asset('bundles/wwscthalamus/images/information-icon.png') }}">
+       </td>
+       <td class="show-currency"> {{ app.user.formatPrice(aFinancesProject['billable_costs_sum']) }}</td>
+    </tr>
+    {% if app.request.attributes.get('_route') != 'wwsc_thalamus_project_overview' %}
+    <tr>
+       <td>
+           {% trans %}Non billable personell-cost{% endtrans %}:
+           <img height="14px" class="tooltip-msg"
+                title="{% trans %}All non-billable hours of the users with the agency role multiplied with the internal hourly rate. The hourly rate is set within the company settings.{% endtrans %}"
+                src="{{ asset('bundles/wwscthalamus/images/information-icon.png') }}">
+       </td>
+       <td class="show-currency"> {{ app.user.formatPrice(aFinancesProject['non_billable_personnel_cost']) }}</td>
+    </tr>
+    <tr>
+       <td>
+           {% trans %}Non billable sub-contractor-cost{% endtrans %}:
+           <img height="14px" class="tooltip-msg"
+                title="{% trans %}All non-billable hours of the users with the sub-contractor role multiplied with the internal hourly rate, that is set in the company settings{% endtrans %}"
+                src="{{ asset('bundles/wwscthalamus/images/information-icon.png') }}">
+       </td>
+       <td class="show-currency">{{ app.user.formatPrice(aFinancesProject['non_billable_sub_contractor_cost']) }}</td>
+   </tr>
+   <tr>
+       <td>
+           {% trans %}Non billable third-party-cost{% endtrans %}:
+            <img height="14px" class="tooltip-msg"
+                title="{% trans %}All non-billable costs of finance section.{% endtrans %}"
+                src="{{ asset('bundles/wwscthalamus/images/information-icon.png') }}">
+       </td>
+       <td class="show-currency">{{ app.user.formatPrice(aFinancesProject['non_billable_third_party']) }}</td>
+   </tr>
+   {% endif %}
+   <tr class="font-bold">
+       <td>
+           {% trans %}Non billable costs sum{% endtrans %}:
+            <img height="14px" class="tooltip-msg"
+                title="{% trans %}Sum of non-billable costs{% endtrans %}"
+                src="{{ asset('bundles/wwscthalamus/images/information-icon.png') }}">
+       </td>
+       <td class="show-currency">{{ app.user.formatPrice(aFinancesProject['non_billable_costs_sum']) }}</td>
+   </tr>
+   <tr class="font-bold">
+       <td>
+           {% trans %}Sum of all costs{% endtrans %}:
+           <img height="14px" class="tooltip-msg"
+                title="{% trans %} This is the sum of all costs {% endtrans %}"
+                src="{{ asset('bundles/wwscthalamus/images/information-icon.png') }}">
+       </td>
+       <td class="show-currency">{{ app.user.formatPrice(aFinancesProject['non_billable_costs_sum'] + aFinancesProject['billable_costs_sum']) }}</td>
+   </tr>
+    <tr class="font-bold">
+       <td>
+           {% trans %}Expected turnover{% endtrans %}:
+           <img height="14px" class="tooltip-msg"
+                title="{% trans %}This sum renders the value of the project, when efforts whould have been billed with external rates. This is what we calculate: All billable hours of agency- and subcontrator users multiplied with their EXTERNAL rates. Plus billable third-party costs.{% endtrans %}"
+                src="{{ asset('bundles/wwscthalamus/images/information-icon.png') }}">
+       </td>
+       <td class="show-currency">{{ app.user.formatPrice(aFinancesProject['sum_for_expected_turnover']+ aFinancesProject['billable_third_party']) }}</td>
+   </tr>
+   <tr  class="font-bold">
+       <td>
+           {% trans %}Gross profit{% endtrans %}:
+           <img height="14px" class="tooltip-msg"
+                title="{% trans %}For fixed-priced projects: The project-budget minus the sum of all internal costs{% endtrans %}"
+                src="{{ asset('bundles/wwscthalamus/images/information-icon.png') }}">
+       </td>
+       <td class="show-currency price">{{ app.user.formatPrice(aFinancesProject['project_budget']+ aFinancesProject['non_billable_costs_sum'] + aFinancesProject['billable_costs_sum']) }}</td>
+   </tr>
+   {% if app.request.attributes.get('_route') != 'wwsc_thalamus_project_overview' %}
+   <tr  class="font-bold">
+       <td>
+           {% trans %}Still open project value{% endtrans %}:
+           <img height="14px" class="tooltip-msg"
+                title="{% trans %}For fixed-priced projects: The idea is to be able to identify project that have money left on their budget. This value is a result of the project-budget minus all POSITIVE costs that are billable and have the status paid. {% endtrans %}"
+                src="{{ asset('bundles/wwscthalamus/images/information-icon.png') }}">
+       </td>
+       <td class="show-currency price gross-profit-value">{{ app.user.formatPrice(aFinancesProject['still_open_project_value']) }}</td>
+   </tr>
+   {% endif %}
+</table>

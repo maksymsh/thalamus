@@ -1,0 +1,634 @@
+<?php
+
+namespace WWSC\ThalamusBundle\Entity;
+
+use WWSC\ThalamusBundle\WWSCThalamusBundle;
+use Doctrine\Common\Collections\ArrayCollection;
+use Gedmo\Mapping\Annotation as Gedmo;
+use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+use Doctrine\Common\Collections\Criteria;
+use Doctrine\ORM\Event\LifecycleEventArgs;
+
+/**
+ * Task
+ *
+ * @ORM\Entity
+ * @ORM\HasLifecycleCallbacks
+ * @ORM\Table(name="task")
+ */
+class Task extends Base{
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="id", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
+     */
+    private $id;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="name", type="string", length=255, nullable=true)
+     */
+    private $name = 'List';
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="description", type="text", nullable=true)
+     */
+    private $description;
+     /**
+     * @var boolean
+     *
+     * @ORM\Column(name="visible_client", type="boolean", nullable=true)
+     */
+    private $visible_client;
+   
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="visible_freelancer", type="boolean", nullable=true)
+     */
+    private $visible_freelancer;
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="is_time_tracker", type="boolean", nullable=true)
+     */
+    private $is_time_tracker;
+    
+ 
+    private $save_to_log = 1;
+
+    /**
+     * @var \DateTime $created
+     *
+     * @ORM\Column(type="datetime")
+     * @Gedmo\Timestampable(on="create")
+     */
+    
+    private $created;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="sort", type="integer", nullable=true)
+     */
+    private $sort;
+
+    /**
+     * @var \DateTime $updated
+     * @Gedmo\Timestampable(on="update")
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $updated;
+
+    /**
+     * @var integer
+     * 
+     * @ORM\ManyToOne(targetEntity="WWSC\ThalamusBundle\Entity\User")
+     */
+    private $user_created;
+
+    /**
+     * @var integer
+     * 
+     * @ORM\ManyToOne(targetEntity="WWSC\ThalamusBundle\Entity\User")
+     */
+    private $user_updated;
+
+    /**
+     * @ORM\Column(name="is_deleted", type="boolean", nullable=true)
+     */
+    private $is_deleted = 0;
+
+    /**
+     * @ORM\Column(name="recursive", type="boolean", nullable=true)
+     */
+    private $recursive = 0;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="WWSC\ThalamusBundle\Entity\Project", inversedBy="project")
+     */
+    private $project;
+
+    /**
+     *
+     * @ORM\OneToMany(targetEntity="WWSC\ThalamusBundle\Entity\TaskItem", mappedBy="task", cascade={"all"})
+     * @ORM\OrderBy({"sort" = "DESC"})
+     */
+    private $items;
+
+    /**
+     * Get id
+     *
+     * @return integer 
+     */
+    public function getId() {
+        return $this->id;
+    }
+
+    /**
+     * Set name
+     *
+     * @param string $name
+     * @return Task
+     */
+    public function setName($name = 'List') {
+        if ($name) {
+            $this->name = $name;
+        }
+        return $this;
+    }
+
+    /**
+     * Get name
+     *
+     * @return string 
+     */
+    public function getName() {
+        return $this->name;
+    }
+
+    /**
+     * Set description
+     *
+     * @param string $description
+     * @return Task
+     */
+    public function setDescription($description) {
+        $this->description = $description;
+
+        return $this;
+    }
+
+    /**
+     * Get description
+     *
+     * @return string 
+     */
+    public function getDescription() {
+        return $this->description;
+    }
+
+
+    /**
+     * Set created
+     *
+     * @param \DateTime $created
+     * @return Task
+     */
+    public function setCreated($created) {
+        $this->created = $created;
+
+        return $this;
+    }
+
+    /**
+     * Get created
+     *
+     * @return \DateTime 
+     */
+    public function getCreated() {
+        return $this->created;
+    }
+
+    /**
+     * Set updated
+     *
+     * @param \DateTime $updated
+     * @return Task
+     */
+    public function setUpdated($updated) {
+        $this->updated = $updated;
+
+        return $this;
+    }
+
+    /**
+     * Get updated
+     *
+     * @return \DateTime 
+     */
+    public function getUpdated() {
+        return $this->updated;
+    }
+
+    /**
+     * Set user_created
+     * @ORM\PrePersist()
+     * @param \WWSC\ThalamusBundle\Entity\User $userCreated
+     * @return Company
+     */
+    public function setUserCreated($userCreated) {
+        $this->user_created = WWSCThalamusBundle::getContainer()->get('security.context')->getToken()->getUser();
+        return $this;
+    }
+
+    /**
+     * Get user_created
+     *
+     * @return \WWSC\ThalamusBundle\Entity\User 
+     */
+    public function getUserCreated() {
+        return $this->user_created;
+    }
+
+    /**
+     * @ORM\PrePersist()
+     * @ORM\PreUpdate
+     * Set user_updated
+     *
+     * @param \WWSC\ThalamusBundle\Entity\User $userUpdated
+     * @return Company
+     */
+    public function setUserUpdated($userUpdated) {
+        $this->user_updated = WWSCThalamusBundle::getContainer()->get('security.context')->getToken()->getUser();
+        return $this;
+    }
+
+    /**
+     * Get user_updated
+     *
+     * @return \WWSC\ThalamusBundle\Entity\User 
+     */
+    public function getUserUpdated() {
+        return $this->user_updated;
+    }
+
+    /**
+     * Set is_deleted
+     *
+     * @param boolean $isDeleted
+     * @return Task
+     */
+    public function setIsDeleted($isDeleted) {
+        $this->is_deleted = $isDeleted;
+
+        if($isDeleted == 1){
+            if($this->getItems()){
+                foreach($this->getItems() as $item){
+                    $item->setIsDeleted(1);
+                }
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * Get is_deleted
+     *
+     * @return boolean 
+     */
+    public function getIsDeleted() {
+        return $this->is_deleted;
+    }
+
+    /**
+     * Set project
+     *
+     * @param \WWSC\ThalamusBundle\Entity\Project $project
+     * @return Task
+     */
+    public function setProject(\WWSC\ThalamusBundle\Entity\Project $project = null) {
+        $this->project = $project;
+
+        return $this;
+    }
+
+    /**
+     * Get project
+     *
+     * @return \WWSC\ThalamusBundle\Entity\Project 
+     */
+    public function getProject() {
+        return $this->project;
+    }
+
+    /**
+     * Constructor
+     */
+    public function __construct() {
+        $this->items = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
+    /**
+     * Add items
+     *
+     * @param \WWSC\ThalamusBundle\Entity\TaskItem $items
+     * @return Task
+     */
+    public function addItem(\WWSC\ThalamusBundle\Entity\TaskItem $items) {
+        $this->items[] = $items;
+        return $this;
+    }
+
+    /**
+     * Remove items
+     *
+     * @param \WWSC\ThalamusBundle\Entity\TaskItem $items
+     */
+    public function removeItem(\WWSC\ThalamusBundle\Entity\TaskItem $items) {
+        $this->items->removeElement($items);
+    }
+
+    /**
+     * Get items
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getItems($status = false, $aFilter = false, $lCompletedItems = false ) {
+        if ($aFilter && (isset($aFilter['filter_due']) && $aFilter['filter_due']) || (isset($aFilter['filter_responsible']) && $aFilter['filter_responsible'])) {
+            return $this->getFilterTaskItem($status, $aFilter , $lCompletedItems);
+        }
+        $criteria = Criteria::create()
+                ->where(Criteria::expr()->eq("is_deleted", 0))
+                ->andWhere(Criteria::expr()->eq("status", $status));
+        if($lCompletedItems){
+            $criteria->setMaxResults($lCompletedItems);
+        }
+        if($status){
+            $criteria->orderBy(array("updated" => Criteria::DESC,  "sort" => Criteria::ASC, "id" => Criteria::DESC));
+        }else{
+            $criteria->orderBy(array("sort" => Criteria::ASC, "id" => Criteria::DESC));
+        }
+        return $this->items->matching($criteria);
+    }
+
+    /**
+     * Set is_time_tracker
+     *
+     * @param boolean $isTimeTracker
+     * @return Task
+     */
+    public function setIsTimeTracker($isTimeTracker) {
+        $this->is_time_tracker = $isTimeTracker;
+
+        return $this;
+    }
+
+    /**
+     * Get is_time_tracker
+     *
+     * @return boolean 
+     */
+    public function getIsTimeTracker() {
+        return $this->is_time_tracker;
+    }
+
+    /**
+     * Set sort
+     *
+     * @param integer $sort
+     * @return Task
+     */
+    public function setSort($sort) {
+        $this->sort = $sort;
+
+        return $this;
+    }
+
+    /**
+     * Get sort
+     *
+     * @return integer 
+     */
+    public function getSort() {
+        return $this->sort;
+    }
+
+    /**
+     * Set int sort
+     * @ORM\PrePersist()
+     */
+    public function setSortNewElem() {
+        $entityManager = WWSCThalamusBundle::getContainer()->get('doctrine')->getManager();
+        $crit = array(
+            'is_deleted' => 0,
+            'project' => $this->project
+        );
+        $oItem = $entityManager->getRepository('WWSCThalamusBundle:Task')->findOneBy($crit, array('sort' => 'DESC'));
+        if ($oItem) {
+            $this->setSort($oItem->getSort() + 1);
+        } else {
+            $this->setSort(0);
+        }
+    }
+
+    public function getFilterTaskItem($status, $aFilter, $lCompletedItems = false) {
+        $entityManager = WWSCThalamusBundle::getContainer()->get('doctrine')->getManager();
+        $criteria = Criteria::create()
+            ->where(Criteria::expr()->eq("is_deleted", 0))
+            ->andWhere(Criteria::expr()->eq("status", $status));
+        if ($aFilter['filter_due']) {
+            switch ($aFilter['filter_due']) {
+                case 'today':
+                    $criteria->andWhere(Criteria::expr()->gte('due_date', new \DateTime("today")));
+                    $criteria->andWhere(Criteria::expr()->lte('due_date', new \DateTime("now")));
+                    break;
+                case 'tomorrow':
+                    $criteria->andWhere(Criteria::expr()->gte('due_date', new \DateTime("now")));
+                    $criteria->andWhere(Criteria::expr()->lte('due_date', new \DateTime("tomorrow")));
+                    break;
+                case 'this_week':
+                    $criteria->andWhere(Criteria::expr()->gte('due_date', new \DateTime("monday this week")));
+                    $criteria->andWhere(Criteria::expr()->lte('due_date', new \DateTime("sunday this week")));
+                    break;
+                case 'next_week':
+                    $criteria->andWhere(Criteria::expr()->gte('due_date', new \DateTime("monday next week")));
+                    $criteria->andWhere(Criteria::expr()->lte('due_date', new \DateTime("sunday next week")));
+                    break;
+                case 'later':
+                    $criteria->andWhere(Criteria::expr()->gte('due_date', new \DateTime("now")));
+                    break;
+            }
+        }
+    
+        if (isset($aFilter['filter_responsible']) && $aFilter['filter_responsible']) {
+          $aFilterResponsible = explode('_', $aFilter['filter_responsible']);   
+          if($aFilterResponsible[0] == 'c'){
+            $oCompany = $entityManager->getRepository('WWSCThalamusBundle:Company')->find($aFilterResponsible[1]);
+            $criteria->andWhere(Criteria::expr()->in('responsible',$oCompany->getUsers(array('id'))));
+          }
+          if($aFilterResponsible[0] == 'u'){
+            $criteria->andWhere(Criteria::expr()->in('responsible', array($aFilterResponsible[1])));
+          }
+          $criteria->orderBy(array("sort" => Criteria::ASC, "id" => Criteria::DESC));
+        }
+        if($lCompletedItems){
+            $criteria->setMaxResults($lCompletedItems);
+        }
+        if($status){
+            $criteria->orderBy(array("updated" => Criteria::DESC,  "sort" => Criteria::ASC, "id" => Criteria::DESC));
+        }else{
+            $criteria->orderBy(array("sort" => Criteria::ASC, "id" => Criteria::DESC));
+        }
+        return $this->items->matching($criteria);
+    }
+
+    private function getLogInfoByTask($entity){
+        if(!$entity->save_to_log){
+            return false;
+        }
+        $aRes = array();
+        $aRes['object_id'] = $entity->getId();
+        $oProject = $entity->getProject();
+        $url = WWSCThalamusBundle::getContainer()->get('router')->generate(
+            'wwsc_thalamus_project_task_show',
+            array(
+                'project' => $oProject->getSlug(),
+                'id' => $entity->getId()
+            )
+        );
+        $aRes['description'] =  "<a href='" . $url . "'>" . $this->truncation($entity->getName(), 100) . "</a>";
+        $aRes['project'] = $oProject;
+        return $aRes;
+    }
+
+    /**
+     * @ORM\PreUpdate
+     */
+    public function preUpdate(LifecycleEventArgs $args) {
+        if(!$args->hasChangedField('is_deleted')){ 
+            $aParams = $this->getLogInfoByTask($args->getEntity());
+            $aParams['action'] = 'Updated by';
+            $this->things[] = $aParams;
+        }
+    }
+
+    /**
+     * @ORM\PostPersist
+     */
+    public function postPersist($args) {
+        if($aParams = $this->getLogInfoByTask($args->getEntity())){
+            $aParams['action'] = 'Posted by';
+            $this->saveLog($aParams);
+        }
+    }
+
+
+    /**
+     * Set visibleClient
+     *
+     * @param boolean $visibleClient
+     *
+     * @return Task
+     */
+    public function setVisibleClient($visibleClient)
+    {
+        $this->visible_client = $visibleClient;
+
+        return $this;
+    }
+
+    /**
+     * Get visibleClient
+     *
+     * @return boolean
+     */
+    public function getVisibleClient()
+    {
+        return $this->visible_client;
+    }
+
+    /**
+     * Set visibleFreelancer
+     *
+     * @param boolean $visibleFreelancer
+     *
+     * @return Task
+     */
+    public function setVisibleFreelancer($visibleFreelancer)
+    {
+        $this->visible_freelancer = $visibleFreelancer;
+
+        return $this;
+    }
+
+    /**
+     * Get visibleFreelancer
+     *
+     * @return boolean
+     */
+    public function getVisibleFreelancer()
+    {
+        return $this->visible_freelancer;
+    }
+
+    /**
+     * Set saveToLog
+     *
+     * @param boolean $saveToLog
+     *
+     * @return Task
+     */
+    public function setSaveToLog($saveToLog)
+    {
+        $this->save_to_log = $saveToLog;
+
+        return $this;
+    }
+
+    /**
+     * Get saveToLog
+     *
+     * @return boolean
+     */
+    public function getSaveToLog()
+    {
+        return $this->save_to_log;
+    }
+
+    /**
+     * Set recursive
+     *
+     * @param boolean $recursive
+     *
+     * @return Task
+     */
+    public function setRecursive($recursive)
+    {
+        $this->recursive = $recursive;
+
+        return $this;
+    }
+
+    /**
+     * Get recursive
+     *
+     * @return boolean
+     */
+    public function getRecursive()
+    {
+        return $this->recursive;
+    }
+
+    /**
+     * Set recurringTaskList
+     *
+     * @param integer $recurringTaskList
+     *
+     * @return Task
+     */
+    public function setRecurringTaskList($recurringTaskList)
+    {
+        $this->recurring_task_list = $recurringTaskList;
+
+        return $this;
+    }
+
+    /**
+     * Get recurringTaskList
+     *
+     * @return integer
+     */
+    public function getRecurringTaskList()
+    {
+        return $this->recurring_task_list;
+    }
+}

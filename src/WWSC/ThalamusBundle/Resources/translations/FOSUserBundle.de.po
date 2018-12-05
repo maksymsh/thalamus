@@ -1,0 +1,63 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: de\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"X-Generator: Poedit 1.7.5\n"
+
+msgid "Change password"
+msgstr "Passwort ändern"
+
+msgid "Create new account"
+msgstr "Neues Konto erstellen"
+
+msgid "Help:"
+msgstr "Hilfe:"
+
+msgid "I forgot my password"
+msgstr "Zugang vergessen?"
+
+msgid "Reset  password"
+msgstr "Passwort zur&uuml;cksetzen"
+
+msgid "Sign in Thalamus"
+msgstr "Anmeldung bei Thalamus"
+
+msgid "Sign in with Google"
+msgstr "Melden Sie sich mit Google an"
+
+msgid "Username"
+msgstr "Benutzername"
+
+msgid "form.email"
+msgstr "form.email"
+
+msgid "form.username"
+msgstr "form.username"
+
+msgid "resetting.check_email"
+msgstr "resetting.check_email"
+
+msgid "resetting.request.invalid_username"
+msgstr "resetting.request.invalid_username"
+
+msgid "resetting.request.submit"
+msgstr "resetting.request.submit"
+
+msgid "resetting.request.username"
+msgstr "resetting.request.username"
+
+msgid "resetting.reset.submit"
+msgstr "resetting.reset.submit"
+
+msgid "security.login.remember_me"
+msgstr "security.login.remember_me"
+
+msgid "security.login.submit"
+msgstr "security.login.submit"

@@ -1,0 +1,184 @@
+{% extends "WWSCThalamusBundle:Content:layout.html.twig" %}
+{% block title %}
+   {% trans %}  Edit company{% endtrans %}
+{% endblock %} 
+{% block content %}   
+    <div class="row">
+        <div class="panel panel-default col-md-9">
+            <div class="panel-heading col-md-12">
+                <div class="col-md-6">
+                  {% trans %} Edit {% endtrans %} {{ company.name }}
+                </div> 
+                {% if company.primaryCompany == 0 %}
+                    <div class="col-md-6">
+                        <div class="btn-delete-company  btn-right">
+                            <a href="{{ path('wwsc_thalamus_company_delete', {'id':  company.id  }) }}" class="btn btn-default btn-md">
+                                <i class="glyphicon glyphicon-plus"></i>{% trans %}  Delete company{% endtrans %}
+                            </a>
+                        </div>
+                    </div>        
+                {% endif %}          
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                    {% include 'WWSCThalamusBundle:Content:flash_notice.html.twig' %}
+                    {% if form_errors(form) %}
+                        <div class="alert alert-error error" role="alert">{{ form_errors(form) }}</div>
+                    {% endif %}
+                    <div class="panel-forms">
+                        <form  action="{{ path('wwsc_thalamus_company_edit', {'id':  company.id  }) }}" {{ form_enctype(form) }} method="Post">
+                            <p>{% trans %} After you add a company you'll be able to add people to that company.{% endtrans %}</p>
+                            <fieldset>
+                                {% if form.roles is defined %}
+                                    {% if is_granted('ROLE_PROVIDER')  %} 
+                                    <div class="form-group col-xs-12">
+                                        {{form_label(form.roles)}}
+                                        <div class="col-md-4">  
+                                            {{form_widget(form.roles)}}
+                                        </div>
+                                    </div>
+                                    {% endif %}      
+                                {% endif %}        
+                                <div class="form-group col-xs-12">
+                                    {{form_label(form.name)}}
+                                    <div class="col-md-4">  
+                                        {{form_widget(form.name)}}
+                                    </div>
+                                </div>
+                                <div class="form-group col-xs-12">
+                                    {{form_label(form.abbreviation)}}
+                                    <div class="col-md-4">
+                                        {{form_widget(form.abbreviation)}}
+                                    </div>
+                                </div>
+                                <div class="form-group col-xs-12">
+                                    {{form_label(form.address1)}}
+                                    <div class="col-md-4">
+                                        {{form_widget(form.address1)}}
+                                    </div>
+                                </div>
+                                <div class="form-group col-xs-12">
+                                    {{form_label(form.address2)}}
+                                    <div class="col-md-4">
+                                        {{form_widget(form.address2)}}
+                                    </div>
+                                </div>
+                                <div class="form-group col-xs-12">
+                                    {{form_label(form.city)}}
+                                    <div class="col-md-4">
+                                        {{form_widget(form.city)}}
+                                    </div>
+                                </div>
+                                <div class="form-group col-xs-12">
+                                    {{form_label(form.state)}}
+                                    <div class="col-md-4">
+                                        {{form_widget(form.state)}}
+                                    </div>
+                                </div>   
+                                <div class="form-group  col-xs-12">
+                                    {{form_label(form.zip)}}
+                                    <div class="col-md-4">
+                                        {{form_widget(form.zip)}}
+                                    </div>
+                                </div>
+                                <div class="form-group  col-xs-12">
+                                    {{form_label(form.country)}}
+                                    <div class="col-md-4">
+                                        {{form_widget(form.country)}}
+                                    </div>
+                                </div>   
+                                <div class="form-group  col-xs-12">
+                                    {{form_label(form.language)}}
+                                    <div class="col-md-4">
+                                        {{form_widget(form.language)}}
+                                    </div>
+                                </div>   
+                                <div class="form-group  col-xs-12">
+                                    {{form_label(form.timeZone)}}
+                                    <div class="col-md-4">
+                                        {{form_widget(form.timeZone)}}
+                                    </div>
+                                </div>   
+                                <div class="form-group  col-xs-12">
+                                    {{form_label(form.webAddress)}}
+                                    <div class="col-md-4">
+                                        {{form_widget(form.webAddress)}}
+                                    </div>
+                                </div>
+                                <div class="form-group  col-xs-12">
+                                    {{form_label(form.office)}}
+                                    <div class="col-md-4">
+                                        {{form_widget(form.office)}}
+                                    </div>
+                                </div>
+                                <div class="form-group  col-xs-12">
+                                    {{form_label(form.fax)}}
+                                    <div class="col-md-4">
+                                        {{form_widget(form.fax)}}
+                                    </div>
+                                </div>
+                            </fieldset>    
+                            <!-- <h4>Can the people in this company view Private items?</h4>
+                            <p>Normally the only people who can view private messages and to-dos are people in your own company, but this setting allows you to grant people in other companies the ability to see private items. Use this option with care.</p> 
+                            <fieldset>
+                                <div class="form-group col-xs-12">
+                                    {{form_widget(form.private)}}
+                                    <div class="col-xs-10">
+                                        Yes, allow everyone in this company to view items marked Private
+                                    </div>
+                                </div>
+                            </fieldset>    -->
+                            <h4>{% trans %}Finance{% endtrans %}</h4>        
+                            <div class="form-group col-xs-12">
+                                {{form_label(form.rate_internal)}}
+                                <div class="col-md-4">
+                                    {{form_widget(form.rate_internal)}}
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12">
+                                {{form_label(form.rate_external)}}
+                                <div class="col-md-4">
+                                    {{form_widget(form.rate_external)}}
+                                </div>
+                            </div>   
+                            <div class="form-group col-xs-12">
+                                {{form_label(form.expected_turnover)}}
+                                <div class="col-md-4">
+                                    {{form_widget(form.expected_turnover)}}
+                                </div>
+                            </div> 
+                                    
+                            <h4>{% trans %} Company logo{% endtrans %}</h4>
+                            <p>{% trans %} Your logo appears on  the Dashboard, and Overview pages.{% endtrans %}</p>
+                            <div class="form-group company-logo col-xs-12">
+                                {{form_widget(form.logo)}}
+                                {% if company.logo %}
+                                    <div>
+                                        <img src="{{ (asset('uploads/company/') ~ company.logo) | imagine_filter('my_thumb',{"thumbnail": {"size": [180, 120] }}) }}">
+                                        <img class="remove_img" data-img-id='wwsc_thalamusbundle_company_logo'  src="{{ asset('bundles/wwscthalamus/images/remove_icon.png') }}">
+                                    </div>
+                                {% endif %}
+                                <div class="col-md-4">
+                                    {{form_widget(form.logoFile)}}
+                                </div>    
+                            </div>
+                            {{ form_widget(form._token) }}
+                            <div class="form-group col-xs-12 btn-action">
+                                <button class="btn btn-sm btn-primary btn-save" type="submit">{% trans %} Save changes{% endtrans %}</button>
+                                or <a class="btn-cancel" href="{{ path ('wwsc_thalamus_account_all_people') }}"> {% trans %} Cancel{% endtrans %}</a> 
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>  
+        </div>                          
+        <div class="col-md-3 sidebar sidebar-company">
+            <div class="col">
+                <div class="title-panel">{% trans %} Original Version{% endtrans %}</div>
+                <div class="info-panel">
+                    {% include 'WWSCThalamusBundle:Company:block_info_company.html.twig' with {'company': company} %}
+                </div>   
+            </div>
+        </div><!--/span-->
+    </div>
+{% endblock %}       

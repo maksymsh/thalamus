@@ -1,0 +1,85 @@
+{% extends "WWSCThalamusBundle:Content:layout.html.twig" %}
+{% block title %}
+  #{{oItem.id}}
+  {{ oItem.description }}
+  — Thalamus.io
+{% endblock %}
+{% block content %}
+    <div class="row">
+        <div class="panel fixed-panel-header panel-default col-md-9 task-item-comments-wrapper">
+            <div class="panel-heading col-xs-12" style="{% if oItem.fastTrack %}background-color:hotpink{% else %}{% endif%}">
+                <div class="col-xs-12 task-block-comment-header">
+                    {% include 'WWSCThalamusBundle:TaskItem:comment-header-task-info.html.twig' with {'oItem': oItem, 'googleDriveFolderId': googleDriveFolderId} %}
+                </div>
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                    {% include 'WWSCThalamusBundle:Content:flash_notice.html.twig' %}
+                    {% include 'WWSCThalamusBundle:Comment:list.html.twig' with {'slugProject': oItem.task.project.slug, 'aComment': oItem.comments, 'type':'TaskItem' , 'parent': oItem.id} %}
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 sidebar">
+            <div class="col">
+                <div class="comments_notification-sidebar">
+                  <i class="fa fa-list" aria-hidden="true"></i> {% trans %}Task-List{% endtrans %}:<br>
+                  <strong>
+                    <span class="link_task_list">  <a href="{{ path ('wwsc_thalamus_project_task_show',{ project:oItem.task.project.slug, 'id': oItem.task.id }) }}"> {{ oItem.task.name }}</a></span>
+                    <br>
+                    <br>
+                  </strong>
+                    {% include 'WWSCThalamusBundle:SubscribeEmail:comments_notification-sidebar.html.twig' with {'slugProject': oItem.task.project.slug, 'oParent': oItem, 'type':'TaskItem'} %}
+                </div>
+                {% if oItem.userCreated.isDeleted == 0 %}
+                    <div class="title-panel">
+                      <i class="fa fa-comments-o" aria-hidden="true"></i>
+                      {% trans %}Who’s talking about this message?{% endtrans %}
+                    </div>
+                    <div class="info-panel info-about-created">
+                        <ul>
+                            <li><strong>{{ oItem.userCreated.firstName }} {{ oItem.userCreated.lastName }}</strong></li>
+                            <li>{{ oItem.userCreated.profile.office }}</li>
+                            <li>{{ oItem.userCreated.email }}</li>
+                        </ul>
+                    </div>
+                {% endif%}
+                <div class="title-panel">
+                  <i class="fa fa-envelope" aria-hidden="true"></i>
+                  {% trans %}Do you wanna add a Comment by email to this task?{% endtrans %}</div>
+                <div class="info-panel task-replyUID">
+                  {% trans %}
+                    Please use this emailaddress to add another comment to this task:
+                  {% endtrans %}
+                  <a href="mailto:{{ oItem.replyUID }}@thalamus.io">
+                      {{ oItem.replyUID }}@thalamus.io
+                  </a>
+                </div>
+                <div class = "showEmptyComment">
+                    <input type="checkbox" id="showCommentBox">{% trans %}Show empty comment{% endtrans %}
+                </div>
+            </div>
+        </div><!--/span-->
+    </div>
+    {% include 'WWSCThalamusBundle:File:jQUploadTemplateAttachment.html.twig'%}
+{% endblock %}
+{% block stylesheets %}
+    <link href="{{ asset('bundles/wwscthalamus/markdown/css/bootstrap-markdown.min.css') }}" type="text/css" rel="stylesheet" />
+    <link href="{{ asset('bundles/wwscthalamus/jQUpload/css/jquery.fileupload.css') }}" type="text/css" rel="stylesheet" />
+    <link href="{{ asset('bundles/wwscthalamus/jQUpload/css/jquery.fileupload-ui.css') }}" type="text/css" rel="stylesheet" />
+    <link href="{{ asset('bundles/wwscthalamus/css/bootstrap-datepicker.css') }}" type="text/css" rel="stylesheet" />
+{% endblock %}
+{% block javascripts %}
+    <script src="{{ asset('bundles/wwscthalamus/clipboard/clipboard.min.js') }}"></script>
+    <script src="{{ asset('bundles/wwscthalamus/markdown/js/to-markdown.js') }}"></script>
+    <script src="{{ asset('bundles/wwscthalamus/markdown/js/markdown.js') }}"></script>
+    <script src="{{ asset('bundles/wwscthalamus/markdown/js/bootstrap-markdown.js') }}"></script>
+    <script src="{{ asset('bundles/wwscthalamus/js/attachment.js') }}"></script>
+    <script src="{{ asset('bundles/wwscthalamus/js/comment.js') }}"></script>
+    {% include 'WWSCThalamusBundle:File:jQUploadAttachmentScript.html.twig'%}
+    <script src="https://apis.google.com/js/client.js?onload=handleGoogleClientLoad"></script>
+    <script src="{{ asset('bundles/wwscthalamus/js/bootstrap-datepicker.js') }}"></script>
+    <script src="{{ asset('bundles/wwscthalamus/js/jquery.autogrow-textarea.js') }}"></script>
+    <script src="{{ asset('bundles/wwscthalamus/filterselect/diacritics.js') }}"></script>
+    <script src="{{ asset('bundles/wwscthalamus/filterselect/bootstrap-dropdown-filter.js') }}"></script>
+    <script src="{{ asset('bundles/wwscthalamus/js/bootstrap-fixed-panel.js') }}"></script>
+{% endblock %}

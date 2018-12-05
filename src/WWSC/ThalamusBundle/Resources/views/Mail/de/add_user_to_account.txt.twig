@@ -1,0 +1,14 @@
+<h2>{{ company_name }}</h2>
+<h3>Hi {{ first_name }}.</h3>
+<p>
+    {{ created_user.firstName }} {{ created_user.lastName }} hat Sie zu Thalamus eingeladen. Bitte akzeptieren Sie die Einladung für den Bereich {{ company_name }} auf unserer Online Projektmanagement-Plattformat.
+</p>
+<p>
+    Einladung akzeptieren : <a href="{{ urlAcceptInvitation }}">{{ urlAcceptInvitation }}</a>
+    <br>
+    Einladung abweisen : <a href="{{ urlRejectInvitation }}">{{ urlRejectInvitation }}</a>
+<p>
+<hr>
+<p>    
+    Haben Sie noch Fragen? Bitte kontaktieren Sie  {{ created_user.firstName }} {{ created_user.lastName }} per Email unter {{ created_user.email }}
+</p>

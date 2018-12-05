@@ -1,0 +1,113 @@
+<html>
+<head>
+  <style type="text/css">
+    ol, ul { padding: 0; }
+    li { margin-left: 30px; line-height: 1.425em; padding: 0; }
+    ul li { list-style-type: square; }
+  </style>
+</head>
+<body bgcolor="#ffffff" color="#333333" link="#0099cc" alink="#0099cc" vlink="#0099cc" style="background-color: #ffffff; text-align: left;">
+<table cellpadding="0" cellspacing="0" border="0" width="100%">
+  <tr>
+    <td style="padding: 10px 10px 10px 20px; text-align: left;">
+      <p style="font-family: Helvetica, Arial, sans-serif; font-size: 12px; color: #999; padding-bottom: 0;">
+        Fügen Sie Ihre Antwort bitte OBERHALB DIESER ZEILE ein um einen weiteren Kommentar zu dieser Aufgabe hinzuzufügen
+      </p>
+    </td>
+  </tr>
+  <tr>
+    <td style="padding: 10px 20px 5px 20px; font-family: Helvetica, Arial, sans-serif; font-size: 14px; background-color: #ffffff; text-align: left; border-bottom: 1px solid #dddddd;" colspan="2">
+      <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td style="padding: 0 0 5px 0; font-weight: normal; color: #999999; text-align: left; font-size: 14px; font-family: Helvetica, Arial, sans-serif;" width="50" valign="top">Projekt:</td>
+          <td style="padding: 0 0 5px 10px; font-size: 14px; font-weight: normal; text-align: left; font-family: Helvetica, Arial, sans-serif;" valign="top"><a href="{{ url('wwsc_thalamus_project_overview',{ 'project':oElement.project.slug} )}}">
+                {{ oElement.project.name }}
+            </a></td>
+        </tr>
+        <tr>
+          <td style="padding: 0 0 5px 0; font-weight: normal; color: #999999; text-align: left; font-size: 14px; font-family: Helvetica, Arial, sans-serif;" width="50" valign="top">Unternehmen:</td>
+          <td style="padding: 0 0 5px 10px; font-size: 14px; color: #000000; text-align: left; font-family: Helvetica, Arial, sans-serif;" valign="top">{{ oElement.project.responsibleCompany.name }}</td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  <tr>
+    <td style="padding-top: 0; padding-bottom: 20px; text-align: left;">
+        <table cellpadding="0" cellspacing="0" border="0" align="left">
+          <tr>
+            <td style="padding: 0 20px 10px 20px; font-family: Helvetica, Arial, sans-serif; font-size: 14px; background-color: #ffffff; text-align: left;">
+              <div style="padding: 10px 0 20px 0;">
+                <table cellpadding="0" cellspacing="0" border="0">
+                  <tr>
+                    <td width="57" valign="top">
+                        {% if oElement.userCreated.avatar %}
+                            <img class="avatar"  style="border: 1px solid #cccccc; padding: 1px;"  src="{{ ('/uploads/user/' ~ oElement.userCreated.avatar) | imagine_filter('my_thumb',{"thumbnail": {"size": [64, 64] }}) }}">
+                        {% else %}
+                            <img class="avatar"  style="border: 1px solid #cccccc; padding: 1px;"  src="{{  ('/bundles/wwscthalamus/images/user_icon.png' ) | imagine_filter('my_thumb',{"thumbnail": {"size": [64, 64] }}) }}">
+                        {% endif %}
+                    </td>
+                    <td style="padding-left: 15px; font-size: 14px; font-family: Helvetica, Arial, sans-serif;" valign="top">
+                      <h1 style="font-family: Helvetica, Arial, sans-serif; font-size: 14px; color: #000000; margin: 0 0 15px 0; font-weight: normal; line-height: 1.3em;">
+                          {{ oElement.userCreated.firstName }}  {{ oElement.userCreated.lastName }} posted a new message:<br />
+                        <span style="font-weight: bold;"><a href="{{ url('wwsc_thalamus_project_message_comments',{ 'project':oElement.project.slug, 'id': oElement.id} )}}">{{ oElement.title  }}</a></span>
+                      </h1>
+                      <div style="line-height: 1.3em;">
+                        <div>{{ oElement.description|markdown|purify  }}</div>
+
+                      </div>
+                      <div style="padding-top: 10px;">
+                        <table cellpadding="0" cellspacing="0" border="0" width="100%">
+                            {% if oElement.files %}
+                                {% for oFile in oElement.files  %}
+                                        {% if oFile.formatFile == 'GOOGLE_DRIVE' %}
+                                            <tr>
+                                              <td width="32">
+                                                <a href="{{ oFile.fileSrc }}"><img alt="{{ oFile.name }}" border="0" class="file_icon" height="32" src="{{ app.request.scheme ~'://' ~ app.request.httpHost ~ oFile.fileIcon }}" width="32" /></a>
+                                              </td>
+                                              <td style="font-size: 13px; padding: 3px 0 0 5px; color: #777777; line-height: 1.4em;">
+                                                <a href="{{ oFile.fileSrc }}">{{ oFile.name }}</a><br />
+                                                  <span style="font-size: 10px;">{{ oFile.fileSize }}</span>
+                                              </td>
+                                            </tr>  
+                                        {% else %}
+                                            <tr>
+                                              <td width="32">
+                                                <a href="{{ app.request.scheme ~'://' ~ app.request.httpHost ~ oFile.fileSrc }}"><img alt="{{ oFile.name }}" border="0" class="file_icon" height="32" src="{{ app.request.scheme ~'://' ~ app.request.httpHost }}/bundles/wwscthalamus/images/icon_file.png" width="32" /></a>
+                                              </td>
+                                              <td style="font-size: 13px; padding: 3px 0 0 5px; color: #777777; line-height: 1.4em;">
+                                                <a href="{{ app.request.scheme ~'://' ~ app.request.httpHost ~ oFile.fileSrc }}">{{ oFile.name }}</a><br />
+                                                  <span style="font-size: 10px;">{{ oFile.fileSize }}</span>
+                                              </td>
+                                            </tr>                                          
+                                        {% endif %}                   
+                                {% endfor  %}
+                            {% endif %}
+                        </table>
+                      </div>
+                    </td>
+                  </tr>
+                </table>
+              </div>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+    <tr>
+      <td style="padding: 10px 20px 10px 20px; font-family: Helvetica, Arial, sans-serif; font-size: 12px; background-color: #ffffff; text-align: left; border-top: 1px solid #dddddd;">
+        <p style="margin: 0; color: #444444">Dieser nachricht wurde gesendet an 
+            {% set i_user = 1 %}
+            {% for nameUser in aUsers  %}
+                {% if aUsers|length == i_user %}
+                    {{ nameUser }} .
+                {% else %} 
+                    {{ nameUser }} ,
+                {% endif %}    
+            {% set i_user = i_user+1 %}
+            {% endfor  %}
+        </p>
+      </td>
+    </tr>
+</table>
+</body>
+</html>

@@ -1,0 +1,606 @@
+<?php
+
+namespace WWSC\ThalamusBundle\Entity;
+
+use WWSC\ThalamusBundle\WWSCThalamusBundle;
+use Doctrine\Common\Collections\ArrayCollection;
+use Gedmo\Mapping\Annotation as Gedmo;
+use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+use Doctrine\Common\Collections\Criteria;
+use Doctrine\ORM\Event\LifecycleEventArgs;
+
+/**
+ * Comment
+ *
+ * @ORM\Entity
+ * @ORM\HasLifecycleCallbacks
+ * @ORM\Table(name="time_tracker")
+ */
+class TimeTracker //extends Base
+{
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="id", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
+     */
+    private $id;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="description", type="text")
+     * @Assert\NotBlank(message="Please enter your comment")
+     * @Assert\Length(
+     *     min=3,
+     *     minMessage="The comment is too short.",
+     * )
+     */
+    private $description;
+
+    /**
+     * @var \DateTime $data
+     * @Gedmo\Timestampable(on="create")
+     * @ORM\Column(type="datetime")
+     */
+    private $date;
+
+    /**
+     * @var integer
+     *
+     * @ORM\ManyToOne(targetEntity="WWSC\ThalamusBundle\Entity\User")
+     */
+    private $person;
+
+    /**
+     * @ORM\Column(name="time", type="float", length=255)
+     */
+    private $time;
+
+    /**
+     * @ORM\OneToOne(targetEntity="WWSC\ThalamusBundle\Entity\Comment", inversedBy="time_tracker")
+     */
+    private $comment;
+
+     /**
+     * @ORM\Column(name="billable", type="boolean", nullable=true)
+     */
+    private $billable = 1;
+    
+    /**
+     * Get id
+     *
+     * @return integer
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+
+    /**
+     * Set description
+     *
+     * @param string $description
+     * @return Task
+     */
+    public function setDescription($description)
+    {
+        $this->description = $description;
+
+        return $this;
+    }
+
+    /**
+     * Get description
+     *
+     * @return string
+     */
+    public function getDescription()
+    {
+        return $this->description;
+    }
+
+    /**
+     * Set person
+     *
+     * @ORM\PrePersist()
+     * @param integer $person
+     * @return TimeTracker
+     */
+    public function setPerson($person)
+    {
+        $this->person = WWSCThalamusBundle::getContainer()->get('security.context')->getToken()->getUser();
+
+        return $this;
+    }
+
+    /**
+     * Get person
+     *
+     * @return integer
+     */
+    public function getPerson()
+    {
+        return $this->person;
+    }
+
+    /**
+     * Set time
+     *
+     * @param \DateTime $time
+     * @return TimeTracker
+     */
+    public function setTime($time)
+    {
+        if (strpos($time, ':') !== false) {
+            $aTime = explode(':', $time);
+            $this->time = $aTime[0] * 60 + $aTime[1];
+        } else {
+            $this->time = $time * 60;
+        }
+        return $this;
+    }
+
+    /**
+     * Get time
+     *
+     * @return \DateTime
+     */
+    public function getTime($format = false)
+    {
+        if($format == 'DE'){
+            return number_format($this->time / 60, 2, ',', ' ');
+        }
+        return number_format($this->time / 60, 2, '.', ' ');
+    }
+
+    /**
+     * Set comment
+     *
+     * @param \WWSC\ThalamusBundle\Entity\Comment $comment
+     * @return TimeTracker
+     */
+    public function setComment(\WWSC\ThalamusBundle\Entity\Comment $comment = null)
+    {
+        $this->comment = $comment;
+
+        return $this;
+    }
+
+    /**
+     * Get comment
+     *
+     * @return \WWSC\ThalamusBundle\Entity\Comment
+     */
+    public function getComment()
+    {
+        return $this->comment;
+    }
+ 
+
+    /**
+     * Set created
+     *
+     * @param \DateTime $date
+     * @return Task
+     */
+
+    public function setDateForm($date) {
+        $this->date = new \DateTime($date);
+        return $this;
+    }
+    /**
+     * Get due_date
+     *
+     * @return \DateTime 
+     */
+    public function getDateForm() {
+        if(gettype($this->date) == 'object'){
+            return $this->date->format('m/d/Y');
+        }
+        return $this->date;
+    }
+        
+    /**
+     * Get date
+     *
+     * @return \DateTime
+     */
+    public function getDate()
+    {
+        return $this->date;
+    }
+
+    public static function getUsersForFilterTime()
+    {
+        $oUser = WWSCThalamusBundle::getContainer()->get('security.context')->getToken()->getUser();
+        $projectIds = $oUser->getProjectsForAccount(true);
+        $oCompany = $oUser->getCompany();
+        $accountId = WWSCThalamusBundle::getContainer()->get('session')->get('account')->id;
+        $qb = WWSCThalamusBundle::getContainer()->get('doctrine')->getManager()->createQueryBuilder();
+        $qb->select('u')
+                ->from('WWSC\ThalamusBundle\Entity\User', 'u')
+                ->join('u.project','p')
+                ->join('WWSC\ThalamusBundle\Entity\CompanyUser', 'cu', 'WITH', "(u.id = cu.user)")
+                ->join('WWSC\ThalamusBundle\Entity\Company', 'comp', 'WITH', "(cu.company = comp.id)")
+                ->where("p.id IN (".implode(',', $projectIds).")")
+                ->andWhere("p.closed_project = 0")
+                ->andWhere("p.is_deleted = 0");
+		if($oCompany->getRoles() == 'ROLE_FREELANCER'){
+			$qb->andWhere("comp.id = ".$oCompany->getId());
+		}else{
+			$qb->andWhere("comp.roles IN ( 'ROLE_FREELANCER', 'ROLE_PROVIDER' )");
+		}		
+        $aUsers = $qb->getQuery()->getResult();
+        $aSubsCompanies = array();
+        foreach($aUsers as $oUser){
+            $aSubsCompanies[$oUser->getCompany()->getId()]['id'] = $oUser->getCompany()->getId();
+            $aSubsCompanies[$oUser->getCompany()->getId()]['name'] = $oUser->getCompany()->getName();
+            $aSubsCompanies[$oUser->getCompany()->getId()]['role'] = $oUser->getCompany()->getRoles();
+            $aSubsCompanies[$oUser->getCompany()->getId()]["people"][$oUser->getId()] = $oUser->getFirstName() . ' ' . $oUser->getLastName();
+        }
+        return $aSubsCompanies;
+    }
+    
+    public static function getReport($project = false, $aFilter = false, $integrateChildRecords = false) { 
+        $oUser = WWSCThalamusBundle::getContainer()->get('security.context')->getToken()->getUser();
+        $oCompany = $oUser->getCompany();
+        $accountId = WWSCThalamusBundle::getContainer()->get('session')->get('account')->id;
+        $qb = WWSCThalamusBundle::getContainer()->get('doctrine')->getManager()->createQueryBuilder();
+        
+       
+        
+        $sql = '';
+        $slectProject = '';
+        $joinProject = '';
+        $whereProject = 't.project_id = '.$project.' AND';
+        $columnTaskName = 'ti.description as task_name';
+        $orderChildRecords = '';
+        $orderAgencyUsers = '';
+        $whereComment = "";
+        $whereListTask = "";
+        if(WWSCThalamusBundle::getContainer()->get('session')->get('presentationMode')){
+            $whereListTask = " AND t.visible_freelancer = 0";
+            $whereComment = " AND c.private = 0";
+        }
+        if(!$project){
+            $slectProject = ', p.slug as project_slug, p.name as project_name';
+            if(isset($aFilter['include_closed_projects'])) {
+                $whereShowClosedProject = '';
+            }else{
+                $whereShowClosedProject = 'and p.closed_project = 0';
+            }
+            $joinProject = 'JOIN project as p on (t.project_id = p.id and  p.account_id ='.$accountId.' and  p.is_deleted = 0 '.$whereShowClosedProject.')
+                            JOIN project_user as pu on (p.id = pu.project_id and pu.user_id ='.$oUser->getId().')';
+            $whereProject = '';
+        }
+        
+        $joinCompany = 'JOIN company_user as cu on (tt.person_id = cu.user_id ) join company as comp on (cu.company_id = comp.id and comp.account_id ='.$accountId.')';
+        
+        if($integrateChildRecords){
+           $columnTaskName = 'getDescription(ti.id) as task_name';
+           $orderChildRecords = ', getPriority(ti.id) ASC';
+        }      
+        if($oCompany->getRoles() == 'ROLE_FREELANCER' ){
+           $joinCompany = 'JOIN company_user as cu on (tt.person_id = cu.user_id and cu.company_id = '.$oCompany->getId().') join company as comp on (cu.company_id = comp.id and comp.roles = "ROLE_FREELANCER" and comp.account_id ='.$accountId.')';
+        }
+                   
+        $selectColumn = 'ROUND (tt.time/60, 2) as time, tt.date as date, c.id as comment_id, t.name as list_name, t.id as list_id, '.$columnTaskName.',
+                         ti.id as task_id, comp.name as comp_name,  u.first_name as person, tt.description, ti.parent, ti.fast_track, ti.state'.$slectProject;
+
+        $sql = 'SELECT '. $selectColumn.' FROM time_tracker as tt
+             JOIN comment as c on (tt.comment_id = c.id  '.$whereComment.')  
+             JOIN taskitem as ti on (ti.id = c.parent_id and c.type = "TaskItem") 
+             JOIN task as t on (ti.task_id = t.id '.$whereListTask.')
+             JOIN fos_user as u on (tt.person_id = u.id) '.$joinProject.$joinCompany;
+        
+            
+        $where = ' WHERE '.$whereProject.' c.is_deleted = 0 AND ti.is_deleted = 0 AND t.is_deleted = 0';
+        
+        if ($aFilter) {
+            if ($aFilter['filter_date_from']) {
+                $filterDateFrom = $aFilter['filter_date_from'].' 00:00:01';
+                $oDateTime = new \DateTime($filterDateFrom);
+                $where .= ' AND tt.date >= "'.$oDateTime->format('Y-m-d H:i:s').'"';
+            }
+            if ($aFilter['filter_date_to']) {
+                $filterDateTo = $aFilter['filter_date_to'].' 23:59:59';
+                $oDateTime = new \DateTime($filterDateTo);
+                $where .= ' AND tt.date <= "'.$oDateTime->format('Y-m-d H:i:s').'"';
+            }
+            if (isset($aFilter['filter_person']) && $aFilter['filter_person']) {
+                $aFilterPerson = explode('_', $aFilter['filter_person']);   
+                if($aFilterPerson[0] == 'c'){
+                  $where .= ' AND comp.id = '.$aFilterPerson[1];
+                }
+                if($aFilterPerson[0] == 'u'){
+                  $where .= ' AND tt.person_id = '.$aFilterPerson[1];
+                }
+            }
+            if ($aFilter['filter_task']) {
+                 $where .= ' AND ti.id = '.$aFilter['filter_task'];
+            }
+            if ($aFilter['fast_track']) {
+                if($aFilter['fast_track'] == 'yes'){
+                    $where .= ' AND ti.fast_track = 1';
+                }else if($aFilter['fast_track'] == 'no'){
+                    $where .= ' AND ti.fast_track = 0';
+                } 
+            }
+            if ($aFilter['filter_hide_empty']) {
+                $where .= ' AND tt.time != 0';
+            }
+            if ($aFilter['filter_parent']) {
+                $where .= ' AND ti.parent = '.$aFilter['filter_parent'];
+            }
+            if(isset($aFilter['sort_agency_users'])) {
+                $orderAgencyUsers .= ' ,FIELD(comp.roles, "ROLE_PROVIDER", "ROLE_FREELANCER")';
+            }
+        } 
+        $orderBy = ' ORDER BY t.project_id ASC '.$orderChildRecords.''.$orderAgencyUsers.', DATE_FORMAT(tt.date,"%d %c %Y") ASC, ti.id ASC, DATE_FORMAT(tt.date,"%H:%i") ASC'; 
+        $sql = $sql.$where.$orderBy;  
+        return WWSCThalamusBundle::getContainer()->get('database_connection')->query($sql)->fetchAll();
+    }
+    
+     public static function getReportGropedByCompany($project = false, $aFilter = false) {
+        $oUser = WWSCThalamusBundle::getContainer()->get('security.context')->getToken()->getUser();
+        $oCompany = $oUser->getCompany();
+        $accountId = WWSCThalamusBundle::getContainer()->get('session')->get('account')->id;  
+        $qb = WWSCThalamusBundle::getContainer()->get('doctrine')->getManager()->createQueryBuilder();
+        if($project){
+           $qb->select('SUM(ROUND (tt.time/60, 2)) as total, comp.name')
+                ->from('WWSC\ThalamusBundle\Entity\TimeTracker', 'tt')
+                ->join('WWSC\ThalamusBundle\Entity\Comment', 'c', 'WITH', "(tt.comment = c.id and c.type = 'TaskItem' and c.is_deleted = 0)")
+                ->join('WWSC\ThalamusBundle\Entity\TaskItem', 'ti', 'WITH', "(c.parent_id = ti.id and ti.is_deleted = 0)")
+                ->join('WWSC\ThalamusBundle\Entity\Task', 't', 'WITH', "(ti.task = t.id and t.is_deleted = 0)")
+                ->where('t.project = '.$project);  
+        }else{
+            if(isset($aFilter['include_closed_projects'])) {
+                $whereShowClosedProject = '';
+            }else{
+                $whereShowClosedProject = 'and p.closed_project = 0';
+            }
+        $qb->select('SUM(ROUND (tt.time/60, 2)) as total,comp.id as comp_id, comp.name, p.slug as project_slug, p.name as project_name')
+                ->from('WWSC\ThalamusBundle\Entity\TimeTracker', 'tt')
+                ->join('WWSC\ThalamusBundle\Entity\Comment', 'c', 'WITH', "(tt.comment = c.id and c.type = 'TaskItem' and c.is_deleted = 0)")
+                ->join('WWSC\ThalamusBundle\Entity\TaskItem', 'ti', 'WITH', "(c.parent_id = ti.id and ti.is_deleted = 0)")
+                ->join('WWSC\ThalamusBundle\Entity\Task', 't', 'WITH', "(ti.task = t.id and t.is_deleted = 0)")
+                ->join('WWSC\ThalamusBundle\Entity\Project', 'p', 'WITH', "(t.project = p.id and p.is_deleted = 0 ".$whereShowClosedProject."  and p.account =".$accountId.")")
+                ->join('p.users','u')
+                ->where("u.id =".$oUser->getId());
+        }
+        if ($aFilter) {
+            if ($aFilter['filter_date_from']) {
+                $filterDateFrom = $aFilter['filter_date_from'].' 00:00:01';
+                $qb->andWhere('tt.date >= :date_from')
+                        ->setParameter(':date_from', new \DateTime($filterDateFrom));
+            }
+            if ($aFilter['filter_date_to']) {
+                $filterDateTo = $aFilter['filter_date_to'].' 23:59:59';
+                $qb->andWhere('tt.date <= :date_to')
+                        ->setParameter(':date_to', new \DateTime($filterDateTo));
+            }
+            if (isset($aFilter['filter_person']) && $aFilter['filter_person']) {
+                $aFilterPerson = explode('_', $aFilter['filter_person']);   
+                if($aFilterPerson[0] == 'c'){
+                   $qb->andWhere('comp.id = :comp_id')
+                        ->setParameter(':comp_id', $aFilterPerson[1]);
+                }
+                if($aFilterPerson[0] == 'u'){
+                  $qb->andWhere('tt.person = :person')
+                        ->setParameter(':person', $aFilterPerson[1]);
+                }
+            }
+           
+            if ($aFilter['filter_task']) {
+                $qb->andWhere('ti.id = :task_id')
+                        ->setParameter(':task_id', $aFilter['filter_task']);
+            }
+            if ($aFilter['fast_track']) {
+                $qb->andWhere('ti.fast_track = :fast_track')
+                        ->setParameter(':fast_track', $aFilter['fast_track'] == 'yes' ? true : false );
+            }
+            if ($aFilter['filter_hide_empty']) {
+                $qb->andWhere('tt.time != 0');
+            }
+            if ($aFilter['filter_parent']) {
+                $qb->andWhere('ti.parent = :parent_task')
+                        ->setParameter(':parent_task', $aFilter['filter_parent']);
+            }
+        }
+        
+        if(WWSCThalamusBundle::getContainer()->get('session')->get('presentationMode')){
+            $qb->andWhere("t.visible_freelancer = 0");
+            $qb->andWhere('c.private <> 1');
+        }
+
+        if($oCompany->getRoles() == 'ROLE_FREELANCER' ){
+            $qb ->join('WWSC\ThalamusBundle\Entity\CompanyUser', 'cu', 'WITH', "(tt.person = cu.user and cu.company = ".$oCompany->getId().")")
+                ->join('WWSC\ThalamusBundle\Entity\Company', 'comp', 'WITH', "(cu.company = comp.id and comp.roles = 'ROLE_FREELANCER' and comp.account =".$accountId.")");
+        }else{
+            $qb ->join('WWSC\ThalamusBundle\Entity\CompanyUser', 'cu', 'WITH', "(tt.person = cu.user)")
+                ->join('WWSC\ThalamusBundle\Entity\Company', 'comp', 'WITH', "(cu.company = comp.id and comp.account =".$accountId.")");
+        }
+         if(!$project){
+            $qb->groupBy('p.id, comp.id');
+        }else{
+            $qb->groupBy('comp.id');
+        }
+        $qb->orderBy('cu.company', 'ASC');
+        $critSQL = $qb->getQuery()->execute();
+        if($project){
+            return $critSQL;
+        }
+        $aProjectGropedByCompany = array();
+        foreach($critSQL as $pGropedByCompany){
+            $aProjectGropedByCompany[$pGropedByCompany['project_slug']]['project_name'] = $pGropedByCompany['project_name'];
+            $aProjectGropedByCompany[$pGropedByCompany['project_slug']]['company'][$pGropedByCompany['comp_id']]['name'] = $pGropedByCompany['name']; 
+            $aProjectGropedByCompany[$pGropedByCompany['project_slug']]['company'][$pGropedByCompany['comp_id']]['total'] = $pGropedByCompany['total'];
+            if(isset($aProjectGropedByCompany[$pGropedByCompany['project_slug']]['project_total'])){
+                $aProjectGropedByCompany[$pGropedByCompany['project_slug']]['project_total'] = $aProjectGropedByCompany[$pGropedByCompany['project_slug']]['project_total'] + $pGropedByCompany['total'];
+            }else{
+                $aProjectGropedByCompany[$pGropedByCompany['project_slug']]['project_total'] = $pGropedByCompany['total'];
+            }
+        }
+        return $aProjectGropedByCompany;
+    }
+    
+    
+    
+    public static function getReportGropedByTask($project = false, $aFilter = false, $integrateChildRecords = false) {
+        $oUser = WWSCThalamusBundle::getContainer()->get('security.context')->getToken()->getUser();
+        $oCompany = $oUser->getCompany();
+        $accountId = WWSCThalamusBundle::getContainer()->get('session')->get('account')->id;  
+        $qb = WWSCThalamusBundle::getContainer()->get('doctrine')->getManager()->createQueryBuilder();
+               
+        $slectProject = '';
+        if(!$project){
+            $slectProject = ', p.slug as project_slug, p.name as project_name';
+            
+            if(isset($aFilter['include_closed_projects'])) {
+                $whereShowClosedProject = '';
+            }else{
+                $whereShowClosedProject = 'and p.closed_project = 0';
+            }
+            
+        }
+        
+        $sql = '';
+        $slectProject = '';
+        $joinProject = '';
+        $whereProject = 't.project_id = '.$project.' AND';
+        $columnTaskName = 'ti.description as task_name';
+        $orderChildRecords = '';
+        $orderAgencyUsers = '';
+        
+        $whereComment = "";
+        $whereListTask = "";
+        if(WWSCThalamusBundle::getContainer()->get('session')->get('presentationMode')){
+            $whereListTask = " AND t.visible_freelancer = 0";
+            $whereComment = " AND c.private = 0";
+        }
+        
+        if(!$project){
+            $slectProject = ', p.slug as project_slug, p.name as project_name';
+            $joinProject = 'JOIN project as p on (t.project_id = p.id and  p.account_id ='.$accountId.' '.$whereShowClosedProject.' and p.is_deleted = 0)
+                            JOIN project_user as pu on (p.id = pu.project_id and pu.user_id ='.$oUser->getId().')';
+            $whereProject = '';
+        }
+        $joinCompany = 'JOIN company_user as cu on (tt.person_id = cu.user_id ) join company as comp on (cu.company_id = comp.id and comp.account_id ='.$accountId.')';
+        
+        if($oCompany->getRoles() == 'ROLE_FREELANCER' ){
+           $joinCompany = 'JOIN company_user as cu on (tt.person_id = cu.user_id and cu.company_id = '.$oCompany->getId().') join company as comp on (cu.company_id = comp.id and comp.roles = "ROLE_FREELANCER" and comp.account_id ='.$accountId.')';
+        }
+        
+        if($integrateChildRecords){
+           $columnTaskName = 'getDescription(ti.id) as task_name';
+           $orderChildRecords = ', getPriority(ti.id) ASC';
+        }          
+        $selectColumn = 'SUM(ROUND(tt.time/60, 2)) as total, MAX(tt.date) as last_track, t.name as list_name,
+            t.id as list_id, '.$columnTaskName.', ti.id as task_id, COUNT(comp.id) as count_comp,
+            DATE_FORMAT(MAX(tt.date), "%d %c %Y") as last_date, DATE_FORMAT(MAX(tt.date),"%H:%i") as last_time,
+            comp.name as comp_name, COUNT(tt.id) as count_tt, COUNT(tt.person_id) as count_person, u.first_name as person,
+            tt.description, ti.parent, ti.fast_track, ti.state'.$slectProject;
+
+        $sql = 'SELECT '. $selectColumn.' FROM time_tracker as tt
+             JOIN comment as c on (tt.comment_id = c.id '.$whereComment.')  
+             JOIN taskitem as ti on (ti.id = c.parent_id and c.type = "TaskItem") 
+             JOIN task as t on (ti.task_id = t.id '.$whereListTask.') 
+             JOIN fos_user as u on (tt.person_id = u.id) '.$joinProject.$joinCompany;
+        
+        $where = ' WHERE '.$whereProject.' c.is_deleted = 0 AND ti.is_deleted = 0 AND t.is_deleted = 0';
+        if ($aFilter) {
+            if ($aFilter['filter_date_from']) {
+                $filterDateFrom = $aFilter['filter_date_from'].' 00:00:01';
+                $oDateTime = new \DateTime($filterDateFrom);
+                $where .= ' AND tt.date >= "'.$oDateTime->format('Y-m-d H:i:s').'"';
+            }
+            if ($aFilter['filter_date_to']) {
+                $filterDateTo = $aFilter['filter_date_to'].' 23:59:59';
+                $oDateTime = new \DateTime($filterDateTo);
+                $where .= ' AND tt.date <= "'.$oDateTime->format('Y-m-d H:i:s').'"';
+            }
+            if (isset($aFilter['filter_person']) && $aFilter['filter_person']) {
+                $aFilterPerson = explode('_', $aFilter['filter_person']);   
+                if($aFilterPerson[0] == 'c'){
+                  $where .= ' AND comp.id = '.$aFilterPerson[1];
+                }
+                if($aFilterPerson[0] == 'u'){
+                  $where .= ' AND tt.person_id = '.$aFilterPerson[1];
+                }
+            }
+            if ($aFilter['filter_task']) {
+                 $where .= ' AND ti.id = '.$aFilter['filter_task'];
+            }
+            if ($aFilter['fast_track']) {
+                if($aFilter['fast_track'] == 'yes'){
+                    $where .= ' AND ti.fast_track = 1';
+                }else if($aFilter['fast_track'] == 'no'){
+                    $where .= ' AND ti.fast_track = 0';
+                } 
+            }
+            if ($aFilter['filter_hide_empty']) {
+                $where .= ' AND tt.time != 0';
+            }
+            if ($aFilter['filter_parent']) {
+                $where .= ' AND ti.parent = '.$aFilter['filter_parent'];
+            }
+            if(isset($aFilter['sort_agency_users'])) {
+                $orderAgencyUsers .= ' ,FIELD(comp.roles, "ROLE_PROVIDER", "ROLE_FREELANCER")';
+            }
+        }
+
+        $orderBy = ' GROUP BY ti.id ORDER BY t.project_id ASC '.$orderChildRecords.''.$orderAgencyUsers.',last_date ASC, task_id ASC, last_time ASC';
+        
+        $sql = $sql.$where.$orderBy;
+        return WWSCThalamusBundle::getContainer()->get('database_connection')->query($sql)->fetchAll();
+    }
+    
+    
+      public static function getTimeTrackToday($type = 'user', $userId = false) {
+        $accountId = WWSCThalamusBundle::getContainer()->get('session')->get('account')->id;
+        $qb = WWSCThalamusBundle::getContainer()->get('doctrine')->getManager()->createQueryBuilder();
+        $filterDateFrom = date('Y-m-d').' 00:00:01';
+        $filterDateTo = date('Y-m-d').' 23:59:59';
+        switch ($type) {
+            case 'user':
+                $sql = 'SELECT SUM(tt.time) as total
+                        FROM time_tracker AS tt
+                        JOIN comment as c on (tt.comment_id = c.id and  c.is_deleted = 0)  
+                        JOIN taskitem as ti on (ti.id = c.parent_id and c.type = "TaskItem" and ti.is_deleted = 0) 
+                        JOIN task as t on (ti.task_id = t.id  and t.is_deleted = 0)
+                        JOIN project as p on (t.project_id = p.id and p.account_id = '.$accountId.')
+                        WHERE tt.date >="'.$filterDateFrom.'" and tt.date <= "'.$filterDateTo.'" and tt.person_id ='.$userId.'';
+                break;
+            case 'company':
+                $sql = 'SELECT SUM(tt.time) as total
+                        FROM time_tracker AS tt
+                        JOIN comment as c on (tt.comment_id = c.id and  c.is_deleted = 0)  
+                        JOIN taskitem as ti on (ti.id = c.parent_id and c.type = "TaskItem"  and ti.is_deleted = 0) 
+                        JOIN task as t on (ti.task_id = t.id  and t.is_deleted = 0)
+                        JOIN project as p on (t.project_id = p.id and p.account_id = '.$accountId.')
+                        JOIN company_user AS cu ON (tt.person_id = cu.user_id)
+                        JOIN company AS comp ON (cu.company_id = comp.id AND comp.account_id = '.$accountId.' and comp.roles ="ROLE_PROVIDER")
+                        WHERE tt.date >="'.$filterDateFrom.'" and tt.date <= "'.$filterDateTo.'"';
+                break;
+        }
+       
+        $critSQL = WWSCThalamusBundle::getContainer()->get('database_connection')->query($sql)->fetchAll(); 
+        
+        if(isset($critSQL[0]['total']) && $critSQL[0]['total']){
+            $hours = floor($critSQL[0]['total']/60);
+            $minutes = $critSQL[0]['total'] % 60;
+            $hours < 10? $hours = '0'.$hours:$hours;
+            $minutes < 10? $minutes = '0'.$minutes:$minutes;
+            return $hours.':'.$minutes;
+        }else{
+             return '00:00';
+        }
+        
+    }
+    
+}

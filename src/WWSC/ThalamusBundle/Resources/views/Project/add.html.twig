@@ -1,0 +1,50 @@
+{% extends "WWSCThalamusBundle:Content:layout.html.twig" %}
+{% block title %}
+    {% trans %}Create a project{% endtrans %}
+{% endblock %}    
+{% block content %}
+    <div class="row">
+        <div class="panel panel-default col-md-9">
+            <div class="panel-heading">
+                {% trans %}Create a project{% endtrans %}
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                    {% include 'WWSCThalamusBundle:Content:flash_notice.html.twig' %}
+                    {% if form_errors(form) %}
+                        <div class="alert alert-error error" role="alert">{{ form_errors(form) }}</div>
+                    {% endif %}
+                    <div class="panel-forms form-add-project">
+                        <form action="{{ path('wwsc_thalamus_project_add') }}" method="Post">
+                            <div class="col-xs-12">
+                                {% trans %}Name the project{% endtrans %}
+                                <small> {% trans %}( "Home page redesign" or "Marketing ideas", etc.
+                                    ){% endtrans %} </small>
+                                {{ form_widget(form.name ) }}
+                                {{ form_widget(form._token) }}
+                            </div>
+                            <div class="col-xs-12 without-padding">
+                                <div class="col-md-5">
+                                    <div class="float-left margin-top-2x col-md-3 without-padding">
+                                        {% trans %}Project ID {% endtrans %}
+                                    </div>
+                                    <div class="col-md-5 without-padding">
+                                        {{ form_widget(form.project_id ) }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xs-12 btn-action margin-top-1x">
+                                <button class="btn btn-sm btn-primary btn-save" type="submit">{% trans %}Create this
+                                    project{% endtrans %}</button>
+                                {% trans %}or{% endtrans %} <a class="btn-cancel"
+                                                               href="{{ path ('wwsc_thalamus_account_dashboard') }}"> {% trans %}
+                                    Cancel{% endtrans %} </a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}       
+

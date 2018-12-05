@@ -1,0 +1,109 @@
+<?php
+
+namespace WWSC\ThalamusBundle\Entity;
+
+use WWSC\ThalamusBundle\WWSCThalamusBundle;
+use Doctrine\Common\Collections\ArrayCollection;
+use Gedmo\Mapping\Annotation as Gedmo;
+use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+use Doctrine\Common\Collections\Criteria;
+
+/**
+ * Company
+ *
+ * @ORM\Entity
+ * @ORM\HasLifecycleCallbacks
+ * @ORM\Table(name="writeoboard")
+ */
+class Writeoboard {
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="id", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
+     */
+    private $id;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="name", type="string", length=255)
+     * @Assert\NotBlank(message="Please enter your project name.")
+     * @Assert\Length(
+     *     min=3,
+     *     max="255",
+     *     minMessage="The project name is too short.",
+     *     maxMessage="The project name is too long.",
+     * )
+     */
+    private $name;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="reply_uid", type="string", length=255, nullable=true)
+     *
+     */
+    private $replyUID;
+    
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="description", type="text", nullable=true)
+     *
+     */
+    private $description;
+
+       /**
+     * @var integer
+     *
+     * @ORM\Column(name="sort", type="integer", nullable=true)
+     */
+    private $sort;
+
+    /**
+     * Constructor
+     */ /**
+     * @var \DateTime $created
+     *
+     * @ORM\Column(type="datetime")
+     * @Gedmo\Timestampable(on="create")
+     */
+    private $created;
+
+    /**
+     * @var \DateTime $updated
+     * @Gedmo\Timestampable(on="update")
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $updated;
+
+    /**
+     * @var integer
+     *
+     * @ORM\ManyToOne(targetEntity="WWSC\ThalamusBundle\Entity\User")
+     */
+    private $user_created;
+
+    /**
+     * @var integer
+     *
+     * @ORM\ManyToOne(targetEntity="WWSC\ThalamusBundle\Entity\User")
+     */
+    private $user_updated;
+
+    /**
+     * @ORM\Column(name="is_deleted", type="boolean", nullable=true)
+     */
+    private $is_deleted = 0;
+    
+    /**
+     * @ORM\ManyToOne(targetEntity="WWSC\ThalamusBundle\Entity\Project", inversedBy="project")
+     */
+    private $project;
+    
+    private $comments;
+}

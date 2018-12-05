@@ -1,0 +1,49 @@
+{% if sowPage  < currentPage %}
+    {% set startPage = (currentPage + 1) - sowPage  %}
+    {% set showCountsPage = (startPage + sowPage) - 1  %}
+{% else %}
+    {% set startPage = 1  %}
+    {% set showCountsPage = 10  %}
+{% endif %}
+{% if showCountsPage  > countPage %}
+    {% set showCountsPage = countPage  %}
+{% endif %}
+<nav class="text-center">
+    <ul class="pagination">
+        {% if startPage  > 1 %}
+             <li>
+                 <a href="{{ url }}?page=1">
+                     <span aria-hidden="true">««</span>
+                 </a>
+             </li>
+             <li>
+                 <a href="{{ url }}?page={{ currentPage - 1 }}">
+                     <span aria-hidden="true">«</span>
+                 </a>
+             </li>
+         {% endif %}
+         {% for page in startPage..showCountsPage %}
+             {% if currentPage == page %}
+                  <li class="active">
+                      <a>{{ page }}</a>
+                 </li>
+            {% else %}
+                 <li>
+                     <a href="{{ url }}?page={{ page }}">{{ page }}</a>
+                 </li>    
+             {% endif %}
+         {% endfor %}
+         {% if showCountsPage < countPage %}
+             <li>
+                 <a href="{{ url }}?page={{ currentPage + 1 }}">
+                     <span aria-hidden="true">»</span>
+                 </a>
+             </li>
+             <li>
+                 <a href="{{ url }}?page={{ countPage }}">
+                     <span aria-hidden="true">»»</span>
+                 </a>
+             </li>
+         {% endif %}
+    </ul>
+</nav>

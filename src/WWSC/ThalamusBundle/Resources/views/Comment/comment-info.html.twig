@@ -1,0 +1,56 @@
+<div id="c_{{ oComment.id }}" data-id="comment-{{ oComment.id }}" class="comment-item {% if (oComment.description|trim) != true %} empty-comment {% endif %} {{ oComment.private ? 'comment-item-private' : '' }}  info-panel col-md-11">
+    <div class="avatar-user">
+        {% if oComment.userCreated.avatar %}
+            {% set icon = (asset('uploads/user/') ~ oComment.userCreated.avatar) %}
+        {% else %}
+            {% set icon = asset('bundles/wwscthalamus/images/user_icon.png') %}
+        {% endif %}
+        <img src="{{ icon | imagine_filter('my_thumb',{"thumbnail": {"size": [48, 48] }}) }}">
+    </div>
+    <div class="comment-info" >
+        <div class="title">
+            <span class="user-created" > {{ oComment.userCreated.firstName }}  {{ oComment.userCreated.lastName }}</span>
+            <span class="date-created" > {{ oComment.updated|date("D, d M H:i a") }}  </span>
+            {% if oComment.canBeEdited %}
+                | <a class="btn-edit-comment no-print-this-part"  href="{{ path ('wwsc_thalamus_project_comment_edit',{ 'project':slugProject, 'id': oComment.id}) }}"> {% trans %}Edit{% endtrans %}</a>
+                <small class="no-print-this-part"> ({% trans %}for another{% endtrans %}{{ oComment.canBeEdited }} ) </small>
+            {% endif %}
+            {% if app.session.get('presentationMode') == false  and oComment.timeTracker   and  ( is_granted('ROLE_PROVIDER') or (is_granted('ROLE_FREELANCER') and (oComment.userCreated.company) and (app.user.company.id == oComment.userCreated.company.id)))%}
+                <div class="time-tracker-info">
+                    {% trans %}reported:{% endtrans %}
+                    <span  class="description"> {{ oComment.timeTracker.description}} </span>
+
+                    —
+                    <span class="time">{{ oComment.timeTracker.time }} hr</span>
+                    {% if oComment.timeTracker.billable != 1 %}
+                        <i class="fa fa-strikethrough" aria-hidden="true"></i>
+                    {% endif %}
+                </div>
+            {% endif %}
+            {% if is_granted('ROLE_PROVIDER') %}
+                <a class="btn-delete-comment no-print-this-part" href="{{ path('wwsc_thalamus_project_comment_delete',{'id': oComment.id}) }}">
+                    <i class="fa fa-trash" aria-hidden="true"></i>
+                </a>
+            {% endif %}
+            <a class="btn-link-comment clip_button no-print-this-part" >
+                <i class="fa fa-link" aria-hidden="true"></i>
+            </a>
+            <a onclick =' printDiv("c_{{ oComment.id }}")' class = "btn-link-comment no-print-this-part" >
+                <i class="fa fa-print" aria-hidden="true"></i>
+
+            </a>
+        </div>
+        <div class="description">
+            <br>
+            {{ oComment.description|escape|markdown }}
+            {% if oComment.files %}
+                {% include 'WWSCThalamusBundle:File:attachments-list.html.twig' with {'aAttachments': oComment, 'slugProject': slugProject} %}
+                <div class="download-all-files-comment">
+                    <a href="{{ path ('wwsc_thalamus_project_comment_download_all_files',{ 'project':slugProject, 'id': oComment.id}) }}">
+                        {% trans %}Download all files{% endtrans %}
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>

@@ -1,0 +1,24 @@
+{% extends "WWSCThalamusBundle:Content:layout.html.twig" %}
+{% block title %}
+    {{ oProject.name }} - {% trans %}To-do lists{% endtrans %}
+{% endblock %} 
+{% block content %}
+    <div class="row blank-slate">
+        <div class="modal-dialog">
+            <div class="col-md-4">
+                <img src="{{ asset('bundles/wwscthalamus/images/blankslate-icon-todos.png') }}">
+            </div>
+            <div class="col-md-8">
+                <h1>{% trans %}Make the first to-do list and get organized.{% endtrans %}</h1>
+                <p>{% trans %}To-dos help you keep track of all the little things that need to get done. You can add them for yourself or assign them to someone else.{% endtrans %}</p>
+                {% if is_granted('ROLE_PROVIDER') %}  
+                <div class="btn-add-new-task">
+                    <a href="{{ path('wwsc_thalamus_project_task_add',{project:oProject.slug})}}" class="btn btn-default btn-md">
+                        <i class="glyphicon glyphicon-plus"></i> {% trans %}Create new to-do list{% endtrans %}
+                    </a>
+                </div>
+                {% endif %} 
+            </div>
+        </div>
+    </div>
+{% endblock %}       

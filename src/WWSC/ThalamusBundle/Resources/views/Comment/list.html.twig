@@ -1,0 +1,13 @@
+<div class="col-md-12">  
+    <div class="comments-list col-md-12">
+        {% for oComment in aComment  %}
+            {% include 'WWSCThalamusBundle:Comment:comment-info.html.twig' with {'project':slugProject, 'oComment': oComment} %}               
+        {% endfor  %}
+    </div>
+    <iframe name="print_frame" width="0" height="0" frameborder="0" src="about:blank"></iframe>
+    <div class="col-md-12"> 
+        <div class="form-comment col-md-11">  
+            {{ render(controller('WWSCThalamusBundle:Comment:add',{'project':slugProject,'type':type,'parent':parent} )) }}
+        </div>
+    </div>
+</div>  

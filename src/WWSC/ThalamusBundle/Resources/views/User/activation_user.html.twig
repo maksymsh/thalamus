@@ -1,0 +1,28 @@
+{% extends '::base.html.twig' %}
+{% block title %}
+    {% trans %}Activation user{% endtrans %}
+{% endblock %} 
+{% block body %}
+<div class="container activation_user modal-content">
+    {% if form is defined %}
+        <form action="{{ path('wwsc_thalamus_user_activation',{'account': oAccount.slug, 'token':token}) }}" method="post" class="form-signin">
+            <h2>{{ oAccount.name }}</h2>
+            {% include 'WWSCThalamusBundle:Content:flash_notice.html.twig' %}
+            <p>{% trans %}Please set your personal password first{% endtrans %}</p>
+            <div class="form-group plain-password">
+                {% set msgValidPassword = oUser.languageCode =='de' ? 'Passwort nicht korrekt. Mind. 6 Zeichen, inkl. 1 Grossbuchstabe und eine Ziffer erforderlich.': 'Password incorrect. 6 characters necessary including 1 uppercase and 1 numeric.' %}
+                {{ form_widget(form.plainPassword.first, {'attr': {'title':'"'~ msgValidPassword ~'"'} } ) }}
+                {{ form_widget(form.plainPassword.second, {'attr': {'title':'"'~ msgValidPassword ~'"'} } ) }}
+            </div>
+            {{ form_widget(form._token) }}
+            <div class="form-group">
+                {{ form_widget(form._token) }}
+                <button class="btn btn-lg btn-primary btn-block"  type="submit">{% trans %}OK, let's go{% endtrans %}</button>
+            </div>
+        </form>
+    {% else %}
+        {% include 'WWSCThalamusBundle:Content:flash_notice.html.twig' %}
+    {% endif %}    
+</div>
+{% endblock %}
+

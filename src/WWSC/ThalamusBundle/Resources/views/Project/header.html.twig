@@ -1,0 +1,91 @@
+
+<div class="navbar navbar-fixed-top navbar-inverse" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">{% trans %}Toggle navigation{% endtrans %}</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="{{ path ('wwsc_thalamus_project_overview',{'project': oProject.slug })}}">{{ oProject.name }}</a>
+        </div>
+
+        <div class="collapse navbar-collapse">
+
+            <div id="settings_signout_and_help">
+                <a  href="{{ path ('wwsc_thalamus_account_dashboard')}}"><i class="fa fa-angle-double-left" aria-hidden="true"></i> {% trans %}Back to Projects{% endtrans %}</a>
+                <span class="pipe">&nbsp;</span>
+                {{ oProject.responsibleCompany.name }}
+                <span class="pipe">&nbsp;</span>
+                <span class="account">
+                {% if app.user.companyUser|length > 1 %}
+                    <div class="btn-group">
+                        <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
+                            Account: <strong>{{ app.session.get('account').name }} </strong>
+                            <span class="caret"></span>
+                        </a>
+                            <ul class="dropdown-menu">
+                                {% for oCompanyUser in app.user.companyUser %}
+                                    {% set oCompany = oCompanyUser.company %}
+                                    <li  {% if app.session.get('account').slug == oCompany.account.slug  %}class="active" {% endif %} ><a href="{{ path ('wwsc_thalamus_account_change',{'account': oCompany.account.id })}}">{{ oCompany.account.name }}</a></li>
+                                    {% endfor %}
+                            </ul>
+                    </div>
+                    {% endif %}
+                </span>
+                {% include 'WWSCThalamusBundle:Task:search-task-form.html.twig' %}
+                <span class="pipe">&nbsp</span>
+                <a href="{{ path('wwsc_thalamus_user_myinfo') }}" title="{% trans %}My info{% endtrans %} - Review and edit your account information"><i class="fa fa-user" aria-hidden="true"></i></a>
+                <span class="pipe">&nbsp</span>
+                <a href="{{ path('fos_user_security_logout')}}" title="{% trans %}Sign out{% endtrans %} - Sign out and clear the cookie off your machine"><i class="fa fa-sign-out" aria-hidden="true"></i></a>
+                <a href="#" class="help" target="_blank"><span><i class="fa fa-question" aria-hidden="true"></i> {% trans %}HELP{% endtrans %}</span></a>
+            </div>
+
+            <ul class="nav navbar-nav navbar-left">
+                <li {% if app.session.get('active_module') == 'overview' %} class="active" {% endif %} ><a href="{{ path ('wwsc_thalamus_project_overview',{'project': oProject.slug })}}">{% trans %}Overview{% endtrans %}</a></li>
+                {# <li {% if app.session.get('active_module') == 'messages' %} class="active" {% endif %} ><a href="{{ path ('wwsc_thalamus_project_messages',{'project': oProject.slug })}}">{% trans %}Messages{% endtrans %}</a></li>#}
+                <li {% if app.session.get('active_module') == 'todos' %} class="active" {% endif %} >
+                  <a href="{{ path ('wwsc_thalamus_project_todos',{'project': oProject.slug })}}">{% trans %}To-Dos{% endtrans %}
+                  </a>
+                </li>
+                <li {% if app.session.get('active_module') == 'files' %} class="active" {% endif %} ><a href="{{ path('wwsc_thalamus_project_file_list',{'project': oProject.slug })}}">{% trans %}Files{% endtrans %}</a></li>
+                <li {% if app.session.get('active_module') == 'writeboards' %} class="active" {% endif %} ><a href="{{ path ('wwsc_thalamus_project_writeboards',{'project': oProject.slug })}}">{% trans %}Writeboards{% endtrans %}</a></li>
+                {% if app.session.get('presentationMode') == false and (is_granted('ROLE_PROVIDER') or is_granted('ROLE_FREELANCER'))  %}
+                    <li {% if app.session.get('active_module') == 'time' %} class="active" {% endif %} >
+                        <a href="{{ path('wwsc_thalamus_project_time_list',{'project': oProject.slug })}}">{% trans %}Time{% endtrans %}</a>
+                    </li>
+                {% endif %}
+                {% if is_granted('ROLE_PROVIDER') and (app.user.role == 'ROLE_ACCOUNTING' or oProject.projectleader('id') == app.user.id) and app.session.get('presentationMode') == false %}
+                    <li {% if app.session.get('active_module') == 'finance' %} class="active" {% endif %} >
+                        <a href="{{ path('wwsc_thalamus_project_finance',{'project': oProject.slug })}}">{% trans %}Finance{% endtrans %}</a>
+                    </li>
+                {% endif %}
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+              {% if is_granted('ROLE_PROVIDER') %}
+                <li>
+                  {% if app.session.get('presentationMode') %}
+                  <a class="link-present" href="{{ path('wwsc_thalamus_presentation_mode')}}">Present</a>
+                  {% else %}
+                  <a class="link-internal" href="{{ path('wwsc_thalamus_presentation_mode')}}">Internal</a>
+                  {% endif %}
+                </li>
+                <li>
+                  <a href="{{ path('wwsc_thalamus_personal_timetracking')}}"><div class="time-track-today"><span>{{ app.user.timeTrackToday }}</span></div></a>
+                </li>
+              {% endif %}
+              <li>
+                <a title="{% trans %}Project Settings{% endtrans %}" href="{{ path ('wwsc_thalamus_project_edit',{'project': oProject.slug })}}"> <i class="fa fa-cog" aria-hidden="true"></i></a>
+              </li>
+                <li {% if app.session.get('active_module') == 'people_permissions' %} class="active" {% endif %} ><a title="{% trans %}People &amp; Permissions{% endtrans %}" href="{{ path ('wwsc_thalamus_project_project_people',{'project': oProject.slug })}}"><i class="fa fa-users" aria-hidden="true"></i></a></li>
+
+                <li {% if app.session.get('active_module') == 'search' %} class="active" {% endif %} ><a href="{{ path ('wwsc_thalamus_search',{'project': oProject.slug })}}"><i class="fa fa-search" aria-hidden="true"></i></a></li>
+                <li class="print"><a href="javascript:window.print()"  title="print"><i class="fa fa-print" aria-hidden="true"></i></a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+</div>
+
+<div class="project-title-for-print">{{oProject.name}}</div>

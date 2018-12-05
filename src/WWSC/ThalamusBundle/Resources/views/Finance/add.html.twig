@@ -1,0 +1,50 @@
+<div class="finance-add from-group col-md-12">
+    <div class="col-md-10">
+        <div class="alert-error"></div>
+        <form accept-charset="UTF-8" action="{{path('wwsc_thalamus_project_finance_add',{'project':projectSlug})}}" class="finance-form" method="post">
+            <div class="col-md-12">
+                {% trans %}Description{% endtrans %}
+                {{ form_widget(form.description) }}
+            </div>
+            <div class="col-md-12 without-padding">
+                <div class="col-md-4">
+                    {% trans %}Invoice-Date{% endtrans %}
+                    {{form_widget(form.invoice_date)}}
+                </div>
+                <div class="col-md-4">
+                    {% trans %}Due date{% endtrans %}
+                    {{form_widget(form.due_date)}}
+                </div>
+                <div class="col-md-4">
+                    <br>{% trans %}Billable{% endtrans %}
+                    {{form_widget(form.billable, {attr: {"checked" : "checked"} } )}}
+                    <br>{% trans %}Recorded Cost{% endtrans %}
+                    {{form_widget(form.recorder_cost )}}                     
+                    <img class ="tooltip-msg" src="{{ asset('bundles/wwscthalamus/images/Information-icon.png') }}" title="These costs are already covered by thalamus time-tracking">
+                </div>                 
+            </div>
+            <div class="col-md-12 without-padding">    
+                <div class="col-md-4">
+                    {% trans %}Net value {% endtrans %}
+                    {{form_widget(form.amount)}}
+                </div>
+                <div class="col-md-4">
+                    {% trans %}VAT rate{% endtrans %}
+                    {{form_widget(form.vat_rate)}}
+                </div>
+                <div class="col-md-4">
+                    {% trans %}Status{% endtrans %}
+                    {{form_widget(form.status)}}
+                </div>
+            </div>
+            <div class="col-md-12 without-padding">    
+                <div class="col-md-12 form-group">
+                    <button class="btn btn-sm btn-primary btn-save" type="submit">{% trans %}Add new cost{% endtrans %}</button>
+                    <span>{% trans %}or{% endtrans %}</span>  <a class="btn-cancel" href="#"> {% trans %}I'm done adding cost{% endtrans %} </a>
+                </div>
+            </div>
+            {{ form_widget(form._token) }}
+        </form>
+    </div>
+</div>
+

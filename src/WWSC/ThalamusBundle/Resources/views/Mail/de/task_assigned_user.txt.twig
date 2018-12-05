@@ -1,0 +1,57 @@
+<html>
+<head>
+  <style type="text/css">
+    ol, ul { padding: 0; }
+    li { margin-left: 30px; line-height: 1.425em; padding: 0; }
+    ul li { list-style-type: square; }
+  </style>
+</head>
+<body bgcolor="#ffffff" color="#333333" link="#0099cc" alink="#0099cc" vlink="#0099cc" style="background-color: #ffffff; text-align: left;">
+<table cellpadding="0" cellspacing="0" border="0" width="100%">
+  <tr>
+    <td style="padding: 10px 10px 10px 20px; text-align: left;">
+      <p style="font-family: Helvetica, Arial, sans-serif; font-size: 12px; color: #999; padding-bottom: 0;">
+        Fügen Sie Ihre Antwort bitte OBERHALB DIESER ZEILE ein um einen weiteren Kommentar zu dieser Aufgabe hinzuzufügen
+      </p>
+    </td>
+  </tr>
+  <tr>
+    <td style="width:100%; padding: 10px 20px 5px 20px; font-family: Helvetica, Arial, sans-serif; font-size: 14px; background-color: #ffffff; text-align: left;" colspan="2">
+      <table cellpadding="0" cellspacing="0" border="0" style ="width:100%;">
+        {% include 'WWSCThalamusBundle:Mail:de/_header_task.txt.twig' with {'oElement':oElement } %}
+		<tr style="border-bottom: 1px solid #dddddd;">
+		  <td  style="padding: 0 0 5px 0; font-weight: normal; color: #999999; text-align: left; font-size: 14px; font-family: Helvetica, Arial, sans-serif;" width="75" valign="top"></td>
+		  <td  style="vertical-align:center;padding:40px 7px">
+			   {{ oElement.userCreated.firstName }}  {{ oElement.userCreated.lastName }}   hat Sie zugeordnet zu
+			   <a href="{{ url('wwsc_thalamus_project_task_item_comments',{ 'project':oElement.task.project.slug, 'task': oElement.task.id ,'id': oElement.id} )|replace({'http://localhost' : 'https://thalamus.io'})}}">{{ oElement.fastTrack ? '[FAST-TRACK]' : '' }} {{ oElement.description  }}</a>  ({{ oElement.id  }})
+		                     {% if commentText is defined %}
+                               <br><br><div> {{ commentText  }} </div>
+                           {% endif %}
+                           {% if roleUser is defined and  oElement.state == "WAITING_FOR_APPROVAL"  and (roleUser == "ROLE_PROVIDER" or roleUser == "ROLE_CLIENT") %}
+                                <div style="margin-top:20px">
+                                    <a style="font-size: 12px; text-decoration: none; background: green; padding: 6px 10px; text-align: center;  border-radius: 5px; color: white; font-weight: bold;"
+                                        href="{{ url('wwsc_thalamus_closing_task_via_mail',{ 'project':oElement.task.project.slug, 'task': oElement.task.id ,'id': oElement.id} )}}">
+                                        Ja - Aufgabe kann geschlossen werden
+                                    </a>
+                                    <a style="margin-left:20px;  font-size: 12px; text-decoration: none; background: red; padding: 6px 10px; text-align: center;  border-radius: 5px; color: white; font-weight: bold;"
+                                     href="{{ url('wwsc_thalamus_project_task_item_comments',{ 'project':oElement.task.project.slug, 'task': oElement.task.id ,'id': oElement.id} )}}">
+                                         Nein - ich werde einen Kommentar hinterlassen
+                                    </a>
+                                </div>
+		                    {% endif %}
+
+                  </td>
+		<tr >
+		<tr>
+		  <td colspan="2" style="padding: 10px 20px 10px 20px; font-family: Helvetica, Arial, sans-serif; font-size: 12px; background-color: #ffffff; text-align: left; border-top: 1px solid #dddddd;">
+			<p style="margin: 0; color: #444444">Dieser Benachrichtigung wurde gesendet an 
+			   {{ oElement.responsible.firstName }}  {{ oElement.responsible.lastName }}, {{ oElement.userCreated.firstName }}  {{ oElement.userCreated.lastName }}
+			</p>
+		  </td>
+		</tr>
+      </table>
+    </td>
+   </tr>
+</table>
+</body>
+</html>

@@ -1,0 +1,5 @@
+<select id="wwsc_thalamusbundle_project_projectleader" name="wwsc_thalamusbundle_project[projectleader]" class="form-control">
+    {% for oUser in aUsers %}
+        <option value="{{oUser.id}}">{{oUser.fullName}}</option>
+    {% endfor %}    
+</select>

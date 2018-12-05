@@ -1,0 +1,219 @@
+<?php
+
+namespace WWSC\ThalamusBundle\Controller;
+
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Session;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use WWSC\ThalamusBundle\Entity\User;
+use WWSC\ThalamusBundle\Entity\UserProfile;
+use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
+
+/**
+ * User controler
+ *
+ * In this controller describes the functions of adding, editing(contact information and personal information about user), 
+ * deleting and activation user.
+ */
+class UserController extends Controller {
+
+    /**
+     *   Method add
+     *  
+     *   This method is responsible for create new user for company
+     */
+    public function addAction(Request $request) {
+        if (!$this->container->get('security.context')->isGranted('ROLE_PROVIDER') && $this->getUser()->getCompany()->getId() != $request->get('company')) {
+            return $this->render('WWSCThalamusBundle:Content:not_permission.html.twig');
+        }
+        $em = $this->getDoctrine()->getManager();
+        $fUser = $this->createForm(new \WWSC\ThalamusBundle\Form\UserForm());
+        $oCompany = $em->getRepository('WWSCThalamusBundle:Company')->find($request->get('company'));
+        $fUser->add('profile', new \WWSC\ThalamusBundle\Form\UserProfileForm());
+        if ($request->getMethod() == 'POST') {
+            $fUser->handleRequest($request);
+            if ($fUser->isValid()) {
+                $fUser = $fUser->getData();
+                $userManager = $this->container->get('fos_user.user_manager');
+                /* create new user */
+                $fUser->setUsername(trim($fUser->getEmail()));
+                $fUser->addCompany($oCompany);
+                $fUser->setPlainPassword(base64_encode(microtime()));
+                $fUser->setLastLoggedAccount($request->getSession()->get('account')->id);
+                $em->persist($fUser);
+                $fUser->getProfile()->setUser($fUser);
+                $em->flush();
+                $message = \Swift_Message::newInstance()
+                        ->setSubject('Create account Thalamus!')
+                        ->setFrom($this->container->getParameter('admin_email'))
+                        ->setContentType("text/html")
+                        ->setTo($fUser->getEmail())
+                        ->setBody($this->renderView('WWSCThalamusBundle:Mail:create_user.txt.twig', array(
+                            'company_name' => $oCompany->getName(),
+                            'first_name' => $fUser->getFirstName(),
+                            'created_user' => $this->getUser(),
+                            'url' => $this->generateUrl('wwsc_thalamus_user_activation', array(
+                                'account' => $oCompany->getAccount()->getSlug(),
+                                'salt' => $fUser->getSalt()), true)
+                )));
+                $this->get('mailer')->send($message);
+                if ($request->request->get('project')) {
+                    $oProject = $em->getRepository('WWSCThalamusBundle:Project')->findOneBy(array('slug' => $request->request->get('project')));
+                    $oProject->addUser($fUser);
+                    $em->flush();
+                    return $this->redirect($this->generateUrl('wwsc_thalamus_add_project_people', array('project' => $oProject->getSlug())));
+                }
+                $request->getSession()->getFlashBag()->add('notice', 'Person has  been created sucessfully');
+                $request->getSession()->getFlashBag()->add('status', 'success');
+                return $this->redirect($this->generateUrl('wwsc_thalamus_account_all_people'));
+            }
+        }
+        return $this->render('WWSCThalamusBundle:User:add.html.twig', array('form' => $fUser->createView(), 'oCompany' => $oCompany));
+    }
+
+    /**
+     *   Method edit
+     *  
+     *   This method is responsible for edit and update contact information about user
+     */
+    public function editAction(Request $request) {
+        if (!$this->container->get('security.context')->isGranted('ROLE_PROVIDER') && $this->getUser()->getCompany()->getId() != $request->get('company')) {
+            return $this->render('WWSCThalamusBundle:Content:not_permission.html.twig');
+        }
+        $em = $this->getDoctrine()->getManager();
+        $oUser = $this->getUser();
+        $userManager = $this->container->get('fos_user.user_manager');
+        if ($request->get('id') == $oUser->getId()) {
+            $fUser = $this->createForm(new \WWSC\ThalamusBundle\Form\UserMyContactForm(), $oUser);
+            $template = 'my_contact_edit.html.twig';
+        } else {
+            $oUser = $userManager->findUserBy(array('id' => $request->get('id')));
+            $fUser = $this->createForm(new \WWSC\ThalamusBundle\Form\UserContactForm($oUser->getCompany()->getAccount()->getCompany()), $oUser);
+            $template = 'contact_edit.html.twig';
+        }
+        if ($request->getMethod() == 'POST') {
+            $fUser->bind($request);
+            if ($fUser->isValid()) {
+                $fUser = $fUser->getData();
+                $em->persist($fUser);
+                $em->flush();
+                $request->getSession()->getFlashBag()->add('notice', 'Person has been updated sucessfully');
+                $request->getSession()->getFlashBag()->add('status', 'success');
+                return $this->redirect($this->generateUrl('wwsc_thalamus_user_edit', array('id' => $request->get('id'))));
+            }
+        }
+        return $this->render('WWSCThalamusBundle:User:' . $template, array('form' => $fUser->createView(), 'oUser' => $oUser));
+    }
+
+    /**
+     *   Method myInfo
+     *  
+     *   This method is responsible for edit and update personal information about user
+     */
+    public function myInfoAction(Request $request) {
+
+        $em = $this->getDoctrine()->getManager();
+        $fUser = $this->createForm(new \WWSC\ThalamusBundle\Form\UserForm(), $this->getUser());
+        if ($request->getMethod() == 'POST') {
+            $fUser->bind($request);
+            if ($fUser->isValid()) {
+                $em->flush();
+                $request->getSession()->getFlashBag()->add('notice', 'Person has been updated sucessfully');
+                $request->getSession()->getFlashBag()->add('status', 'success');
+                return $this->redirect($this->generateUrl('wwsc_thalamus_user_myinfo'));
+            }
+        }
+        return $this->render('WWSCThalamusBundle:User:my_info.html.twig', array('form' => $fUser->createView()));
+    }
+
+    /**
+     *   Method activationUser
+     *  
+     *   This method is responsible for activation user.
+     */
+    public function activationUserAction(Request $request) {
+        $userManager = $this->container->get('fos_user.user_manager');
+        $em = $this->getDoctrine()->getManager();
+        if (!$oAccount = $this->getDoctrine()->getRepository('WWSCThalamusBundle:Account')->findOneBy(array('slug' => $request->get('account')))) {
+            $request->getSession()->getFlashBag()->add('notice', 'Incorrect account name');
+            $request->getSession()->getFlashBag()->add('status', 'error');
+            return $this->render('WWSCThalamusBundle:User:activation_user.html.twig', array(
+                        'salt' => $request->get('salt'),
+                        'account' => $request->get('account')
+            ));
+        }
+        if (!$oUser = $this->getDoctrine()->getRepository('WWSCThalamusBundle:User')->findOneBy(array('salt' => $request->get('salt')))) {
+            $request->getSession()->getFlashBag()->add('notice', 'Incorrect user code ');
+            $request->getSession()->getFlashBag()->add('status', 'error');
+            return $this->render('WWSCThalamusBundle:User:activation_user.html.twig', array(
+                        'salt' => $request->get('salt'),
+                        'account' => $request->get('account')
+            ));
+        }
+        $request->getSession()->set('account', (object) ['slug' => $oAccount->getSlug(), 'name' => $oAccount->getName(), 'id' => $oAccount->getId()]);
+        $fUser = $this->createForm(new \WWSC\ThalamusBundle\Form\ActivationUserForm(), $oUser);
+        if ($request->getMethod() == 'POST') {
+            $fUser->bind($request);
+            if ($fUser->isValid()) {
+                $oUser = $fUser->getData();
+                $oUser->setEnabled(true);
+                $oUser->setRoles(array($oUser->getCompany()->getRoles()));
+                $oUser->setEnabled(true);
+                $em->persist($oUser);
+                $em->flush();
+                $token = new UsernamePasswordToken($oUser, null, 'main', $oUser->getRoles());
+                $this->get('security.context')->setToken($token);
+                $this->get('session')->set('_security_main', serialize($token));
+                return $this->redirect($this->generateUrl('wwsc_thalamus_account_dashboard'));
+            }
+        }
+        return $this->render('WWSCThalamusBundle:User:activation_user.html.twig', array(
+                    'form' => $fUser->createView(),
+                    'oAccount' => $oAccount,
+                    'salt' => $request->get('salt'),
+        ));
+    }
+
+    /**
+     *   Method delete
+     *  
+     *   This method is responsible for delete user.
+     */
+    public function deleteAction(Request $request) {
+        if (!$this->container->get('security.context')->isGranted('ROLE_PROVIDER') && $this->getUser()->getCompany()->getId() != $request->get('company')) {
+            return $this->render('WWSCThalamusBundle:Content:not_permission.html.twig');
+        }
+        $em = $this->getDoctrine()->getManager();
+        $user = $this->getDoctrine()->getRepository('WWSCThalamusBundle:User')->find($request->get('id'));
+        $em->remove($user);
+        $em->flush();
+        $request->getSession()->getFlashBag()->add('notice', 'Person has been updated sucessfully');
+        $request->getSession()->getFlashBag()->add('status', 'success');
+        return $this->redirect($this->generateUrl('wwsc_thalamus_account_all_people'));
+    }
+    /**
+     *   Method resend Email
+     *  
+     *   This method is responsible for re-sending emails to user.
+     */
+    public function resendEmailAction(Request $request) {
+        $oUser = $this->getDoctrine()->getRepository('WWSCThalamusBundle:User')->find($request->get('id'));
+        $message = \Swift_Message::newInstance()
+                ->setSubject('Create account Thalamus!')
+                ->setFrom($this->container->getParameter('admin_email'))
+                ->setContentType("text/html")
+                ->setTo($oUser->getEmail())
+                ->setBody($this->renderView('WWSCThalamusBundle:Mail:create_user.txt.twig', array(
+                    'company_name' => $oUser->getCompany()->getName(),
+                    'first_name' => $oUser->getFirstName(),
+                    'created_user' => $oUser,
+                    'url' => $this->generateUrl('wwsc_thalamus_user_activation', array(
+                        'account' => $oUser->getCompany()->getAccount()->getSlug(),
+                        'salt' => $oUser->getSalt()), true)
+        )));
+        $this->get('mailer')->send($message);
+        return $this->redirect($this->generateUrl('wwsc_thalamus_user_edit', array('id' => $request->get('id'))));
+    }
+
+}
+

@@ -1,0 +1,17 @@
+<h2>{{ company_name }}</h2>
+<p> You're invited to join Thalamus, our project management and collaboration system. </p>
+<h3>Hi {{ first_name }}.</h3>
+<p>
+    {{ profile_description }}
+</p>
+<p>
+    {{ created_user.firstName }} {{ created_user.lastName }} just set up an account for you. All you need to do is choose a username and password. It only takes a few seconds.<br>
+    Please note, by clicking the following link you are accepting the terms of our <a href="http://blog.thalamus.io/datenschutzerklaerung/" target="_blank">data privacy policy</a>. <br>
+    Click this link to get started:<br>
+    <a href="{{ url }}">{{ url }}</a>
+
+<p>
+<hr>
+<p>    
+    Have questions? Contact {{ created_user.firstName }} {{ created_user.lastName }} at {{ created_user.email }}
+</p>

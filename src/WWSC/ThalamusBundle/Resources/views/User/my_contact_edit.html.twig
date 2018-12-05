@@ -1,0 +1,46 @@
+{% extends "WWSCThalamusBundle:Content:layout.html.twig" %}
+{% block title %}
+    {% trans %}Edit person{% endtrans %}
+{% endblock %} 
+{% block content %}   
+    <div class="row">
+        <div class="panel panel-default col-md-9">
+            <div class="panel-heading my-personal-data col-xs-12">
+                <div class="col-md-5">
+                    <h4><a href="{{ path('wwsc_thalamus_user_myinfo') }}">{% trans %}Edit your personal information{% endtrans %}</a></h4>
+                    <p class="unformatted_text">{% trans %}Change your name, photo, email address, username or password.{% endtrans %}</p>
+                </div>
+                <div class="col-md-4">
+                    {% include 'WWSCThalamusBundle:User:my_info_block.html.twig' with {'oUser': oUser } %}
+                </div>
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                    {% include 'WWSCThalamusBundle:Content:flash_notice.html.twig' %}
+                    {% if form_errors(form) %}
+                        <div class="alert alert-error error" role="alert">{{ form_errors(form) }}</div>
+                    {% endif %}
+                    <div class="panel-forms contact-edit-person">
+                        <form action="{{ path('wwsc_thalamus_user_edit', { id: oUser.id } ) }}"  {{ form_enctype(form) }} method="Post">
+                                {% include 'WWSCThalamusBundle:User:profile_form.html.twig' with {'profile': form.profile} %}
+                            <h4 class="margin-top-2x">{% trans %}Email notifications{% endtrans %}</h4>
+                            <p>{% trans %}Send all email notifications and reminders to this address:{% endtrans %}</p>
+                            <div class="form-group col-xs-12">
+                                {{form_label(form.email )}}
+                                <div class="col-md-4">       
+                                    {{form_widget(form.email )}}
+                                </div>
+                            </div>
+                            {{ form_widget(form._token) }}
+                            <div class="form-group col-xs-12 btn-action">
+                                <button class="btn btn-sm btn-primary btn-save" type="submit">{% trans %}Save changes{% endtrans %}</button>
+                                {% trans %}or{% endtrans %} <a class="btn-cancel" href="{{ path ('wwsc_thalamus_account_all_people') }}">{% trans %}Cancel{% endtrans %}</a> 
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>  
+        </div>                          
+    </div>
+{% endblock %}       
+

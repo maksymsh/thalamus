@@ -1,0 +1,238 @@
+<?php
+
+namespace WWSC\ThalamusBundle\Entity;
+
+use WWSC\ThalamusBundle\WWSCThalamusBundle;
+use Doctrine\Common\Collections\ArrayCollection;
+use Gedmo\Mapping\Annotation as Gedmo;
+use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+use Doctrine\Common\Collections\Criteria;
+use Doctrine\ORM\Event\LifecycleEventArgs;
+
+/**
+ * Comment
+ *
+ * @ORM\Entity
+ * @ORM\HasLifecycleCallbacks
+ * @ORM\Table(name="time_tracker")
+ */
+class TimeTracker extends Base
+{
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="id", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
+     */
+    private $id;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="description", type="text")
+     * @Assert\NotBlank(message="Please enter your comment")
+     * @Assert\Length(
+     *     min=3,
+     *     minMessage="The comment is too short.",
+     * )
+     */
+    private $description;
+
+    /**
+     * @var \DateTime $data
+     *
+     * @ORM\Column(type="datetime")
+     */
+    private $date;
+
+    /**
+     * @var integer
+     *
+     * @ORM\ManyToOne(targetEntity="WWSC\ThalamusBundle\Entity\User")
+     */
+    private $person;
+
+    /**
+     * @ORM\Column(name="time", type="decimal", length=255)
+     */
+    private $time;
+
+    /**
+     * @ORM\OneToOne(targetEntity="WWSC\ThalamusBundle\Entity\Comment", inversedBy="time_tracker")
+     */
+    private $comment;
+
+    /**
+     * Get id
+     *
+     * @return integer
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+
+    /**
+     * Set description
+     *
+     * @param string $description
+     * @return Task
+     */
+    public function setDescription($description)
+    {
+        $this->description = $description;
+
+        return $this;
+    }
+
+    /**
+     * Get description
+     *
+     * @return string
+     */
+    public function getDescription()
+    {
+        return $this->description;
+    }
+
+    /**
+     * Set person
+     *
+     * @ORM\PrePersist()
+     * @param integer $person
+     * @return TimeTracker
+     */
+    public function setPerson($person)
+    {
+        $this->person = WWSCThalamusBundle::getContainer()->get('security.context')->getToken()->getUser();
+
+        return $this;
+    }
+
+    /**
+     * Get person
+     *
+     * @return integer
+     */
+    public function getPerson()
+    {
+        return $this->person;
+    }
+
+    /**
+     * Set time
+     *
+     * @param \DateTime $time
+     * @return TimeTracker
+     */
+    public function setTime($time)
+    {
+        if (strpos($time, ':') !== false) {
+            $aTime = explode(':', $time);
+            $this->time = $aTime[0] * 60 + $aTime[1];
+        } else {
+            $this->time = $time * 60;
+        }
+        return $this;
+    }
+
+    /**
+     * Get time
+     *
+     * @return \DateTime
+     */
+    public function getTime()
+    {
+        return round($this->time / 60, 2);
+    }
+
+    /**
+     * Set comment
+     *
+     * @param \WWSC\ThalamusBundle\Entity\Comment $comment
+     * @return TimeTracker
+     */
+    public function setComment(\WWSC\ThalamusBundle\Entity\Comment $comment = null)
+    {
+        $this->comment = $comment;
+
+        return $this;
+    }
+
+    /**
+     * Get comment
+     *
+     * @return \WWSC\ThalamusBundle\Entity\Comment
+     */
+    public function getComment()
+    {
+        return $this->comment;
+    }
+
+    /**
+     * Set date
+     *
+     * @param \DateTime $date
+     * @return TimeTracker
+     */
+    public function setDate($date)
+    {
+        $this->date = $date;
+
+        return $this;
+    }
+
+    /**
+     * Get date
+     *
+     * @return \DateTime
+     */
+    public function getDate()
+    {
+        return $this->date;
+    }
+
+    private function getLogInfoByTimeTracker($entity){
+        $aRes = array();
+        $aRes['object_id'] = $entity->getId();
+        if ($taskItem = $entity->getComment()->getParentInfo()) {
+            $oProject = $taskItem->getTask()->getProject();
+            $aRes['project'] = $oProject;
+        }
+        $url = WWSCThalamusBundle::getContainer()->get('router')->generate(
+            'wwsc_thalamus_project_time_list',
+            array(
+                'project' => $oProject->getSlug()
+            )
+        );
+        $aRes['description'] =  "<a href='" . $url . "'>" . $this->truncation($entity->getDescription(), 100) . "</a>";
+        return $aRes;
+    }
+
+    /**
+     * @ORM\PreUpdate
+     */
+    public function preUpdate(LifecycleEventArgs $args)
+    {
+        if(!$args->hasChangedField('is_deleted')){ 
+            $aParams = $this->getLogInfoByTimeTracker($args->getEntity());
+            $aParams['action'] = 'Updated by';
+            $this->things[] = $aParams;
+        }
+    }
+
+    /**
+     * @ORM\PostPersist
+     */
+    public function postPersist(LifecycleEventArgs $args)
+    {
+        $aParams = $this->getLogInfoByTimeTracker($args->getEntity());
+        $aParams['action'] = 'Posted by';
+        $this->saveLog($aParams);
+    }
+}
+

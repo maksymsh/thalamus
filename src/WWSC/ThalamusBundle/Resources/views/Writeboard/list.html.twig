@@ -1,0 +1,46 @@
+{% extends "WWSCThalamusBundle:Content:layout.html.twig" %}
+{% block title %}
+    {{ oProject.name }} - {% trans %} Writeboards{% endtrans %}
+{% endblock %} 
+{% block content %}
+<div class="row">
+    <div class="panel panel-default col-md-9">
+        <div class="panel-heading col-xs-12">
+            <div class="col-xs-12">
+                {% trans %}Writeboards{% endtrans %}
+            </div>
+        </div>
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-md-12 writeboards-list">
+                    {% for oWriteboard in oProject.writeboards%}
+                        <div data-id="{{ oWriteboard.id }}" class="writeboard col-md-12">
+                            <div class="show-writeboard">
+                                {% include 'WWSCThalamusBundle:Writeboard:writeboard-block.html.twig' with {'oWriteboard': oWriteboard } %}
+                            </div>
+                        </div>
+                    {% endfor %} 
+                    {% if (is_granted('ROLE_PROVIDER')) %}  
+                        <div class="writeboard-add col-md-11">
+                            <div class="col-md-12 btn-add-new-writeboard"> 
+                                <a href={{ path('wwsc_thalamus_project_writeboard_add',{project:oProject.slug})}}> {% trans %}Add an writeboard{% endtrans %} </a>
+                            </div>
+                        </div>
+                    {% endif %}    
+                </div>
+            </div>
+        </div>
+    </div>                
+</div>
+{% endblock %}
+{% block stylesheets %}
+    <link href="{{ asset('bundles/wwscthalamus/markdown/css/bootstrap-markdown.min.css') }}" type="text/css" rel="stylesheet" />
+    <link href="{{ asset('bundles/wwscthalamus/css/bootstrap-datepicker.css') }}" type="text/css" rel="stylesheet" />    
+{% endblock %}
+{% block javascripts %}
+    <script src="{{ asset('bundles/wwscthalamus/markdown/js/to-markdown.js') }}"></script>
+    <script src="{{ asset('bundles/wwscthalamus/markdown/js/markdown.js') }}"></script>
+    <script src="{{ asset('bundles/wwscthalamus/markdown/js/bootstrap-markdown.js') }}"></script>
+    <script src="{{ asset('bundles/wwscthalamus/js/writeboard.js') }}"></script>
+    <script src="{{ asset('bundles/wwscthalamus/js/bootstrap-datepicker.js') }}"></script>
+{% endblock %}

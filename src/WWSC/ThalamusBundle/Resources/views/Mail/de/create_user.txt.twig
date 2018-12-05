@@ -1,0 +1,16 @@
+<h2>{{ company_name }}</h2>
+<p> Sie wurden zu Thamalus, unserer Online Projektmanagement-Plattform eingeladen </p>
+<h3>Hallo {{ first_name }}.</h3>
+<p>
+    {{ profile_description }}
+</p>
+<p>
+    {{ created_user.firstName }} {{ created_user.lastName }} hat bereits einen Zugangsaccount für Sie erstellt. Sie müssen jetzt nur noch einen Benutzernamen und ein Passwort auswählen. In ein paar Sekunden sind Sie startklar.<br>
+    Bitte beachten Sie, dass Sie durch das Klicken des folgenden Links den Bedingungen unserer <a href="http://blog.thalamus.io/datenschutzerklaerung/" target="_blank">Datenschutzerklärung</a> zustimmen.  <br>
+    Klicken Sie bitte diesen Link zum Starten:<br>
+    <a href="{{ url }}">{{ url }}</a>
+<p>
+<hr>
+<p>    
+    Haben Sie noch Fragen? Bitte kontaktieren Sie {{ created_user.firstName }} {{ created_user.lastName }} per Email unter  {{ created_user.email }}
+</p>

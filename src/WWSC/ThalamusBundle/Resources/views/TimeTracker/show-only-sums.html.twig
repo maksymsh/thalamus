@@ -1,0 +1,51 @@
+{% for projectSlug , aProjects in aReportGropedByCompanies %}
+    {% if(projectSlug != 'projects_total')%}
+        {% for aReportGropedByCompany in aReportGropedByCompanies[projectSlug]['company'] %}
+            <tr>
+                <td colspan="6"></td>
+                <td>
+                    <strong>
+                        {{ app.user.formatHours(aReportGropedByCompany['total']) }}
+                    </strong>
+                </td>
+                <td colspan="3"></td>
+                <td colspan="2"><strong>{{ aReportGropedByCompany['name'] }}</strong></td>
+                <td  colspan="3"></td>
+            </tr>
+        {% endfor %}
+         <tr>
+            <td colspan="6"></td>
+            <td>
+                {{ app.user.formatHours(aProjects['total_billable']) }}
+                <br> {{ app.user.formatHours(aProjects['total_nonbillable']) }}
+            </td>
+            <td>
+                yes
+                <br>
+                no
+            </td>
+            <td></td>
+            <td colspan="2" ><a href="{{ url ('wwsc_thalamus_project_time_list',{'project':projectSlug}) }}">{{ aProjects['project_name'] }}</a></td>
+            <td  colspan="4"></td>
+         </tr>
+    {% endif %}
+{% endfor %}
+<tr>
+   <td colspan="6"></td>
+   <td>
+       <strong>{{ app.user.formatHours(aReportGropedByCompanies['projects_total']['sum']) }}</strong><br>
+       <strong>{{ app.user.formatHours(aReportGropedByCompanies['projects_total']['billable']) }}</strong><br>
+       <strong>{{ app.user.formatHours(aReportGropedByCompanies['projects_total']['nonbillable']) }}</strong><br>
+   </td>
+    <td>
+        <br>
+        yes
+        <br>
+        no
+    </td>
+    <td></td>
+   <td colspan="2" ><strong>{% trans %}Total{% endtrans %} </strong></td>
+   <td  colspan="4"></td>
+</tr>
+
+{#  [projects_total] => 16.9 [projects_total_billable] => 8.9 [projects_total_nonbillable]  #}

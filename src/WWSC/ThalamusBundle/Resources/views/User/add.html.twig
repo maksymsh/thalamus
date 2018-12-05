@@ -1,0 +1,100 @@
+{% extends "WWSCThalamusBundle:Content:layout.html.twig" %}
+{% block title %}
+    {% trans %}Add new person{% endtrans %}
+{% endblock %} 
+{% block content %}   
+    <div class="row">
+        <div class="panel panel-default col-md-9">
+            <div class="panel-heading">
+                {% trans %}Add a person to{% endtrans %} {{oCompany.name}}
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                    {% include 'WWSCThalamusBundle:Content:flash_notice.html.twig' %}
+                    {% if form_errors(form) %}
+                        <div class="alert alert-error error" role="alert">{{ form_errors(form) }}</div>
+                    {% endif %}
+                    <div class="panel-forms">
+                        <form action="{{ path('wwsc_thalamus_user_add', {'company': oCompany.id}) }}" class="add-user-form" method="Post">
+                            <input type='hidden' name="company" id="company_id" value="{{ oCompany.id }}">
+                            {% if app.request.get('project') %}
+                                <input type='hidden' id="wwsc_thalamus_user_project"  name="project" value="{{ app.request.get('project')}}">
+                            {% endif %}
+                            <p>{% trans %}This person's name will be displayed next to their messages, comments, to-dos, milestones, and files.{% endtrans %}</p>
+                            <fieldset>
+                                <div class="form-group col-xs-12">
+                                    {{form_label(form.first_name )}}
+                                    <div class="col-md-4">  
+                                        {{form_widget(form.first_name )}}
+                                    </div>
+                                </div>
+                                <div class="form-group col-xs-12">
+                                    {{form_label(form.last_name )}}
+                                    <div class="col-md-4">      
+                                        {{form_widget(form.last_name )}}
+                                    </div>
+                                </div>
+                                <div class="form-group col-xs-12">
+                                    {{form_label(form.email )}}
+                                    <div class="col-md-4">       
+                                        {{form_widget(form.email )}}
+                                    </div>
+                                </div>
+                            {% if is_granted('ROLE_PROVIDER') %}
+                                <div class="form-group col-xs-12">
+                                    {{form_label(form.language )}}
+                                    <div class="col-md-4">       
+                                        {{form_widget(form.language )}}
+                                    </div>
+                                </div>
+                            {% endif %}
+                            {% if aRoles is defined %}
+                                <div class="form-group col-xs-12">
+                                    <label class="control-label col-md-2" for="wwsc_thalamusbundle_user_language">Role User</label>
+                                    <div class="col-md-4">       
+                                        <select name="role-user" class="form-control">
+                                            <option></option>
+                                             {% for oRole in aRoles %}
+                                                 <option value="{{ oRole.key }}">{{ oRole.name }}</option>
+                                            {% endfor %}
+                                        </select>    
+                                    </div>
+                                </div>
+                            {% endif %} 
+                            </fieldset>    
+                            <p>{% trans %}The rest is optional. You can fill it in later if you'd like.{% endtrans %}</p>
+                            <fieldset>
+                                {% include 'WWSCThalamusBundle:User:profile_form.html.twig' with {'profile': form.profile} %}
+                            </fieldset>  
+                            <h3>{% trans %}Include a personal note along with the invitation to set up their account?{% endtrans %}</h3>
+                            <p>{% trans %}This person will receive a welcome email with a link to choose their username and password. You can also add a personalized note that will appear at the bottom of the email. Please use plain text (no HTML tags).{% endtrans %}</p>
+                            <fieldset>
+                                <div class="form-group col-xs-12">
+                                    <div class="col-md-6"> 
+                                        {{form_widget(form.profile.description )}}
+                                    </div>
+                                </div>
+                            </fieldset>     
+                            {{ form_widget(form._token) }}
+                            <h3>{% trans %}What happens now?{% endtrans %}</h3>
+                            <p>{% trans %}When you click the "Add this person" button below, we'll fire off a nice invitation to the email address you entered above. The email will contain a link to a web page where this person will complete the setup process by picking their own username and password. Plus, you can immediately start involving them in projects even before they've chosen their username and password.{% endtrans %}</p>
+                            <div class="form-group col-xs-12 btn-action">
+                                <button class="btn btn-sm btn-primary btn-save" type="submit">{% trans %}Save changes{% endtrans %}</button>
+                                or <a class="btn-cancel" href="{{ path ('wwsc_thalamus_account_all_people') }}">{% trans %}Cancel{% endtrans %} </a> 
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>  
+        </div>                          
+        <div class="col-md-3 sidebar sidebar-user">
+            <div class="col">
+                <div class="title-panel">{% trans %}Sample welcome email{% endtrans %}</div>
+                <div class="info-panel">
+                    {% trans %}As soon as you submit this form, this person will receive a welcome email with a link to pick their own username and password.{% endtrans %}
+                </div>   
+            </div>
+        </div><!--/span-->
+    </div>
+{% endblock %}       
+

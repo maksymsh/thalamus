@@ -1,0 +1,14 @@
+<tr>
+  <td style="padding: 0 0 5px 0; font-weight: normal; color: #999999; text-align: left; font-size: 14px; font-family: Helvetica, Arial, sans-serif;" width="50" valign="top">Projekt:</td>
+  <td style="padding: 0 0 5px 10px; font-size: 14px; font-weight: normal; text-align: left; font-family: Helvetica, Arial, sans-serif;" valign="top"><a href="{{ url('wwsc_thalamus_project_overview',{ 'project':oElement.task.project.slug} )|replace({'http://localhost' : 'https://thalamus.io'}) }}">
+        {{ oElement.task.project.name }}
+    </a></td>
+</tr>
+<tr>
+  <td style="padding: 0 0 5px 0; font-weight: normal; color: #999999; text-align: left; font-size: 14px; font-family: Helvetica, Arial, sans-serif;" width="50" valign="top">Unternehmen:</td>
+  <td style="padding: 0 0 5px 10px; font-size: 14px; color: #000000; text-align: left; font-family: Helvetica, Arial, sans-serif;" valign="top">{{ oElement.task.project.responsibleCompany.name }}</td>
+</tr>
+<tr style="border-bottom: 1px solid #dddddd;">
+  <td style="padding: 0 0 5px 0; border-bottom: 1px solid #dddddd; font-weight: normal; color: #999999; text-align: left; font-size: 14px; font-family: Helvetica, Arial, sans-serif;" width="75" valign="top">Aufgabenliste:</td>
+  <td style="padding: 0 0 5px 10px; border-bottom: 1px solid #dddddd; font-size: 14px; color: #000000; text-align: left; font-family: Helvetica, Arial, sans-serif;" valign="top"><a href="{{ url('wwsc_thalamus_project_task_show',{ 'project':oElement.task.project.slug, 'id': oElement.task.id } )|replace({'http://localhost' : 'https://thalamus.io'})}}">{{ oElement.task.name }}</a></td>
+</tr>

@@ -1,0 +1,42 @@
+<form class="edit-info-file col-md-11 info-panel" action="{{ path('wwsc_thalamus_project_file_edit',{'project':oFile.project.slug, 'id':oFile.id} ) }}" method="Post">
+    <div class="col-md-12">
+        <div class="col-md-2">
+            <span class="preview"><img height = "64px" src='{{ oFile.fileIcon }}'></span>
+        </div>
+        <div class="col-md-9">
+            <div class="col-md-12 form-group">
+                <div class="alert-error"></div>
+                {{form_widget(form.name)}}
+            </div>
+            <div class="col-md-12 form-group">
+                <div class="col-md-3 without-padding">
+                    <span> Category</span>
+                </div>
+                <div class="col-md-6 ">
+                    {{form_widget(form.category)}}
+                </div>
+            </div>
+            <div class="col-md-12 form-group">
+                <div class="col-md-3 without-padding">
+                    <span>Optional description:</span>
+                </div>
+                <div class="col-md-6">
+                   {{form_widget(form.description)}}
+                </div>
+            </div>
+            <div class="col-md-12 form-group">
+                <div class="col-md-3 without-padding">
+                    <span>  Make file private</span>
+                </div>
+                <div class="col-md-9">
+                    {{form_widget(form.private)}} 
+                </div>
+             </div>
+            {{ form_widget(form._token) }}
+            <div class="form-group col-xs-12 btn-action">
+                <button class="btn btn-sm btn-primary btn-save" type="submit">{% trans %}Save changes{% endtrans %}</button>
+                <span> or </span> <a class="btn-cancel" href="/account/all_people">{% trans %}Cancel{% endtrans %}</a> 
+            </div>
+        </div>
+    </div>
+</form>       

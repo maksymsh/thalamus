@@ -1,0 +1,67 @@
+{% extends '::base.html.twig' %}
+{% block title %}
+    {% trans %}Create new account{% endtrans %}
+{% endblock %} 
+{% block body %}   
+<div class="container new-account">
+        <div class="row">
+            <div class="panel panel-default  col-xs-offset-2  col-lg-7">
+            <div class="panel-heading">
+                {% trans %}You're just 60 seconds away from your new Thalamus account.{% endtrans %}
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-md-12 panel-info">
+                        <div class="col-md-6">
+                            <p><strong>{% trans %}Hi{% endtrans %}{{app.user.firstName }} {{app.user.lastName }},</strong> <span class="logout">(<a href="{{ path('fos_user_security_logout')}}" rel="nofollow">{% trans %}I'm not{% endtrans %}{{app.user.firstName }} {{app.user.lastName }}</a>)</span></p>
+                            {% trans %}<p>After your account is created, you can sign in with the same <strong>username and password</strong> that you use with your other accounts.</p>{% endtrans %}
+                        </div>
+                        <div class="col-md-6">
+                            {% include 'WWSCThalamusBundle:User:my_info_block.html.twig' with {'oUser': app.user } %}
+                       </div>
+                   </div>
+                   <div class="col-md-12">
+                        <form  class="form-horizontal form-new-account" action="{{ path('wwsc_thalamus_account_new') }}"  method="POST">                              
+                            {% include 'WWSCThalamusBundle:Content:flash_notice.html.twig' %}
+                            {% if form_errors(form) %}
+                                <div class="alert alert-error error" role="alert">{{ form_errors(form) }}</div>
+                            {% endif %}
+                            <div  class="col-md-12">
+                                <h3>{% trans %}A few details and you're on your way{% endtrans %}</h3>
+                            </div>
+                            <div  class="col-md-12">
+                                <div  class="col-md-2">Company:</div>
+                                 <div  class="col-md-8">
+                                     {{ form_widget(form.name) }}<small>({% trans %}Or non-profit, organization, group, school, etc.{% endtrans %})</small>
+                                 </div>
+                             </div>
+                            <div  class="col-md-12">
+                                <div  class="col-md-2">{% trans %} Company abbreviation:{% endtrans %}</div>
+                                <div  class="col-md-8">
+                                    {{form_widget(form.abbreviation)}}
+                                </div>
+                            </div>
+                            <div  class="col-md-12">
+                                <div  class="col-md-2">{% trans %}Time zone:{% endtrans %}</div>
+                                 <div  class="col-md-8">
+                                     {{ form_widget(form.timeZone) }}
+                                 </div>
+                             </div>
+                             <div class="col-md-12 panel-offer">
+                               {% trans %}You have selected the Free plan. There is no time limit on the free plan — you can use it for free as long as you'd like. You can always upgrade to a paying plan later if you need multiple projects, more file storage, etc.{% endtrans %}
+                             </div>
+                             <hr>
+                             {{ form_widget(form._token) }}
+                            <div class="form-group">
+                                 <div class="col-xs-9">
+                                     <input type="submit" class="btn btn-primary" value="{% trans %}Create my account{% endtrans %}">
+                                 </div>
+                            </div>  
+                        </form> 
+                   </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}       

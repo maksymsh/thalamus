@@ -1,0 +1,19 @@
+<div data-id={{aItem["id"]}} class="task-item  {% if( status == 1) %}  task-items-closed {% endif %}">
+    <div class="show-task-item">
+        {% if (is_granted('ROLE_PROVIDER')) or  (is_granted('ROLE_CLIENT')) %}
+            {# actions-panel for task#}
+            <div class="actions-panel">
+                <a class="btn-delete-task-item fa fa-trash-o" href={{path('wwsc_thalamus_project_task_item_delete',{project:projectSlug, task:taskId, id:aItem["id"]})}}></a>
+                {# if  the tasks is  open #}
+                {% if( status != 1) %}
+                     <a class="btn-edit-task-item fa fa-pencil" href={{path('wwsc_thalamus_project_task_item_edit',{project:projectSlug, task:taskId, id:aItem["id"]})}}></a>
+                     <a class="btn-sort" href="#"><i class="fa fa-sort" aria-hidden="true"></i></a>
+                {% endif %}
+            </div>
+        {% endif %}
+        <div class="task-item-info">
+            {# information about  task #}
+            {% include 'WWSCThalamusBundle:TaskItem:task-item-info.html.twig' with {'projectSlug': projectSlug, 'status':status, 'taskId': taskId, 'aItem': aItem} %}
+        </div>
+    </div>
+</div>

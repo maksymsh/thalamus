@@ -1,0 +1,35 @@
+{% block content %}
+    {% set lastDate = null %}
+        {% for oLog in aLog %}
+            {% if (lastDate == null and date(oLog['created']) > date('today')) %}
+                <div class="overview-today">{% trans %}Today{% endtrans %}</div>
+                <table class="table table-striped dashboard-log">
+                <tbody>
+            {% else %}
+                {% set sLastDate = date(lastDate) | date("m/d/Y") %}
+                {% set sCreated = oLog['created'] | date("m/d/Y") %}
+                {% if sCreated != sLastDate %}
+                    </tbody>
+                    </table>
+                    <div data-day-log = "day-{{ oLog['created'] | date("z") }}" class="overview-today ">{{ oLog['created'] | date("l, j F Y") }}</div>
+                    <table class="table table-striped dashboard-log">
+                    <tbody>
+                {% endif %}
+            {% endif %}
+
+            {% set lastDate = oLog['created'] %}
+            <tr>
+                <td class="type col-md-2" ><span class="{{ oLog["object_type"]| lower}}">{{ oLog["object_type"] }}</span></td>
+                <td class="item">
+                    {% autoescape false %}
+                        {{ oLog["description"]}}
+                    {% endautoescape %}
+                </td>
+                <td class="action">{{ oLog["action"] }}</td>
+                <td class="author">{{ oLog["last_name"] }} {{ oLog["first_name"] }}</td>
+            </tr>
+        {% endfor %}
+       </tbody>
+    </table>
+{% endblock %}
+

@@ -1,0 +1,56 @@
+{% extends "WWSCThalamusBundle:Content:layout.html.twig" %}
+{% block title %}
+    {{ nameProject}} - {% trans %}All Messages{% endtrans %} 
+{% endblock %} 
+{% block content %}   
+    <div class="row">
+        <div class="panel panel-default col-md-9">
+            <div class="panel-heading">
+              {% trans %}All Messages{% endtrans %}  
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="list-messages">
+                        {% for oMessage in aMessages %}
+                            <div data-id="message-{{ oMessage.id }}" class="message-item info-panel col-md-11">
+                                {% include 'WWSCThalamusBundle:Message:message-item.html.twig' with {'oMessage': oMessage} %}
+                            </div>
+                        {% endfor %} 
+                    </div><!--/span-->
+                </div>
+            </div>  
+        </div>                          
+        <div class="col-md-3 sidebar sidebar-filter">
+            <div class="col">
+                <div class="btn-add-new-message">
+                    <a href="{{ path('wwsc_thalamus_project_message_add',{ project:slugProject }) }}" class="btn btn-default btn-md">
+                        <i class="glyphicon glyphicon-plus"></i> {% trans %}Post a new message{% endtrans %}
+                    </a>
+                </div>
+                <div class='box_message_guid'><img src="{{ asset('bundles/wwscthalamus/images/icon_mail.png') }}"> <a href="{{ path('wwsc_thalamus_project_messages_guid',{project:slugProject})}}">{% trans %}Post messages via email{% endtrans %}</a> </div>       
+                <div class="title-panel">{% trans %}Categories{% endtrans %} <a class="edit-cat-block" data-cat-block="category-list" href="#">{% trans %}Edit{% endtrans %}</a></div>    
+                <div class="info-panel">
+                    <ul id="category-list" data-url="{{ path('wwsc_thalamus_category_save',{ project:slugProject }) }}"  data-type="MESSAGE">
+                        <li><a {% if (app.request.get('cat') == '') %} class="active" {% endif %} href="">{% trans %}All Message{% endtrans %}</a></li>
+                        {% for oCategory in aCategory %}
+                            <li>
+                                <a {% if (app.request.get('cat') == oCategory.id ) %} class="active" {% endif %} data-cat-id="{{ oCategory.id }}" href="{{ path ('wwsc_thalamus_project_messages',{'project': slugProject, 'cat': oCategory.id })}}">
+                                    {{ oCategory.name }}
+                                </a>
+                                <span class="actions-panel">
+                                     <a class="btn-rename-category" data-name="{{ oCategory.name }}" data-id="{{ oCategory.id }}">{% trans %}Rename{% endtrans %}</a> 
+                                     <a class="btn-delete-category" data-id="{{ oCategory.id }}"><img src="/bundles/wwscthalamus/images/remove_icon.png"></a>
+                                </span>
+                            </li>
+                        {% endfor %}
+                        <li class="btn-add-new-categoty"><a href="#">{% trans %}Add new category{% endtrans %}</a></li>
+                    </ul>    
+                </div>
+            </div>
+        </div><!--/span-->
+    </div>
+{% endblock %}
+{% block javascripts %}
+    <script src="{{ asset('bundles/wwscthalamus/js/category.js') }}"></script>
+ {% endblock %}  
+

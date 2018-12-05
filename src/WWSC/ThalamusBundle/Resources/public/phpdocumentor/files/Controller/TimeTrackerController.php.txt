@@ -1,0 +1,71 @@
+<?php
+namespace WWSC\ThalamusBundle\Controller;
+
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Session;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\StreamedResponse;
+
+/**
+ * Time tracker controler
+ * In this controller describes the functions of display  trackers for project.
+ *
+ */
+class TimeTrackerController extends Controller {
+    /**
+     *  Method list
+     * 
+     *  This method is responsible for display trackers for project
+    */
+    public function listAction (Request $request){
+        if(!$this->container->get('security.context')->isGranted('ROLE_PROVIDER')){
+            return $this->render('WWSCThalamusBundle:Content:not_permission.html.twig');
+        }
+        $oProject = $this->getDoctrine()->getRepository('WWSCThalamusBundle:Project')->findOneBy(array('slug' => $request->get('project')));        
+        $request->getSession()->set('active_module', 'time');
+        $fFilter =  $this->createForm(new \WWSC\ThalamusBundle\Form\FilterTimeTrackerForm($oProject->getUsers()));
+        $fFilter->bind($request);
+        $aFilter = $fFilter->getData();
+        $aTimeTracker = $oProject->getReportProject($aFilter);
+        $request->getSession()->set('aFilterTimeReport', $aFilter);
+        return $this->render('WWSCThalamusBundle:TimeTracker:list.html.twig', array('aTimeTracker' => $oProject->getReportProject($aFilter), 'fFilter' => $fFilter->createView(), 'oProject' => $oProject));
+        
+   }
+   /**
+     *  Method export trackers to csv
+     * 
+     *  This method is responsible for export trackers to csv
+    */
+   public function exportToCsvAction(Request $request){
+        if(!$this->container->get('security.context')->isGranted('ROLE_PROVIDER')){
+            return $this->render('WWSCThalamusBundle:Content:not_permission.html.twig');
+        }
+        $oProject = $this->getDoctrine()->getRepository('WWSCThalamusBundle:Project')->findOneBy(array('slug' => $request->get('project')));
+        $aTimeTracker = $oProject->getReportProject($request->getSession()->get('aFilterTimeReport'));
+        $response = new StreamedResponse();
+        $response->setCallback(
+            function () use ($aTimeTracker) {
+                $handle = fopen('php://output', 'r+');
+                 fputcsv($handle, array('Date', 'Hours', 'Task-Title', 'Person','Task-ID','Task-Url','Description' ),';');
+                foreach ($aTimeTracker as $oTimeTracker) {
+                    $data = array(
+                        $oTimeTracker->getDate()->format('d M Y'),
+                        $oTimeTracker->getTime(),
+                        $oTimeTracker->getComment()->getParentInfo()->getTask()->getName(),
+                        $oTimeTracker->getPerson()->getFirstName(),
+                        $oTimeTracker->getComment()->getParentInfo()->getTask()->getId(),
+                        '',
+                        $oTimeTracker->getDescription(),
+                    );
+                    fputcsv($handle, $data);
+                }
+                fclose($handle);
+            }
+        );
+        $request->getSession()->set('aFilterTimeReport', false);
+        $response->headers->set('Content-Type', 'application/force-download');
+        $response->headers->set('Content-Disposition', 'attachment; filename="report_project#'.$oProject->getId().'.csv"');
+       return $response;
+   }
+}

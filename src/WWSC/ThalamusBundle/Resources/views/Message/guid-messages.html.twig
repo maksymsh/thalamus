@@ -1,0 +1,24 @@
+{% extends "WWSCThalamusBundle:Content:layout.html.twig" %}
+{% block content %}
+    <div class="row blank-slate">
+        <div class="modal-dialog message-guid">
+            <div class="col-xs-12">
+                <p><strong>{% trans %}Send an email to{% endtrans %} <a href="mailto:pm_{{ oProject.replyUID }}@thalamus.io">pm_{{ oProject.replyUID }}@thalamus.io</a> {% trans %}and it will be posted as a message to the{% endtrans %} {{ oProject.name }} {% trans %}project.{% endtrans %}</strong>
+                <p>
+                    <ul>
+                        <li>{% trans %}Put this address in the ‘To:’, ‘CC:’, or ‘BCC:’ field of the email.{% endtrans %}</li> 
+                        <li>{% trans %}The email subject will become the message title.{% endtrans %}</li>
+                        <li>{% trans %}Everyone on the project will be notified via email.{% endtrans %}</li>
+                    </ul>    
+                </p>
+                <p>{% trans %}<strong>Note: The email address above is unique to you and this project.</strong>
+                    This is how the system knows who wrote the message. Do not share the email address above with anyone else in your account (each person will see their own unique email address).{% endtrans %}
+                </p>
+                <div class="btn-add-new-task">
+                    <a href="{{ path('wwsc_thalamus_project_messages',{project:oProject.slug})}}" class="remove"></i> <h4>{% trans %}Go back to Messages{% endtrans %}</h4>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}       

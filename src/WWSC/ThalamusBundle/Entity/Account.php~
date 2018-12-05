@@ -1,0 +1,185 @@
+<?php
+
+namespace WWSC\ThalamusBundle\Entity;
+
+use Doctrine\Common\Collections\ArrayCollection;
+use Gedmo\Mapping\Annotation as Gedmo;
+use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+use Doctrine\Common\Collections\Criteria;
+
+/**
+ * Company
+ *
+ * @ORM\Entity
+ * @ORM\Table(name="account")
+ */
+class Account {
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="id", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
+     */
+    private $id;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="name", type="string", length=255)
+     * @Assert\NotBlank(message="Please enter your account name.")
+     * @Assert\Length(
+     *     min=3,
+     *     max="255",
+     *     minMessage="The account name is too short.",
+     *     maxMessage="The account name is too long.",
+     * )
+     */
+    private $name;
+
+    /**
+     * @Gedmo\Slug(fields={"name"})
+     * @ORM\Column(length=128, unique=true)
+     */
+    private $slug;
+
+    /**
+     *
+     * @ORM\OneToMany(targetEntity="WWSC\ThalamusBundle\Entity\Company", mappedBy="account", cascade={"all"})
+     * @ORM\OrderBy({"id" = "DESC"})
+     */
+    private $company;
+
+    /**
+     *
+     * @ORM\OneToMany(targetEntity="WWSC\ThalamusBundle\Entity\Project", mappedBy="account", cascade={"all"})
+     * @ORM\OrderBy({"id" = "DESC"})
+     */
+    private $projects;
+
+    /**
+     * Constructor
+     */
+    public function __construct() {
+        $this->company = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->project = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
+    /**
+     * Get id
+     *
+     * @return integer 
+     */
+    public function getId() {
+        return $this->id;
+    }
+
+    /**
+     * Set name
+     *
+     * @param string $name
+     * @return Account
+     */
+    public function setName($name) {
+        $this->name = $name;
+
+        return $this;
+    }
+
+    /**
+     * Get name
+     *
+     * @return string 
+     */
+    public function getName() {
+        return $this->name;
+    }
+
+    /**
+     * Add company
+     *
+     * @param \WWSC\ThalamusBundle\Entity\Company $company
+     * @return Account
+     */
+    public function addCompany(\WWSC\ThalamusBundle\Entity\Company $company) {
+        $this->company[] = $company;
+
+        return $this;
+    }
+
+    /**
+     * Remove company
+     *
+     * @param \WWSC\ThalamusBundle\Entity\Company $company
+     */
+    public function removeCompany(\WWSC\ThalamusBundle\Entity\Company $company) {
+        $this->company->removeElement($company);
+    }
+
+    /**
+     * Get company
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getCompany() {
+       
+        return $this->company;
+    }
+
+    /**
+     * Set slug
+     *
+     * @param string $slug
+     * @return Account
+     */
+    public function setSlug($slug) {
+        $this->slug = $slug;
+
+        return $this;
+    }
+
+    /**
+     * Get slug
+     *
+     * @return string 
+     */
+    public function getSlug() {
+        return $this->slug;
+    }
+
+    /**
+     * Add projects
+     *
+     * @param \WWSC\ThalamusBundle\Entity\Project $projects
+     * @return Account
+     */
+    public function addProject(\WWSC\ThalamusBundle\Entity\Project $projects) {
+        $this->projects[] = $projects;
+
+        return $this;
+    }
+
+    /**
+     * Remove projects
+     *
+     * @param \WWSC\ThalamusBundle\Entity\Project $projects
+     */
+    public function removeProject(\WWSC\ThalamusBundle\Entity\Project $projects) {
+        $this->projects->removeElement($projects);
+    }
+
+    /**
+     * Get projects
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getProjects() {
+        $criteria = Criteria::create()
+            ->where(Criteria::expr()->eq("is_deleted", 0))
+            ->orderBy(array("id" => Criteria::DESC));
+        return $this->projects->matching($criteria);
+    }
+
+}

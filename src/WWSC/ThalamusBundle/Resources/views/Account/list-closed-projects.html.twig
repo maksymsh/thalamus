@@ -1,0 +1,33 @@
+{% extends "WWSCThalamusBundle:Content:layout.html.twig" %}
+{% block title %}
+    {% trans %}Dashboard{% endtrans %}
+{% endblock %}   
+{% block content %}   
+<div class="row dashboard-account">
+    <div class="panel panel-default col-md-9">
+        <div class="panel-heading">
+            {% trans %}Closed projects{% endtrans %}
+        </div>
+        <div class="panel-body">
+            <div class="row">
+            {% if oAccount.hasProjects %}  
+                <div>
+                    {% for aCompProjects in oAccount.projects(true, false, false, false, 'closed') %}
+                        <div class="item-compnay"><strong>{{ aCompProjects['company_name'] }}</strong></div>
+                            <div>
+                                {% for aProject in  aCompProjects['projects'] %}
+                                <div class="item-project">
+                                    <a href="{{ path('wwsc_thalamus_project_overview',{'project': aProject['slug']} ) }}">
+                                      {{ aProject['name'] }}
+                                    </a>
+                                </div>    
+                                {% endfor%}
+                        </div><br>
+                    {% endfor%} 
+                </div>
+            {% endif %}  
+            </div>
+        </div>
+    </div>                          
+</div>
+{% endblock %}       

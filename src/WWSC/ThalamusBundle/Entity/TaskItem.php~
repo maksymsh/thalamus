@@ -1,0 +1,1033 @@
+<?php
+
+namespace WWSC\ThalamusBundle\Entity;
+
+use WWSC\ThalamusBundle\WWSCThalamusBundle;
+use Doctrine\Common\Collections\ArrayCollection;
+use Gedmo\Mapping\Annotation as Gedmo;
+use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Event\LifecycleEventArgs;
+use WWSC\ThalamusBundle\Entity\Comment as Comments;
+use Symfony\Component\Validator\Constraints as Assert;
+use Doctrine\Common\Collections\Criteria;
+
+/**
+ * taskItem
+ *
+ * @ORM\Entity
+ * @ORM\HasLifecycleCallbacks
+ * @ORM\Table(name="taskitem")
+ */
+class TaskItem extends Base {
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="id", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
+     */
+    private $id;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="reply_uid", type="string", length=255, nullable=true)
+     *
+     */
+    private $replyUID;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="parent",  type="integer", nullable=true)
+     */
+    private $parent;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="state", type="string", length=255, nullable=true)
+     *
+     */
+    private $state;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="description", type="text")
+     * @Assert\NotBlank(message="Please enter your item description.")
+     * @Assert\Length(
+     *     min=3,
+     *     minMessage="The description item is too short.",
+     * )
+     */
+    private $description;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="WWSC\ThalamusBundle\Entity\User", inversedBy="responsible")
+     */
+    private $responsible;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="WWSC\ThalamusBundle\Entity\Task", inversedBy="task")
+     */
+    private $task;
+
+    /**
+     * @ORM\Column(name="due_date", type="datetime", nullable=true)
+     */
+    private $due_date;
+       
+    private $save_to_log = 1;
+    
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="status", type="boolean", nullable=true)
+     */
+    private $status;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="sort", type="integer", nullable=true)
+     */
+    private $sort;
+
+    /**
+     * Constructor
+     */ /**
+     * @var \DateTime $created
+     *
+     * @ORM\Column(type="datetime")
+     * @Gedmo\Timestampable(on="create")
+     */
+    private $created;
+
+    /**
+     * @var \DateTime $updated
+     * @Gedmo\Timestampable(on="update")
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $updated;
+
+    /**
+     * @var integer
+     *
+     * @ORM\ManyToOne(targetEntity="WWSC\ThalamusBundle\Entity\User")
+     */
+    private $user_created;
+
+    /**
+     * @var integer
+     *
+     * @ORM\ManyToOne(targetEntity="WWSC\ThalamusBundle\Entity\User")
+     */
+    private $user_updated;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="fast_track", type="boolean", nullable=true)
+     */
+    private $fast_track;
+
+    /**
+     * @ORM\Column(name="is_deleted", type="boolean", nullable=true)
+     */
+    private $is_deleted = 0;
+ 
+    /**
+     * @ORM\Column(name="recursive", type="boolean", nullable=true)
+     */
+    private $recursive = 0;
+    
+    /**
+     * @ORM\Column(name="show_description_recursive", type="boolean", nullable=true)
+     */
+    private $show_description_recursive = 0;
+
+    /**
+     * @ORM\Column(name="day_of_recursion", type="integer", nullable=true)
+    */
+    private $day_of_recursion = 1;
+
+    /**
+     * @ORM\Column(name="month_of_recursion", type="integer", nullable=true)
+    */
+    private $month_of_recursion = 1;
+
+    /**
+     * @ORM\Column(name="type_recursion", type="integer", nullable=true)
+    */
+    private $type_period_recursion = 1;
+    
+    /**
+     * @ORM\Column(name="estimated", type="float", length=255, nullable=true)
+    */
+    private $estimated;
+    
+    
+    /**
+     * @ORM\Column(name="recurring_task_list", type="integer", nullable=true)
+    */
+    private $recurring_task_list = 0;
+    
+     /**
+     * @var string
+     *
+     * @ORM\Column(name="description_recursive", type="text", nullable=true)
+     */
+    private $description_recursive;
+    
+    private $comments;
+    
+    public static $states = array
+        (
+        'READY_FOR_BRIEFING' => 'Ready for briefing',
+        'IN_PROGRESS' => 'In Progress',
+        'BILLED' => 'Billed',
+        'ON_HOLD' => 'on Hold',
+        'WAITING_FOR_FEEDBACK' => 'Waiting for feedback',
+        'WAITING_FOR_APPROVAL' => 'Waiting for approval',
+        'CLOSED' => 'Closed'
+    );
+
+    public static $aTypePeriodRecursion = array(
+        '1' => 'every month',
+        '3' => 'every quarter',
+        '6' => 'every half-year',
+        '12' => 'every year'
+    );
+    /**
+     * Get id
+     *
+     * @return integer
+     */
+    public static function getDayMonth(){
+        $aDaysMonth = array();
+        for($i=1; $i <= 31; $i++){
+            $aDaysMonth[$i] = $i;
+            
+        }
+        return $aDaysMonth;
+    }
+    
+    public static function getMonth(){
+        $aMonth = array();
+        for($i=1; $i <= 12; $i++){
+            $aMonth[$i] = $i;
+        }
+        return $aMonth;
+    }
+    
+    public function getId() {
+        return $this->id;
+    }
+
+    /**
+     * Set description
+     *
+     * @param string $description
+     * @return TaskItem
+     */
+    public function setDescription($description) {
+        $this->description = $description;
+
+        return $this;
+    }
+
+    /**
+     * Get description
+     *
+     * @return string
+     */
+    public function getDescription() {
+        return $this->description;
+    }
+
+    /**
+     * Get due_date
+     *
+     * @return \DateTime
+     */
+    public function getDueDate() {
+        return $this->due_date;
+    }
+
+    public function setDueDateForm($dueDate) {
+        $this->due_date = new \DateTime($dueDate);
+        return $this;
+    }
+
+    /**
+     * Get due_date
+     *
+     * @return \DateTime
+     */
+    public function getDueDateForm() {
+        if (gettype($this->due_date) == 'object') {
+            return $this->due_date->format('m/d/Y');
+        }
+        return $this->due_date;
+    }
+
+    /**
+     * Set status
+     *
+     * @param boolean $status
+     * @return TaskItem
+     */
+    public function setStatus($status) {
+        $this->status = $status;
+
+        return $this;
+    }
+
+    /**
+     * Get status
+     *
+     * @return boolean
+     */
+    public function getStatus() {
+        return $this->status;
+    }
+
+    /**
+     * Set sort
+     *
+     * @param integer $sort
+     * @return TaskItem
+     */
+    public function setSort($sort) {
+        $this->sort = $sort;
+
+        return $this;
+    }
+
+    /**
+     * Get sort
+     *
+     * @return integer
+     */
+    public function getSort() {
+        return $this->sort;
+    }
+
+    /**
+     * Set created
+     *
+     * @param \DateTime $created
+     * @return TaskItem
+     */
+    public function setCreated($created) {
+        $this->created = $created;
+
+        return $this;
+    }
+
+    /**
+     * Get created
+     *
+     * @return \DateTime
+     */
+    public function getCreated() {
+        return $this->created;
+    }
+
+    /**
+     * Set updated
+     *
+     * @param \DateTime $updated
+     * @return TaskItem
+     */
+    public function setUpdated($updated) {
+        $this->updated = $updated;
+
+        return $this;
+    }
+
+    /**
+     * Get updated
+     *
+     * @return \DateTime
+     */
+    public function getUpdated() {
+        return $this->updated;
+    }
+
+    /**
+     * Set user_created
+     * @ORM\PrePersist()
+     * @param \WWSC\ThalamusBundle\Entity\User $userCreated
+     * @return Company
+     */
+    public function setUserCreated($userCreated) {
+        $this->user_created = WWSCThalamusBundle::getContainer()->get('security.context')->getToken()->getUser();        
+        return $this;
+    }
+
+    /**
+     * Get user_created
+     *
+     * @return \WWSC\ThalamusBundle\Entity\User
+     */
+    public function getUserCreated() {
+        return $this->user_created;
+    }
+
+    /**
+     * @ORM\PrePersist()
+     * @ORM\PreUpdate
+     * Set user_updated
+     *
+     * @param \WWSC\ThalamusBundle\Entity\User $userUpdated
+     * @return Company
+     */
+    public function setUserUpdated($userUpdated) {
+        $this->user_updated = WWSCThalamusBundle::getContainer()->get('security.context')->getToken()->getUser();
+        return $this;
+    }
+
+    /**
+     * Get user_updated
+     *
+     * @return \WWSC\ThalamusBundle\Entity\User
+     */
+    public function getUserUpdated() {
+        return $this->user_updated;
+    }
+
+    /**
+     * Set is_deleted
+     *
+     * @param boolean $isDeleted
+     * @return TaskItem
+     */
+    public function setIsDeleted($isDeleted) {
+        $this->is_deleted = $isDeleted;
+
+        if ($isDeleted == 1) {
+            if ($this->getComments()) {
+                foreach ($this->getComments() as $item) {
+                    $item->setIsDeleted(1);
+                }
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * Get is_deleted
+     *
+     * @return boolean
+     */
+    public function getIsDeleted() {
+
+        return $this->is_deleted;
+    }
+
+    /**
+     * Set responsible
+     *
+     * @param \WWSC\ThalamusBundle\Entity\User $responsible
+     * @return TaskItem
+     */
+    public function setResponsible(\WWSC\ThalamusBundle\Entity\User $responsible = null) {
+        $this->responsible = $responsible;
+
+        return $this;
+    }
+
+    /**
+     * Get responsible
+     *
+     * @return \WWSC\ThalamusBundle\Entity\User
+     */
+    public function getResponsible() {
+        return $this->responsible;
+    }
+
+    /**
+     * Set task
+     *
+     * @param \WWSC\ThalamusBundle\Entity\Task $task
+     * @return TaskItem
+     */
+    public function setTask(\WWSC\ThalamusBundle\Entity\Task $task = null) {
+        $this->task = $task;
+
+        return $this;
+    }
+
+    /**
+     * Get task
+     *
+     * @return \WWSC\ThalamusBundle\Entity\Task
+     */
+    public function getTask() {
+        return $this->task;
+    }
+
+    /**
+     * Get comments
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getComments() {
+        $activeUserCompany = WWSCThalamusBundle::getContainer()->get('security.context')->getToken()->getUser()->getCompany();
+        $qb = WWSCThalamusBundle::getContainer()->get('doctrine')->getManager()->createQueryBuilder();
+        $qb->select('c')
+                ->from('WWSC\ThalamusBundle\Entity\Comment', 'c')
+                ->where('c.is_deleted = 0')
+                ->andWhere("c.type = 'TaskItem'")
+                ->andWhere('c.parent_id = ' . $this->getId());
+        if ($activeUserCompany->getRoles() != 'ROLE_PROVIDER' || WWSCThalamusBundle::getContainer()->get('session')->get('presentationMode')) {
+            $qb->andWhere('c.private <> 1');
+        }
+
+        return $qb->getQuery()->getResult();
+    }
+
+    public function getSumHoursTimeTracker() {
+        $sumHours = 0;
+        foreach ($this->getComments() as $oComment) {
+            if ($oComment->getTimeTracker()) {
+                $sumHours = $sumHours + $oComment->getTimeTracker()->getTime();
+            }
+        }
+        if ($sumHours <= 0) {
+            return 0;
+        }
+        return round($sumHours, 2);
+    }
+
+    public function getSumHoursAllChildren() {
+        $qb = WWSCThalamusBundle::getContainer()->get('doctrine')->getManager()->createQueryBuilder();
+        $sql = ' SELECT ROUND(SUM(tt.time / 60),2) as sumHoursAllChildren';
+        $sql .=' FROM task AS t LEFT JOIN taskitem AS ti on(t.project_id = 23 and ti.is_deleted=0 and t.is_deleted=0 and ti.task_id=t.id) Left JOIN comment AS c on(ti.id = c.parent_id and c.type= "TaskItem"  AND c.is_deleted= 0 AND FIND_IN_SET (ti.id, getChildrenTasksIds('.$this->getId().')))';
+        $sql .= 'JOIN time_tracker as tt on(c.id = tt.comment_id)';
+        $aAllSumHours = WWSCThalamusBundle::getContainer()->get('database_connection')->query($sql)->fetchAll();        
+        return $aAllSumHours[0]['sumHoursAllChildren'];
+    }
+    /**
+     * Set int sort
+     * @ORM\PrePersist()
+     */
+    public function setSortNewElem() {
+        $entityManager = WWSCThalamusBundle::getContainer()->get('doctrine')->getManager();
+        $crit = array(
+            'is_deleted' => 0,
+            'status' => 0,
+            'task' => $this->task
+        );
+        $oItem = $entityManager->getRepository('WWSCThalamusBundle:TaskItem')->findOneBy($crit, array('sort' => 'DESC'));
+        if ($oItem && $this->getFastTrack() != 1) {
+            $this->setSort($oItem->getSort() + 1);
+        } else {
+            $this->setSort(0);
+        }
+    }
+
+    private function getLogInfoByTaskItem($entity) {
+        if(!$entity->save_to_log){
+            return false;
+        }
+        $aRes = array();
+        $aRes['object_id'] = $entity->getId();
+        $url = WWSCThalamusBundle::getContainer()->get('router')->generate(
+                'wwsc_thalamus_project_task_item_comments', array(
+            'project' => $entity->getTask()->getProject()->getSlug(),
+            'task' => $entity->getTask()->getId(),
+            'id' => $entity->getId()
+                )
+        );
+        $aRes['description'] = "<a href='" . $url . "'>" . $this->truncation($entity->getDescription(), 100) . "</a>";
+        $aRes['project'] = $entity->getTask()->getProject();
+        return $aRes;
+    }
+
+    /**
+     * @ORM\PreUpdate
+     */
+    public function preUpdate(LifecycleEventArgs $args) {
+        if (!$args->hasChangedField('is_deleted')) {
+            $aParams = $this->getLogInfoByTaskItem($args->getEntity());
+            $aParams['action'] = 'Updated by';
+            $this->things[] = $aParams;
+        }
+    }
+
+    /**
+     * @ORM\PostPersist
+     */
+    public function postPersist(LifecycleEventArgs $args ) {
+        if($aParams = $this->getLogInfoByTaskItem($args->getEntity())){
+            $aParams['action'] = 'Posted by';
+            $this->saveLog($aParams);            
+        }
+    }
+
+    public function getActiveSubscribed($typeShow = 'id', $privateComment = 0) {
+        $em = WWSCThalamusBundle::getContainer()->get('doctrine')->getManager();
+        $critSubspeople = $em->getRepository('WWSCThalamusBundle:SubscribeEmail')->findBy(array('type' => 'TaskItem', 'parent' => $this->id));
+        $aSubspeople = array();
+        if ($typeShow == 'id') {
+            foreach ($critSubspeople as $oSubsPeople) {
+                $aSubspeople[$oSubsPeople->getUser()->getId()] = $oSubsPeople->getUser()->getId();
+            }
+        }
+        if ($typeShow == 'info') {
+            foreach ($critSubspeople as $oSubsPeople) {
+                if ($privateComment != 1 || $oSubsPeople->getUser()->getCompany()->getRoles() == 'ROLE_PROVIDER') {
+                    $aSubspeople['email'][$oSubsPeople->getUser()->getId()] = $oSubsPeople->getUser()->getEmail();
+                    $aSubspeople['lang'][$oSubsPeople->getUser()->getId()] = $oSubsPeople->getUser()->getLanguageCode();
+                    $aSubspeople['name'][$oSubsPeople->getUser()->getId()] = $oSubsPeople->getUser()->getFirstName() . ' ' . $oSubsPeople->getUser()->getLastName();
+                }
+            }
+        }
+        if ($typeShow == 'company-info') {
+            foreach ($critSubspeople as $oSubsPeople) {
+                $aSubspeople[$oSubsPeople->getUser()->getCompany()->getName()][$oSubsPeople->getUser()->getId()] = $oSubsPeople->getUser()->getFirstName() . ' ' . $oSubsPeople->getUser()->getLastName();
+            }
+        }
+        return $aSubspeople;
+    }
+
+    /**
+     * @ORM\PrePersist()
+     * Set replyUID
+     *
+     * @param string $replyUID
+     * @return $replyUID
+     */
+    public function setReplyUID($replyUID) {
+        $this->replyUID = 'ti_'
+                . $this->getId()
+                . md5(uniqid(rand(), true));
+        WWSCThalamusBundle::getContainer()->get('doctrine')->getManager()->flush();
+
+        return $this;
+    }
+
+    /**
+     * Get replyUID
+     *
+     * @return string
+     */
+    public function getReplyUID() {
+        return $this->replyUID;
+    }
+
+    /**
+     * Set state
+     *
+     * @param string $state
+     *
+     * @return TaskItem
+     */
+    public function setState($state) {
+        $this->state = $state;
+        $status = $state == 'CLOSED' ? 1 : 0;
+        $this->setStatus($status);
+        return $this;
+    }
+
+    /**
+     * Get state
+     *
+     * @return string
+     */
+    public function getState() {
+        return $this->state;
+    }
+
+     public function getStateValue() {
+        if(isset(self::$states[$this->getState()])){
+            return self::$states[$this->getState()];
+        };
+        return $this->state;
+    }
+
+    
+    /**
+     * Set parent
+     *
+     * @param string $parent
+     *
+     * @return Task
+     */
+    public function setParent($parent) {
+        $this->parent= $parent;
+
+        return $this;
+    }
+
+    public function getParent() {
+        
+        return $this->parent;
+    }
+    /**
+     * Get parent
+     *
+     * @return string
+     */
+    public function getParentTask() {
+        $em = WWSCThalamusBundle::getContainer()->get('doctrine')->getManager();
+        if($this->getParent()){
+            return $em->getRepository('WWSCThalamusBundle:TaskItem')->find($this->getParent());
+        }
+        return false;
+    }
+    
+    public function getChildTasks() {
+        $em = WWSCThalamusBundle::getContainer()->get('doctrine')->getManager();
+        return $em->getRepository('WWSCThalamusBundle:TaskItem')->findBy(array('parent'=> $this->getId()));
+    }
+    
+    /**
+     * Set due_date
+     *
+     * @param \DateTime $dueDate
+     * @return TaskItem
+     */
+    public function setDueDate($dueDate) {
+        $this->due_date = $dueDate;
+
+        return $this;
+    }
+
+    /**
+     * Set fast_track
+     *
+     * @param boolean $fastTrack
+     * @return TaskItem
+     */
+    public function setFastTrack($fastTrack) {
+        $this->fast_track = $fastTrack;
+
+        return $this;
+    }
+
+    /**
+     * Get fast_track
+     *
+     * @return boolean 
+     */
+    public function getFastTrack() {
+        return $this->fast_track;
+    }
+
+    public function getDaysAfterLastFeedback() {
+        $em = WWSCThalamusBundle::getContainer()->get('doctrine')->getManager();
+        if ($lastCommentsUpdate = $em->getRepository('WWSCThalamusBundle:Comment')->findOneBy(
+                array(
+            'type' => 'TaskItem',
+            'parent_id' => $this->getId()
+                ), array(
+            'updated' => 'DESC'
+                ))) {
+            $lastFeedback = (int) ((strtotime("now") - strtotime($lastCommentsUpdate->getUpdated()->format('Y-m-d'))) / (60 * 60 * 24));
+            if ($lastFeedback > 0) {
+                if ($lastFeedback > 1) {
+                    return $lastFeedback . ' days';
+                } else {
+                    return $lastFeedback . ' day';
+                }
+            }
+        }
+        return false;
+    }
+
+    public function saveLastVisitToTask() {
+        $userId = WWSCThalamusBundle::getContainer()->get('security.context')->getToken()->getUser()->getId();
+        $em = WWSCThalamusBundle::getContainer()->get('doctrine')->getManager();
+        if ($lastVisitToTask = $em->getRepository('WWSCThalamusBundle:LastVisitToTask')->findOneBy(array('user' => $userId, 'task' => $this->getId()))) {
+            $lastVisitToTask->setDate(new \DateTime('now'));
+            $em->flush();
+        } else {
+            $lastVisit = new \WWSC\ThalamusBundle\Entity\LastVisitToTask ();
+            $lastVisit->setUser($userId);
+            $lastVisit->setTask($this->getId());
+            $lastVisit->setDate(new \DateTime('now'));
+            $em->persist($lastVisit);
+            $em->flush();
+        }
+    }
+
+    public function getIconComments() {
+        $userId = WWSCThalamusBundle::getContainer()->get('security.context')->getToken()->getUser()->getId();
+        $em = WWSCThalamusBundle::getContainer()->get('doctrine')->getManager();
+        if ($lastVisitToTask = $em->getRepository('WWSCThalamusBundle:LastVisitToTask')->findOneBy(array('user' => $userId, 'task' => $this->getId()))) {
+            $lastCommentsUpdate = $em->getRepository('WWSCThalamusBundle:Comment')->findOneBy(array('type' => 'TaskItem', 'parent_id' => $this->getId()), array('updated' => 'DESC'));
+            if ($lastCommentsUpdate->getUpdated() <= $lastVisitToTask->getDate()) {
+                return '/bundles/wwscthalamus/images/icon-comment.png';
+            }
+        }
+        return '/bundles/wwscthalamus/images/icon-comment_not_show.png';
+    }
+
+
+    /**
+     * Set saveToLog
+     *
+     * @param boolean $saveToLog
+     *
+     * @return TaskItem
+     */
+    public function setSaveToLog($saveToLog)
+    {
+        $this->save_to_log = $saveToLog;
+
+        return $this;
+    }
+
+    /**
+     * Get saveToLog
+     *
+     * @return boolean
+     */
+    public function getSaveToLog()
+    {
+        return $this->save_to_log;
+    }
+
+    /**
+     * Set recursive
+     *
+     * @param boolean $recursive
+     *
+     * @return TaskItem
+     */
+    public function setRecursive($recursive)
+    {
+        $this->recursive = $recursive;
+
+        return $this;
+    }
+
+    /**
+     * Get recursive
+     *
+     * @return boolean
+     */
+    public function getRecursive()
+    {
+        return $this->recursive;
+    }
+
+    /**
+     * Set showDescriptionRecursive
+     *
+     * @param boolean $showDescriptionRecursive
+     *
+     * @return TaskItem
+     */
+    public function setShowDescriptionRecursive($showDescriptionRecursive)
+    {
+        $this->show_description_recursive = $showDescriptionRecursive;
+
+        return $this;
+    }
+
+    /**
+     * Get showDescriptionRecursive
+     *
+     * @return boolean
+     */
+    public function getShowDescriptionRecursive()
+    {
+        return $this->show_description_recursive;
+    }
+
+    /**
+     * Set dayOfRecursion
+     *
+     * @param integer $dayOfRecursion
+     *
+     * @return TaskItem
+     */
+    public function setDayOfRecursion($dayOfRecursion)
+    {
+        $this->day_of_recursion = $dayOfRecursion;
+
+        return $this;
+    }
+
+    /**
+     * Get dayOfRecursion
+     *
+     * @return integer
+     */
+    public function getDayOfRecursion()
+    {
+        return $this->day_of_recursion;
+    }
+
+    /**
+     * Set descriptionRecursive
+     *
+     * @param string $descriptionRecursive
+     *
+     * @return TaskItem
+     */
+    public function setDescriptionRecursive($descriptionRecursive)
+    {
+        $this->description_recursive = $descriptionRecursive;
+
+        return $this;
+    }
+
+    /**
+     * Get descriptionRecursive
+     *
+     * @return string
+     */
+    public function getDescriptionRecursive()
+    {
+        return $this->description_recursive;
+    }
+
+    /**
+     * Set recurringTaskList
+     *
+     * @param integer $recurringTaskList
+     *
+     * @return TaskItem
+     */
+    public function setRecurringTaskList($recurringTaskList)
+    {
+        $this->recurring_task_list = $recurringTaskList;
+
+        return $this;
+    }
+
+    /**
+     * Get recurringTaskList
+     *
+     * @return integer
+     */
+    public function getRecurringTaskList()
+    {
+        return $this->recurring_task_list;
+    }
+    
+    public static function getArrayRecurringTaskList($projectId)
+    {
+        $activeUser = WWSCThalamusBundle::getContainer()->get('security.context')->getToken()->getUser();
+        $qb = WWSCThalamusBundle::getContainer()->get('doctrine')->getManager()->createQueryBuilder();
+        $qb->select('t.id as task_list_id, t.name as task_list_name')
+                ->from('WWSC\ThalamusBundle\Entity\Task', 't')
+                ->where('t.is_deleted = 0')
+                ->andWhere('t.project = ' . $projectId);
+        
+        $aTaskList = array();
+        foreach ($qb->getQuery()->execute() as $aTask){
+            $aTaskList[$aTask['task_list_id']] = $aTask['task_list_name'];
+        }
+        return $aTaskList;
+    }
+    
+
+    /**
+     * Set monthOfRecursion
+     *
+     * @param integer $monthOfRecursion
+     *
+     * @return TaskItem
+     */
+    public function setMonthOfRecursion($monthOfRecursion)
+    {
+        $this->month_of_recursion = $monthOfRecursion;
+
+        return $this;
+    }
+
+    /**
+     * Get monthOfRecursion
+     *
+     * @return integer
+     */
+    public function getMonthOfRecursion()
+    {
+        return $this->month_of_recursion;
+    }
+
+    /**
+     * Set typePeriodRecursion
+     *
+     * @param integer $typePeriodRecursion
+     *
+     * @return TaskItem
+     */
+    public function setTypePeriodRecursion($typePeriodRecursion)
+    {
+        $this->type_period_recursion = $typePeriodRecursion;
+
+        return $this;
+    }
+
+    /**
+     * Get typePeriodRecursion
+     *
+     * @return integer
+     */
+    public function getTypePeriodRecursion()
+    {
+        return $this->type_period_recursion;
+    }
+
+    /**
+     * Set estimated
+     *
+     * @param float $estimated
+     *
+     * @return TaskItem
+     */
+    public function setEstimated($estimated)
+    {
+        
+        if (strpos($estimated, ':') !== false) {
+            $aEstimated = explode(':', $estimated);
+            $this->estimated = $aEstimated[0] * 60 + $aEstimated[1];
+        } else {
+            $this->estimated = $estimated * 60;
+        }
+        return $this;
+    }
+
+    /**
+     * Get estimated
+     *
+     * @return float
+     */
+    public function getEstimated($format = false)
+    {
+        if($this->estimated){
+            if($format == 'DE'){
+                return number_format($this->estimated / 60, 2, ',', ' ');
+            }
+            return number_format($this->estimated / 60, 2, '.', ' ');
+        }
+        return null;
+    }
+    
+    public function getPercentOfMoneyLeft (){
+        if($this->getEstimated() && !WWSCThalamusBundle::getContainer()->get('session')->get('presentationMode')){
+            $percent = ($this->getSumHoursAllChildren() *100)/$this->getEstimated();
+            if($percent > 100) {
+                return '<span class="estimate-task more_100_percentage">'.floor($percent).'%</span>';
+            }else if($percent > 74){
+                return '<span class="estimate-task more_75_percentage">'.floor($percent).'%</span>';
+            }else{
+               return '<span class="estimate-task">'.floor($percent).'%</span>'; 
+            }
+        }else{
+            return null;
+        }
+    }
+    
+}
+

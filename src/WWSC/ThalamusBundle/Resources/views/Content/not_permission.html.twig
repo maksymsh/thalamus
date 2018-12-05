@@ -1,0 +1,14 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="row">
+        <div class="dialog-error">
+            <div>
+                <h3>{% trans %}Thank you for visiting the Thalamus website. Access to this area is restricted.{% endtrans %}</h3>
+                <p>{% trans %}The page you are trying to access is restricted based on specific criteria, such as role of your company.{% endtrans %}</p>
+                <p>{% trans %}If you believe your access to this page has been denied in error, please contact support@thalamus.io. 
+                    To assist us in responding to your issue, please reference the page 
+                    you were attempting to view (simply copy the URL from your browser and paste it into the email) and indicate your qualification for access to the area.{% endtrans %}</p>
+            </div>
+        </div>
+    </div>
+{% endblock %}

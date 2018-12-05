@@ -1,0 +1,535 @@
+<?php
+
+namespace WWSC\ThalamusBundle\Entity;
+
+use FOS\UserBundle\Model\User as BaseUser;
+use WWSC\ThalamusBundle\WWSCThalamusBundle;
+use Doctrine\Common\Collections\ArrayCollection;
+use WWSC\ThalamusBundle\Entity\UserProfile as Profile;
+use WWSC\ThalamusBundle\Entity\CompanyUser;
+use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Component\Validator\Constraints as Assert;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
+use Doctrine\Common\Collections\Criteria;
+
+/**
+ * @ORM\Entity
+ * @Vich\Uploadable
+ * @ORM\HasLifecycleCallbacks
+ * @ORM\Table(name="fos_user")
+ */
+class User extends BaseUser {
+
+    /**
+     * @ORM\Id
+     * @ORM\Column(type="integer")
+     * @ORM\GeneratedValue(strategy="AUTO")
+     */
+    protected $id;
+
+    /**
+     * @Assert\File(
+     *     maxSize="5M",
+     *     mimeTypes={"image/png", "image/jpeg", "image/pjpeg"}
+     * )
+     * @Vich\UploadableField(mapping="user_avatar", fileNameProperty="avatar")
+     *
+     * @var File $avatarFile
+     *
+     */
+    protected $avatarFile;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="avatar", type="string", length=255, nullable=true)
+     */
+    private $avatar;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="first_name", type="string", length=100)
+     * @Assert\NotBlank(message="Please enter your first Name.")
+     * @Assert\Length(
+     *     min=3,
+     *     max="20",
+     *     minMessage="The first Name is too short.",
+     *     maxMessage="The first Name is too long.",
+     * )
+     */
+    private $firstName;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="last_name", type="string", length=100)
+     * @Assert\NotBlank(message="Please enter your last Name.")
+     * @Assert\Length(
+     *     min=3,
+     *     max="20",
+     *     minMessage="The last Name is too short.",
+     *     maxMessage="The last Name is too long.",
+     * )
+     */
+    private $lastName;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="language", type="string", length=100, nullable=true)
+     */
+    private $language;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="time_zone", type="string", length=100, nullable=true)
+     */
+    private $timeZone;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="access_all_projects", type="boolean", nullable=true)
+     */
+    private $accessAllProjects;
+
+    /**
+     * @ORM\OneToOne(targetEntity="WWSC\ThalamusBundle\Entity\UserProfile", mappedBy="user", cascade={"all"})
+     */
+    protected $profile;
+    
+    /**
+     * @var \DateTime $updated
+     *
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $updated;
+
+    /** 
+      * @ORM\OneToMany(targetEntity="WWSC\ThalamusBundle\Entity\CompanyUser", mappedBy="user") 
+    */
+    private $companyUser;
+    
+    /**
+     * @ORM\ManyToMany(targetEntity="WWSC\ThalamusBundle\Entity\Project", mappedBy="users")
+     */
+    private $project;
+    
+    /**
+     * @ORM\Column(name="last_logged_account", type="integer", nullable=true)
+    */
+    public $last_logged_account;
+    
+ 
+    /** @ORM\Column(name="googleID", type="string", length=255, nullable=true) */
+    protected $googleID;
+
+    /** @ORM\Column(name="google_access_token", type="string", length=255, nullable=true) */
+    
+    protected $google_access_token;
+    
+    /**
+     * @ORM\Column(name="is_deleted", type="boolean", nullable=true)
+    */
+    private $is_deleted = 0;
+    
+    public $account;
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {   parent::__construct();
+        $this->project = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->companyUser = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
+    public function setProfile(Profile $profile) {
+        $this->profile = $profile;
+    }
+
+    public function getProfile() {
+        return $this->profile;
+    }
+
+    /**
+     * Get id
+     *
+     * @return integer 
+     */
+    public function getId() {
+        return $this->id;
+    }
+
+    /**
+     * @param UploadedFile $avatarFile
+     */
+    public function setAvatarFile(File $avatarFile) {
+        $this->avatarFile = $avatarFile;
+        $this->updated = new \DateTime();
+    }
+
+    /**
+     * @return File
+     */
+    public function getAvatarFile() {
+        return $this->avatarFile;
+    }
+
+    /**
+     * Set avatar
+     *
+     * @param string $avatar
+     * @return User
+     */
+    public function setAvatar($avatar) {
+        $this->avatar = $avatar;
+    }
+
+    /**
+     * Get avatar
+     *
+     * @return string 
+     */
+    public function getAvatar() {
+        return $this->avatar;
+    }
+
+
+   public function getCompany() {
+        foreach($this->getCompanyUser() as $oCompany){
+            if($oCompany->getCompany()->getAccount()->getId() == WWSCThalamusBundle::getContainer()->get('session')->get('account')->id){
+                return $oCompany->getCompany();
+            }
+        }
+    }
+    
+    public function getAccount() {
+        return $this->account;
+    }
+
+    /**
+     * Set firstName
+     *
+     * @param string $firstName
+     * @return User
+     */
+    public function setFirstName($firstName) {
+        $this->firstName = $firstName;
+
+        return $this;
+    }
+
+    /**
+     * Get firstName
+     *
+     * @return string 
+     */
+    public function getFirstName() {
+        return $this->firstName;
+    }
+
+    public function getLastName() {
+        return $this->lastName;
+    }
+
+    /**
+     * Set lastName
+     *
+     * @param string $lastName
+     * @return User
+     */
+    public function setLastName($lastName) {
+        $this->lastName = $lastName;
+
+        return $this;
+    }
+
+    /**
+     * Set language
+     *
+     * @param string $language
+     * @return User
+     */
+    public function setLanguage($language) {
+        $this->language = $language;
+
+        return $this;
+    }
+
+    /**
+     * Get language
+     *
+     * @return string 
+     */
+    public function getLanguage() {
+        return $this->language;
+    }
+
+    /**
+     * Set timeZone
+     *
+     * @param string $timeZone
+     * @return User
+     */
+    public function setTimeZone($timeZone) {
+        $this->timeZone = $timeZone;
+
+        return $this;
+    }
+
+    /**
+     * Get timeZone
+     *
+     * @return string 
+     */
+    public function getTimeZone() {
+        return $this->timeZone;
+    }
+
+    /**
+     * Set accessAllProjects
+     *
+     * @param boolean $accessAllProjects
+     * @return User
+     */
+    public function setAccessAllProjects($accessAllProjects) {
+        $this->accessAllProjects = $accessAllProjects;
+
+        return $this;
+    }
+
+    /**
+     * Get accessAllProjects
+     *
+     * @return boolean 
+     */
+    public function getAccessAllProjects() {
+        return $this->accessAllProjects;
+    }
+
+    /**
+     * Set updated
+     *
+     * @param \DateTime $updated
+     * @return User
+     */
+    public function setUpdated($updated) {
+        $this->updated = $updated;
+
+        return $this;
+    }
+
+    /**
+     * Get updated
+     *
+     * @return \DateTime 
+     */
+    public function getUpdated() {
+        return $this->updated;
+    }
+    /**
+     * Add project
+     *
+     * @param \WWSC\ThalamusBundle\Entity\Project $project
+     * @return User
+     */
+    public function addProject(\WWSC\ThalamusBundle\Entity\Project $project)
+    {
+        $this->project[] = $project;
+
+        return $this;
+    }
+
+    /**
+     * Remove project
+     *
+     * @param \WWSC\ThalamusBundle\Entity\Project $project
+     */
+    public function removeProject(\WWSC\ThalamusBundle\Entity\Project $project)
+    {
+        $this->project->removeElement($project);
+    }
+
+    /**
+     * Get project
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getProject()
+    {
+        return $this->project;
+    }
+
+    public function getHasRoleProject($projectSlug)
+    {
+        foreach($this->getProject() as $oProject){
+            if($oProject->getSlug() == $projectSlug){
+                return true;
+            }
+        }  
+        return false;
+    }
+    
+
+    /**
+     * Set lastLoggedAccount
+     *
+     * @param integer $lastLoggedAccount
+     *
+     * @return User
+     */
+    public function setLastLoggedAccount($lastLoggedAccount)
+    {
+        $this->last_logged_account = $lastLoggedAccount;
+
+        return $this;
+    }
+
+    /**
+     * Get lastLoggedAccount
+     *
+     * @return integer
+     */
+    public function getLastLoggedAccount()
+    {
+        return $this->last_logged_account;
+    }
+
+    /**
+     * Set googleAccessToken
+     *
+     * @param string $googleAccessToken
+     *
+     * @return User
+     */
+    public function setGoogleAccessToken($googleAccessToken)
+    {
+        $this->google_access_token = $googleAccessToken;
+    
+        return $this;
+    }
+
+    /**
+     * Get googleAccessToken
+     *
+     * @return string
+     */
+    public function getGoogleAccessToken()
+    {
+        return $this->google_access_token;
+    }
+
+    /**
+     * Set googleID
+     *
+     * @param string $googleID
+     *
+     * @return User
+     */
+    public function setGoogleID($googleID)
+    {
+        $this->googleID = $googleID;
+    
+        return $this;
+    }
+
+    /**
+     * Get googleID
+     *
+     * @return string
+     */
+    public function getGoogleID()
+    {
+        return $this->googleID;
+    }
+    
+    /** Sets the email.
+     *
+     * @param string $email
+     * @return User
+     */
+    public function setEmail($email)
+    {
+        $this->setUsername($email);
+
+        return parent::setEmail($email);
+    }
+
+    /**
+     * Set the canonical email.
+     *
+     * @param string $emailCanonical
+     * @return User
+     */
+    public function setEmailCanonical($emailCanonical)
+    {
+        $this->setUsernameCanonical($emailCanonical);
+
+        return parent::setEmailCanonical($emailCanonical);
+    }
+
+    
+
+    /**
+     * Set isDeleted
+     *
+     * @param boolean $isDeleted
+     *
+     * @return User
+     */
+    public function setIsDeleted($isDeleted)
+    {
+        $this->is_deleted = $isDeleted;
+
+        return $this;
+    }
+
+    /**
+     * Get isDeleted
+     *
+     * @return boolean
+     */
+    public function getIsDeleted()
+    {
+        return $this->is_deleted;
+    }
+
+
+    /**
+     * Add companyUser
+     *
+     * @param \WWSC\ThalamusBundle\Entity\CompanyUser $companyUser
+     *
+     * @return User
+     */
+    public function addCompanyUser(\WWSC\ThalamusBundle\Entity\CompanyUser $companyUser)
+    {
+        $this->companyUser[] = $companyUser;
+
+        return $this;
+    }
+
+    /**
+     * Remove companyUser
+     *
+     * @param \WWSC\ThalamusBundle\Entity\CompanyUser $companyUser
+     */
+    public function removeCompanyUser(\WWSC\ThalamusBundle\Entity\CompanyUser $companyUser)
+    {
+        $this->companyUser->removeElement($companyUser);
+    }
+
+    /**
+     * Get companyUser
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getCompanyUser()
+    {
+        return $this->companyUser;
+    }
+    
+}

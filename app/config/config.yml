@@ -1,0 +1,230 @@
+imports:
+    - { resource: security.yml }
+    - { resource: "@WWSCThalamusBundle/Resources/config/services.yml" }
+
+framework:
+    #esi:             ~
+    translator:      { fallback: en }
+    secret:          "%secret%"
+    router:
+        resource: "%kernel.root_dir%/config/routing.yml"
+        strict_requirements: ~
+    form:            ~
+    csrf_protection: ~
+    validation:      { enable_annotations: true, api: 2.4 }
+    templating:
+        engines: ['twig']
+        #assets_version: SomeVersionScheme
+    default_locale:  en
+    trusted_hosts:   ~
+    trusted_proxies: ~
+    session:
+        # handler_id set to null will use default session handler from php.ini
+        #handler_id:  ~
+        cookie_lifetime: 86400
+        gc_maxlifetime: 86400
+    fragments:       ~
+    http_method_override: false
+#lsw_gettext:
+#    locale_listener: false
+
+#jms_i18n_routing:
+#    default_locale: en
+#    locales: [en, de]
+#    strategy: prefix
+    
+oneup_uploader:
+    mappings:
+        files:
+            frontend: blueimp
+            max_size: 100000000
+            
+liip_imagine:
+    resolvers:
+       default:
+          web_path: ~
+
+    filter_sets:
+        cache: ~
+        my_thumb:
+            quality: 100
+            filters:
+                thumbnail: { size: [120, 90], mode: inset }            
+#Twig Configuration
+twig:
+#    exception_controller:  WWSCThalamusBundle:Content:showException
+    debug:            "%kernel.debug%"
+    strict_variables: "%kernel.debug%"
+    globals: 
+        google_client_id: "%google_client_id%"
+        google_client_secret: "%google_client_secret%"
+        google_api_key: "%google_api_key%"
+        allowed_file_types: "%allowed_file_types%"
+    form:
+        resources:
+            - 'OrnjMarkdownBundle:Form:fields.html.twig'
+        
+# Assetic Configuration
+assetic:
+    debug:          "%kernel.debug%"
+    use_controller: false
+    bundles:        [ ]
+    #java: /usr/bin/java
+    filters:
+        cssrewrite: ~
+        #closure:
+        #    jar: "%kernel.root_dir%/Resources/java/compiler.jar"
+        #yui_css:
+        #    jar: "%kernel.root_dir%/Resources/java/yuicompressor-2.4.7.jar"
+
+# Doctrine Configuration
+doctrine:
+    dbal:
+        driver:   "%database_driver%"
+        host:     "%database_host%"
+        port:     "%database_port%"
+        dbname:   "%database_name%"
+        user:     "%database_user%"
+        password: "%database_password%"
+        charset:  UTF8
+        # if using pdo_sqlite as your database driver:
+        #   1. add the path in parameters.yml
+        #     e.g. database_path: "%kernel.root_dir%/data/data.db3"
+        #   2. Uncomment database_path in parameters.yml.dist
+        #   3. Uncomment next line:
+        #     path:     "%database_path%"
+
+    orm:
+        default_entity_manager: default
+        dql:
+            string_functions:
+                unix_timestamp: \WWSC\ThalamusBundle\DQL\UnixTimestamp
+            datetime_functions:
+                DATE_FORMAT: \WWSC\ThalamusBundle\DQL\DateFormatFunction
+            numeric_functions:
+                round: \WWSC\ThalamusBundle\DQL\Round
+        auto_generate_proxy_classes: "%kernel.debug%"
+        auto_mapping: true
+
+stof_doctrine_extensions:
+    default_locale: en
+    orm:
+        default:
+            loggable: false
+            sluggable: true
+            timestampable: true
+            translatable: true
+            tree: true
+
+fos_user:
+    db_driver: orm
+    firewall_name: api
+    user_class: WWSC\ThalamusBundle\Entity\User
+    from_email:
+        address:        no-reply@thalamus.io
+        sender_name:    thalamus.io
+
+hwi_oauth:
+    connect:
+        account_connector: google_user_provider
+    firewall_name: main
+    http_client:
+        verify_peer: false
+        timeout: 10
+    fosub:
+        username_iterations: 30
+        properties:
+            google: googleID
+    resource_owners:
+        google:
+            type:                google
+            client_id:           "%google_client_id%"
+            client_secret:       "%google_client_secret%"
+            scope:               "https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile"
+            options:
+                access_type:     offline
+            
+vich_uploader:
+    db_driver: orm
+    twig: true
+    mappings:
+        company_logo:
+            uri_prefix:         /uploads/company
+            upload_destination: %kernel.root_dir%/../web/uploads/company
+            namer:              vich_uploader.namer_uniqid
+            inject_on_load:     false
+            delete_on_update:   true
+            delete_on_remove:   true
+        user_avatar:
+            uri_prefix:         /uploads/user
+            upload_destination: %kernel.root_dir%/../web/uploads/user
+            namer:              vich_uploader.namer_uniqid
+            inject_on_load:     false
+            delete_on_update:   true
+            delete_on_remove:   true          
+               
+# Swiftmailer Configuration
+swiftmailer:
+    transport: "%mailer_transport%"
+    username:  "%mailer_user%"
+    password:  "%mailer_password%"
+
+nelmio_api_doc:
+    default_sections_opened:  true
+    swagger:
+        api_base_path:        /api
+        swagger_version:      '1.2'
+        api_version:          '0.1'
+        info:
+            title:                Symfony2
+            description:          'My awesome Symfony2 app!'
+            TermsOfServiceUrl:    null
+            contact:              null
+            license:              null
+            licenseUrl:           null
+
+nelmio_cors:
+    defaults:
+        allow_credentials: false
+        allow_origin: ['*']
+        allow_headers: ['*']
+        allow_methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
+        max_age: 3600
+        hosts: []
+        origin_regex: false
+
+fos_rest:
+    routing_loader:
+        default_format: json
+        include_format: false
+    view:
+        view_response_listener: 'force'
+    param_fetcher_listener: true
+    body_listener: true
+
+fos_oauth_server:
+    db_driver: orm
+    client_class:        WWSC\ThalamusBundle\Entity\Client
+    access_token_class:  WWSC\ThalamusBundle\Entity\AccessToken
+    refresh_token_class: WWSC\ThalamusBundle\Entity\RefreshToken
+    auth_code_class:     WWSC\ThalamusBundle\Entity\AuthCode
+    service:
+        user_provider: fos_user.user_provider.username_email
+
+jms_serializer:
+    metadata:
+        auto_detection: true
+#knp_paginator:
+#    page_range: 5                      # default page range used in pagination control
+#    default_options:
+#        page_name: page                # page query parameter name
+#        sort_field_name: sort          # sort field query parameter name
+#        sort_direction_name: direction # sort direction query parameter name
+#        distinct: true                 # ensure distinct results, useful when ORM queries are using GROUP BY statements
+#    template:
+#        pagination: WWSCThalamusBundle:Pagination:sliding.html.twig     # sliding pagination controls template
+        #sortable: KnpPaginatorBundle:Pagination:sortable_link.html.twig # sort link template
+
+exercise_html_purifier:
+    custom:
+        HTML.TargetBlank: true

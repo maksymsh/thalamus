@@ -1,0 +1,32 @@
+{% if app.request.attributes.get('_route') == 'wwsc_thalamus_personal_timetracking_user_for_select' or app.request.attributes.get('_route') ==  'wwsc_thalamus_edit_personal_timetracking'%}
+      <select required   name="personal-timetracking[responsible-user]" class="select-user-personal-timetracking form-control">
+{% else %}
+      <select  id="wwsc_thalamusbundle_task_item_responsible" name="wwsc_thalamusbundle_task_item[responsible]" class="form-control">
+{% endif %}
+        <option value="{{ app.user.id }}"
+            {% if ((responsibleUserId is defined) and  app.user.id == responsibleUserId) %}
+                selected
+            {% endif %}
+        >
+            {% trans %}Me{% endtrans %} ({{ app.user.firstName }} {{ app.user.lastName }})</option>
+        <option disabled value="">----------</option>
+        {% for oResponsibleCompany in oTask.project.subspeople %}
+            {% if (oResponsibleCompany ['role'] == 'ROLE_PROVIDER') or  (oTask.visibleClient == 1 and oResponsibleCompany['role'] == 'ROLE_CLIENT') or (oTask.visibleFreelancer == 1 and oResponsibleCompany['role'] == 'ROLE_FREELANCER')%}
+                {% if oResponsibleCompany.people is defined %}
+                    {% if oResponsibleCompany['people']|length > 1 or (oResponsibleCompany['people']|length == 1 and app.user.id in oResponsibleCompany['people']|keys == false ) %}
+                        <option disabled value="">{{ oResponsibleCompany['name'] }}</option>
+                        {% for key,val in oResponsibleCompany['people'] %}
+                            {% if app.user.id != key %}
+                                <option  value={{ key }}
+                                    {% if ((responsibleUserId is defined) and  key == responsibleUserId) %}
+                                         selected
+                                    {% endif %}
+                                >{{ val }}</option>
+                            {% endif %}
+                        {%endfor%}
+                        <option disabled value="">----------</option>
+                    {% endif %}
+                {% endif %}
+            {% endif %}  
+        {%endfor%}
+</select>

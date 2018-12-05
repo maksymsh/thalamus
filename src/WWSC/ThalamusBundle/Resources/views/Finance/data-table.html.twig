@@ -1,0 +1,28 @@
+<table class="table table-striped finance-table project-costs">
+    <thead>
+        <tr>
+            <th>{% trans %}Invoice-Date{% endtrans %}</th>
+            <th>{% trans %}Due date{% endtrans %}</th>
+            <th class="price">{% trans %}Net value{% endtrans %}</th>
+            <th>{% trans %}VAT rate{% endtrans %}</th>
+            <th>{% trans %}Description{% endtrans %}</th>
+            <th>{% trans %}Billable{% endtrans %}</th>
+            <th>{% trans %}Status{% endtrans %}</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for oFinance in aFinance %}
+           {% include 'WWSCThalamusBundle:Finance:show.html.twig' with {'oFinance': oFinance} %}
+        {%endfor%}
+        <tr>
+            <td><strong>Total:</strong></td>
+            <td></td>
+            <td class="price show-currency total-cost-project"><strong>{{ app.user.formatPrice(totalAmount) }}</strong></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+    </tbody>
+</table>
+                  

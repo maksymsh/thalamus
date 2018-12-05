@@ -1,0 +1,91 @@
+<div class="task-item-form  from-group col-md-12 no-float">
+    <div class="col-md-12 no-float">
+        <div class="alert-error"></div>
+        {% set oTask = oItem.task %}
+        <form accept-charset="UTF-8" action="{{path('wwsc_thalamus_project_form_add_child_task',{'project':oItem.task.project.slug,'task':oItem.task.id, 'item':oItem.id })}}" class="todo_item" method="post">
+            <div class="col-md-12 no-float">
+                <label> {% trans %} Select Child {% endtrans %} </label>
+                <div>
+            <input type="hidden" class="url-form-add-child" value="{{path('wwsc_thalamus_project_form_add_child_task',{'project':oItem.task.project.slug,'task':oItem.task.id, 'item':oItem.id })}}">
+            <input type="hidden" name="child-task" class="child-task-input">
+                <div class="btn-group btn-input selected-child-task open-selectbox">
+                  <button type="button" class="btn btn-default dropdown-toggle form-control" >
+                    <span class="label-active" data-bind="label"><a href="#">{% trans %} Create a new task {% endtrans %}</a></span> <span class="caret"></span>
+                  </button>
+                  <ul class="dropdown-menu  dropdown-filter" class="form-control">
+                    <li><span class="disabled">----------</span></li>
+                    {% for childTasks in oItem.task.project.childTasks(oItem.id) %}
+                        <li><span class="disabled">{{ childTasks['name'] }} </span><ul class="tasks-select">
+                        {% if childTasks.tasks is defined %}
+                            {% if childTasks['tasks']['open'] is defined %}
+                                {% for key,val in childTasks['tasks']['open'] %}
+                                    {% if key != oItem.id %}
+                                        <li> <a href="#" class="option" data-value="{{ key }}">#{{ key }} - {{ val }}</a></li>
+                                    {% endif %}
+                                {%endfor%}
+                            {% endif %}
+                            {% if childTasks['tasks']['closed'] is defined %}
+                                <li><span class="disabled"></span></li>
+                                {% for key,val in childTasks['tasks']['closed'] %}
+                                    {% if key != oItem.id %}
+                                        <li class="hidden closed-task"><a href="#" class="option" data-value="{{ key }}">#{{ key }} - {{ val }}</a></li>
+                                    {% endif %}
+                                {%endfor%}
+                                <li class="show-closed-task"><a href="#" data-status="hide">{% trans %}Show closed Task{% endtrans %}</a></li>
+                            {% endif %}
+                            </ul>
+                        {% endif %}
+                        <li><span class="disabled">----------</span></li>
+                     {% endfor %}
+                  </ul>
+                </div>
+            </div>
+            </div>
+            <div class="col-md-12 no-float">
+                {% trans %}Select list:{% endtrans %} 
+                <select data-responsible-url = "{{ path ('wwsc_thalamus_project_task_item_responsible',{'project':oItem.task.project.slug} )}}" class="task-list-id form-control" name="task-list-id" required>
+                    <option value="">{% trans %}Select a list{% endtrans %}</option>
+                    {% for oTask in oTask.project.tasks %}
+                        <option value="{{ oTask.id }}">{{ oTask.name }}</option>
+                    {%endfor%}
+                </select>
+            </div>
+            <div class="col-md-12 no-float">
+                {% trans %}Enter a to-do item{% endtrans %}
+                {{ form_widget(form.description) }}
+            </div>
+            <div class="col-md-12 without-padding no-float">
+                <div class="col-md-6 no-float">
+                    {% trans %}Who's responsible?{% endtrans %}
+                    <div class="select-task-item-responsible"></div>
+                    <select class="task_item_responsible default-task-item-responsible form-control" disabled>
+                            <option value="{{ app.user.id }}">{% trans %}Me{% endtrans %} ({{ app.user.firstName }} {{ app.user.lastName }})</option>
+                    </select>
+                </div>
+                <div class="col-md-6 no-float">
+                    {% trans %}Status{% endtrans %}
+                    {{form_widget(form.state)}}
+                </div>
+                <div class="col-md-6 no-float">
+                    {% trans %}When is it due?{% endtrans %}
+                    {{form_widget(form.due_date_form)}}
+                </div>
+                 <div class="col-md-6 no-float">
+                    {% trans %}Estimated Time{% endtrans %}
+                    {{form_widget(form.estimated)}}
+                </div>
+                <div class="col-md-12 form-group margin-top-2x no-float">
+                     <div class="col-md-6 float-right">
+                       {{form_widget(form.fast_track)}} <span>{% trans %}Fast-track{% endtrans %}</span>
+                    </div>
+                    <div class="col-md-6 without-padding no-float">
+                        <button class="btn btn-sm btn-primary btn-save" type="submit">{% trans %}Create Relation{% endtrans %}</button>
+                        <span>{% trans %}or{% endtrans %}</span>  <a class="btn-cancel close" href="#" data-dismiss="modal"> {% trans %}I'm done adding items{% endtrans %}</a>
+                    </div>
+                </div>
+            </div>
+            {{ form_widget(form._token) }}
+        </form>
+    </div>
+</div>
+

@@ -1,0 +1,83 @@
+{% extends "WWSCThalamusBundle:Content:layout.html.twig" %}
+{% block title %}
+    {{ oProject.name }}- {% trans %}People & Permissions{% endtrans %}  
+{% endblock %}    
+{% block content %}   
+    <div class="row">
+        <div class="panel panel-default col-xs-12">
+            <div class="panel-heading col-xs-12">
+                <div class="col-xs-12">
+                    {% trans %}People on this project{% endtrans %}  
+                    {% if is_granted('ROLE_PROVIDER')  %}
+                        <a href="{{ path('wwsc_thalamus_add_project_people',{'project':oProject.slug})}}"> {% trans %}Add people, remove people, change permissions{% endtrans %}</a>
+                    {% endif %}
+                </div> 
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-md-12 main">
+                        <div class="modal fade" id="add-new-company">
+                            {{ render(controller('WWSCThalamusBundle:Company:add')) }}
+                        </div>
+                    </div>
+                    {% include 'WWSCThalamusBundle:Content:flash_notice.html.twig' %}
+                    <div class="list-company col-md-12">
+                        {% for oCompany in oProject.companies %}
+                            {% if is_granted('ROLE_PROVIDER') or oCompany.id == app.user.company.id or (app.user.company.roles == 'ROLE_CLIENT' and oCompany.roles == 'ROLE_CLIENT')%}
+                            <div class="company  col-xs-12">
+                                <div class="title-panel col-xs-12">
+                                    <div class="col-xs-12">
+                                        {% if oCompany.id == app.user.company.id %} 
+                                            {% trans %}Your company:{% endtrans %}
+                                        {% endif %}
+                                        {{ oCompany.name }} 
+                                        {% if is_granted('ROLE_PROVIDER') or oCompany.id == app.user.company.id %}
+                                            <small>( {{ oCompany.roleName }} )</small>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <div class="item col-md-4">
+                                    <div class="avatar">
+                                        <img src="{{ asset('bundles/wwscthalamus/images/company_icon.png') | imagine_filter('my_thumb',{"thumbnail": {"size": [64, 64] }}) }}">
+                                    </div>
+                                    <div class="desc">
+                                        {% include 'WWSCThalamusBundle:Company:block_info_company.html.twig' with {'company': oCompany} %}
+                                        {% if (oCompany.id == app.user.company.id)  or  (is_granted('ROLE_PROVIDER'))  %}                    
+                                              <a href="{{ path('wwsc_thalamus_company_edit', {'id':  oCompany.id  }) }}">{% trans %}Edit{% endtrans %}</a> <small> {% trans %}this company{% endtrans %}</small>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                {% for oUser in oProject.users(oCompany.id) %}   
+                                    <div class="item col-md-4">
+                                        <div class="avatar">
+                                            {% if oUser.avatar %}
+                                                {% set icon = (asset('uploads/user/')~ oUser.avatar) %}
+                                            {% else %}
+                                                {% set icon = asset('bundles/wwscthalamus/images/user_icon.png') %}
+                                            {% endif %}
+                                            <img src="{{ icon | imagine_filter('my_thumb',{"thumbnail": {"size": [64, 64] }}) }}">
+                                            {% if oUser.enabled %}
+                                                {% if accountOwnerId == oUser.id  %}
+                                                    <div class="badge badge-owner">{% trans %}OWNER{% endtrans %}</div>
+                                                {% endif %} 
+                                            {% else %}
+                                                <div class="badge badge-invited"{% trans %}>INVITED{% endtrans %}</div>      
+                                            {% endif %}   
+                                        </div>
+                                        <div class="desc">
+                                            {% include 'WWSCThalamusBundle:User:block_info_user.html.twig' with {'user': oUser} %}
+                                            {% if (oCompany.id == app.user.company.id)  or  (is_granted('ROLE_PROVIDER'))  %}   
+                                                <a href="{{ path('wwsc_thalamus_user_edit', {'id': oUser.id }) }}">{% trans %}Edit{% endtrans %}</a>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                        {% endfor %}                   
+                    </div>            
+                </div><!--/span-->
+            </div>  
+        </div>
+    </div>
+{% endblock %}

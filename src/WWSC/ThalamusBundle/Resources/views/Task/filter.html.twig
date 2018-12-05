@@ -1,0 +1,30 @@
+<form id="form-filter-tasks" method="GET" action="#">        
+<h4>{% trans %}Show to-dos assigned to{% endtrans %}</h4>
+    {%if app.session.get('aFilterTask') and app.session.get('aFilterTask')['filter_responsible'] %} 
+        {% set filter_responsible = app.session.get('aFilterTask')['filter_responsible'] %}
+    {% else %}
+        {% set filter_responsible = '' %}
+    {% endif %}
+    <div>
+    <select id="filter_tasks_filter_responsible" name="filter_tasks[filter_responsible]" class="form-control">
+        <option value="">{% trans %}Anyone{% endtrans %}</option>
+        <option {% if  filter_responsible == 'u_'~app.user.id %} selected {% endif %} value="u_{{ app.user.id }}">{% trans %}Me{% endtrans %} ({{ app.user.firstName }} {{ app.user.lastName }})</option>
+        <option disabled value="">----------</option>
+        {% for oResponsibleCompany in aResponsiblepeople %}
+            {% if oResponsibleCompany.people is defined %}
+                {% if oResponsibleCompany['people']|length > 1 or (oResponsibleCompany['people']|length == 1 and app.user.id in oResponsibleCompany['people']|keys == false ) %}
+                    <option  {% if 'c_'~ oResponsibleCompany['id'] == filter_responsible %} selected {% endif %} value="c_{{ oResponsibleCompany['id'] }}">{{ oResponsibleCompany['name']|upper }}</option>
+                    {% for key,val in oResponsibleCompany['people'] %}
+                        {% if app.user.id != key %}
+                            <option {% if 'u_'~ key == filter_responsible %} selected {% endif %}  value=u_{{ key }} >{{ val }}</option>
+                        {% endif %}
+                    {%endfor%}
+                    <option disabled value="">----------</option>
+                {% endif %}
+            {% endif %}
+        {%endfor%}
+      </select>
+    </div>    
+<h4>{% trans %}Show to-dos that are due{% endtrans %}</h4>   
+{{ form_widget(fFilterTask.filter_due) }}
+</form>

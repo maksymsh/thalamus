@@ -1,0 +1,35 @@
+<?php
+
+namespace WWSC\ThalamusBundle\Entity;
+
+use WWSC\ThalamusBundle\WWSCThalamusBundle;
+use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\Criteria;
+
+/**
+ * @ORM\Entity
+ * @ORM\Table(name="project_for_api")
+ */
+class ProjectForAPI {
+
+    /**
+     * @ORM\Id()
+     * @ORM\ManyToOne(targetEntity="WWSC\ThalamusBundle\Entity\User", inversedBy="projectForAPI")
+     * @ORM\JoinColumn(name="user_id", referencedColumnName="id", nullable=false)
+     */
+    protected $user;
+
+    /**
+     * @ORM\Id()
+     * @ORM\ManyToOne(targetEntity="WWSC\ThalamusBundle\Entity\Project", inversedBy="projectForAPI")
+     * @ORM\JoinColumn(name="company_id", referencedColumnName="id", nullable=false)
+     */
+    protected $project;
+
+
+    /**
+     * @ORM\ManyToOne(targetEntity="WWSC\ThalamusBundle\Entity\Account", inversedBy="projectForAPI")
+     * @ORM\JoinColumn(name="account_id", referencedColumnName="id", nullable=true)
+     */
+    protected $account;
+}

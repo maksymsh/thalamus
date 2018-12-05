@@ -1,0 +1,36 @@
+<div class="avatar-user col-md-1">
+    {% if oMessage.userCreated.avatar %}
+        {% set icon = (asset('uploads/user/') ~ oMessage.userCreated.avatar) %}
+    {% else %}
+        {% set icon = asset('bundles/wwscthalamus/images/user_icon.png') %}
+    {% endif %}
+    <img src="{{ icon | imagine_filter('my_thumb',{"thumbnail": {"size": [48, 48] }}) }}">
+</div>
+<div class="message-info col-md-11">
+    <div class="user-posted">
+        <strong> {{ oMessage.userCreated.firstName }}  {{ oMessage.userCreated.lastName }} </strong> {% trans %}posted this message on{% endtrans %} {{ oMessage.updated|date("D, d M H:i a") }}
+    </div>
+    <div class="title">
+        <a href="{{ path('wwsc_thalamus_project_message_comments',{ 'project':oMessage.project.slug, 'id': oMessage.id} )}}">
+            {{ oMessage.title  }}
+        </a>
+    </div>
+    <div class="description">
+        {{ oMessage.description|markdown|purify  }}
+        {% if oMessage.files %}
+            {% include 'WWSCThalamusBundle:File:attachments-list.html.twig' with {'aAttachments': oMessage ,'slugProject':oMessage.project.slug} %}
+        {% endif %}      
+    </div>
+    <div class="action">
+        <a href="{{ path('wwsc_thalamus_project_message_comments',{ 'project':oMessage.project.slug, 'id': oMessage.id} )}}">{% trans %}Go to message{% endtrans %}</a> | 
+        {% if oMessage.comments|length > 0 %}
+            <a href="{{ path('wwsc_thalamus_project_message_comments',{ 'project':oMessage.project.slug, 'id': oMessage.id} )}}">
+                {{ oMessage.comments|length }} {% trans %} comments{% endtrans %}
+            </a> 
+            <span class="user-posted">({% trans %} last by{% endtrans %}{{ oMessage.comments[oMessage.comments|length-1].userCreated.firstName}} {{ oMessage.comments[oMessage.comments|length-1].userCreated.lastName}} {% trans %} on{% endtrans %}{{ oMessage.comments[oMessage.comments|length-1].created|date("D, d M H:i a") }})</span>
+        {% else %}
+            <a href="{{ path('wwsc_thalamus_project_message_comments',{ 'project':oMessage.project.slug, 'id': oMessage.id} )}}">{% trans %} Add a comment{% endtrans %}</a>
+        {% endif %} 
+    </div>
+</div>
+        

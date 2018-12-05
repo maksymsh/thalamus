@@ -1,0 +1,72 @@
+<script type="text/javascript">
+$('.attachment-files').fileupload({
+    url: "{{ oneup_uploader_endpoint('files') }}",
+    dataType: 'json',
+    downloadTemplateId: null,
+    type: 'POST'
+});
+</script>
+<form class="form-edit-comment" data-id-comment="comment-{{oComment.id}}" action="{{ path('wwsc_thalamus_project_comment_edit', {'id':oComment.id, 'project' : slugProject} )}}" method="Post">
+    <div class="error"></div>
+    <div class="form-group">
+        <p>{% trans %}Edit this comment…{% endtrans %}</p>
+        {{ form_widget(form.description) }}
+    </div>
+    {% if form.time_tracker is defined %}
+        <div class="form-group time-tracker-form">
+            <h3> {% trans %}Time tracking to this comment{% endtrans %}</h3>
+            {% include 'WWSCThalamusBundle:Comment:time-tracker-form.html.twig' with {'form':form.time_tracker, 'isBillableHours': isBillableHours } %}
+        </div>
+    {% endif %}
+    {% if oComment.type == 'TaskItem'%}
+        {% if (is_granted('ROLE_PROVIDER')) %}
+            <div class="col-md-12 form-group">
+                {{ form_widget(form.private ) }}  
+                {% trans %}Private: (Visible only to agency companies){% endtrans %}
+            </div>   
+        {% endif %}  
+        <div class="col-md-12 info-panel">
+            <div class="col-md-6">
+                {% trans %}Status{% endtrans %}
+                <select id="wwsc_thalamusbundle_task_item_state" name="wwsc_thalamusbundle_task_item[state]" class="form-control">
+                    <option value="">{% trans %} Select please ...{% endtrans %}</option>
+                    {% for taskItemStateKey, tasItemState in aTaskItemStates %}
+                        <option {% if oComment.parentInfo.state == taskItemStateKey %}selected="selected" {% endif %} value="{{ taskItemStateKey }}">{{ tasItemState }}</option>
+                    {%endfor%}
+                </select>
+            </div>
+            <div class="col-md-6">
+                {% trans %}Who's responsible?{% endtrans %}
+                <select id="wwsc_thalamusbundle_task_item_responsible" name="wwsc_thalamusbundle_task_item[responsible]" class="form-control">
+                    <option value="{{ app.user.id }}">{% trans %}Me{% endtrans %}({{ app.user.firstName }} {{ app.user.lastName }})</option>
+                    <option disabled value="">----------</option>
+                    {% for oResponsibleCompany in oComment.parentInfo.task.project.subspeople %}
+                        {% if (oResponsibleCompany ['role'] == 'ROLE_PROVIDER') or  (oComment.parentInfo.task.visibleClient == 1 and oResponsibleCompany['role'] == 'ROLE_CLIENT') or (oComment.parentInfo.task.visibleFreelancer == 1 and oResponsibleCompany['role'] == 'ROLE_FREELANCER')%}
+                            {% if oResponsibleCompany.people is defined %}
+                                {% if oResponsibleCompany['people']|length > 1 or (oResponsibleCompany['people']|length == 1 and app.user.id in oResponsibleCompany['people']|keys == false ) %}
+                                    <option disabled value="">{{ oResponsibleCompany['name'] }}</option>
+                                    {% for key,val in oResponsibleCompany['people'] %}
+                                        {% if app.user.id != key %}
+                                            <option {% if key == oComment.parentInfo.responsible.id %} selected {% endif %} value={{ key }} >{{ val }}</option>
+                                        {% endif %}
+                                    {%endfor%}
+                                    <option disabled value="">----------</option>
+                                {% endif %}
+                            {% endif %}
+                        {% endif %}
+                    {%endfor%}
+                </select>
+            </div>
+        </div>
+    {% endif %}
+    <div class="form-group">
+        {% include 'WWSCThalamusBundle:File:attachment-form.html.twig'  with {'aFiles': oComment.files, 'project' : slugProject} %} 
+    </div>
+    {{ form_widget(form._token) }}
+    {% if oComment.type == 'TaskItem'%}
+        {% include 'WWSCThalamusBundle:SubscribeEmail:block-subscribed-people.html.twig'  with {'aSubsCompanies': oComment.parentInfo.task.project.subspeople , 'activeSubscribed':oComment.parentInfo.activeSubscribed, 'type': 'Task', 'oParent':oComment.parentInfo.task} %} 
+    {% endif %}
+    <div class="form-group  btn-action"> 
+        <button class="btn btn-save btn-primary" type="submit">{% trans %}Update this Comment{% endtrans %}</button>
+    </div>    
+</form>

@@ -1,0 +1,106 @@
+{% extends "WWSCThalamusBundle:Content:layout.html.twig" %}
+{% block title %}
+    {% trans %}Edit person{% endtrans %}
+{% endblock %} 
+{% block content %}   
+    <div class="row">
+        <div class="panel panel-default col-md-9">
+            <div class="panel-heading">
+                {% trans %}Edit{% endtrans %} {{ oUser.firstName }} {{ oUser.company.name }} -  {{ oUser.company.roleName }} 
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                    {% include 'WWSCThalamusBundle:Content:flash_notice.html.twig' %}
+                    {% if form_errors(form) %}
+                        <div class="alert alert-error error" role="alert">{{ form_errors(form) }}</div>
+                    {% endif %}
+                    <div class="panel-forms">
+                        {% if oUser.enabled == 0 %}
+                            <div class="info-panel">
+                                <h1>{{ oUser.firstName }} {% trans %}hasn't accepted this invitation yet.{% endtrans %}</h1>
+                                <p>{% trans %}The last invitation was sent on{% endtrans %} {{ oUser.updated|date("F d, Y") }} . {% trans %}If you'd like, you can{% endtrans %} 
+                                    <a href="{{ url ('wwsc_thalamus_user_resend_email',{'id': oUser.id }) }}">{% trans %}re-send the email{% endtrans %}</a> 
+                                    {% trans %}or you can send{% endtrans %} {{ oUser.firstName }} {% trans %}this invite link yourself:{% endtrans %}</p>
+                                <p>{{ url ('wwsc_thalamus_user_activation',{'account': oUser.company.account.slug, 'token': oUser.confirmationToken }) }}</p>            
+                            </div>
+                        {% endif %}
+                        {% if oUser.enabled == 1 and oUser.checkActiveUserCompany == 0 %}
+                            <div class="info-panel">
+                                <h1>{{ oUser.firstName }} {% trans %}hasn't accepted this invitation yet.{% endtrans %} </h1>
+                                <p>{% trans %}The last invitation was sent on{% endtrans %}  {{ oUser.updated|date("F d, Y") }} . {% trans %}If you'd like, you can{% endtrans %}  
+                                    <a href="{{ url ('wwsc_thalamus_user_exist-user-resend-email',{'user': oUser.id, 'company': oUser.company.id }) }}">{% trans %}re-send the email{% endtrans %} </a> 
+                                    {% trans %}or you can send{% endtrans %} {{ oUser.firstName }} {% trans %}this invite link yourself:{% endtrans %} </p>
+                                <p>{{ url ('wwsc_thalamus_user_acccept_invitation',{'account': oUser.company.account.slug, 'company': oUser.company.id,'salt': oUser.salt }) }}</p>            
+                            </div>
+                        {% endif %}
+                        {% if (oUser.enabled == 1 and oUser.checkActiveUserCompany != 0) or (oUser.enabled == 0 and oUser.checkActiveUserCompany == 0) %}
+                        <form action="{{ path('wwsc_thalamus_user_edit', { id: oUser.id } ) }}"  {{ form_enctype(form) }} method="Post">
+                            <div class="form-group col-md-12">
+                                <div class="avatar-user col-md-2">
+                                    {% if oUser.avatar %}
+                                        {% set icon = (asset('uploads/user/')~ oUser.avatar) %}
+                                    {% else %}
+                                        {% set icon = asset('bundles/wwscthalamus/images/user_icon.png') %}
+                                    {% endif %}
+                                    <img src="{{ icon | imagine_filter('my_thumb',{"thumbnail": {"size": [64, 64] }}) }}">
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12">
+                                {{form_label(form.company )}}
+                                <div class="col-md-4">       
+                                    {{form_widget(form.company )}}
+                                </div>
+                            </div>
+                            {% if is_granted('ROLE_PROVIDER') %}
+                                <div class="form-group col-xs-12">
+                                    {{form_label(form.language )}}
+                                    <div class="col-md-4">       
+                                        {{form_widget(form.language )}}
+                                    </div>
+                                </div>
+                                <div class="form-group col-xs-12">
+                                    <label class="control-label col-md-2">
+                                        {% trans %}Project for Screenshot Tool{% endtrans %}
+                                    </label>
+                                    <div class="col-md-4">
+                                        {% include 'WWSCThalamusBundle:Project:project-for-screenshot-tool.html.twig' with {'oUser': oUser} %}
+                                    </div>
+                                </div>
+                            {% endif %}
+                            {% if aRoles is defined %}
+                                <div class="form-group col-xs-12">
+                                    <label class="control-label col-md-2" for="wwsc_thalamusbundle_user_language">Role User</label>
+                                    <div class="col-md-4">       
+                                        <select name="role-user" class="form-control">
+                                            <option></option>
+                                             {% for oRole in aRoles %}
+                                                 <option  {% if oUser.role == oRole.key %} selected {% endif %}   value="{{ oRole.key }}">{{ oRole.name }}</option>
+                                            {% endfor %}
+                                        </select>    
+                                    </div>
+                                </div>
+                            {% endif %}
+                            {% include 'WWSCThalamusBundle:User:profile_form.html.twig' with {'profile': form.profile} %}
+                            {{ form_widget(form._token) }}
+                            <div class="form-group col-xs-12 btn-action">
+                                <button class="btn btn-sm btn-primary btn-save" type="submit">{% trans %}Save changes{% endtrans %}</button>
+                                or <a class="btn-cancel" href="{{ path ('wwsc_thalamus_account_all_people') }}"> {% trans %}Cancel{% endtrans %} </a> 
+                            </div>
+                        </form>
+                        {% endif %}    
+                    </div>
+                </div>
+            </div>  
+        </div>                          
+        <div class="col-md-3 sidebar sidebar-user">
+            <div class="col">
+                <div class="title-panel">{% trans %}Delete this person?{% endtrans %} </div>
+                <div class="info-panel">
+                    {% trans %}This will permanently remove{% endtrans %} {{ oUser.firstName }} {% trans %}from your Thalamus account{% endtrans %}. 
+                    {% trans %}Don't worry, their messages, comments, and history will not be erased.{% endtrans %} <br> 
+                    <a class="btn-delete-user" href="{{path('wwsc_thalamus_user_delete',{'id': oUser.id })}}">{% trans %}Delete{% endtrans %} {{ oUser.firstName }} {% trans %}now{% endtrans %} </a>
+                </div>   
+            </div>
+        </div><!--/span-->
+    </div>
+{% endblock %}       

@@ -1,0 +1,42 @@
+# Symfony data
+/app/bootstrap.php.cache
+/app/cache/*
+/app/logs/*
+/bin/*
+/vendor
+/web/bundles
+/web/media/*
+/web/uploads/*
+/web/config.php
+
+# Autodeploy file
+/deploy
+
+# Other data
+/nbproject
+/.idea
+/0
+/1
+/AUTO
+/nbproject
+/Array
+/Doctr
+/Gedmo
+/LAZY
+/account
+/datetime
+/html
+/project
+/web/1
+/web/phpMyAdmin
+/web/phpmd.xml
+tmp.*
+/nbproject/private
+.DS_Store
+parameters.yml
+/.cache
+/dev-scripts/thalamus.sql
+/mysql
+/web/dataForGoogleSpreadsheet.csv
+/web/temp/dataForGoogleSpreadsheet.csv
+/app/config/parameters.yml

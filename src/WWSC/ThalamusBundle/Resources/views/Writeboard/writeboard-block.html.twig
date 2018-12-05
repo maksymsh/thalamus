@@ -1,0 +1,9 @@
+{% if (is_granted('ROLE_PROVIDER')) %}
+    <div class="actions-panel">
+        <a class="btn-delete-writeboard" href={{path('wwsc_thalamus_project_writeboard_delete',{project:oWriteboard.project.slug, number:oWriteboard.number})}}><img src="{{ asset('bundles/wwscthalamus/images/remove_icon.png') }}"></a>
+    </div>
+{% endif %} 
+<div class="description">
+    <a href={{path('wwsc_thalamus_project_writeboard_show',{'project':oWriteboard.project.slug,'number':oWriteboard.number })}}> {{ oWriteboard.name }} <small>{% trans %} version {% endtrans %} {{ oWriteboard.version }} </small></a>
+        <span class="writeboard-more-info"> {{ oWriteboard.userUpdated.firstName }} {{ oWriteboard.userUpdated.lastName }} {% if oWriteboard.updated %} {{ oWriteboard.updated|date("d M Y") }} {% endif %} </span>
+</div>

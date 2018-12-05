@@ -1,0 +1,38 @@
+<div class="edit-task">
+    <div class="panel-forms"> 
+        <form action="{{ path('wwsc_thalamus_project_task_edit',{'project': oTask.project.slug, 'id': oTask.id })}}"  method="Post">
+            <div class="col-xs-10 form-group">
+                <div class="col-md-12 form-group">
+                    {{ form_widget(form.name ) }}
+                </div>    
+                <div class="col-md-12 form-group without-padding">
+                    <div class="col-md-6 without-padding">
+                       {{ form_widget(form.is_time_tracker ) }}  
+                       {% trans %}Enable time tracking for this list{% endtrans %}
+                    </div>
+                    <div class="col-md-6 without-padding">
+                       {{ form_widget(form.recursive ) }}  
+                       {% trans %}contains only recurring tasks{% endtrans %}
+                   </div>
+                </div>
+                <div class="col-md-12 form-group">
+                    {{ form_widget(form.visible_client ) }}  
+                    {% trans %}Visible to company client{% endtrans %}
+                </div>
+                <div class="col-md-12 form-group">
+                    {{ form_widget(form.visible_freelancer ) }}  
+                    {% trans %}Visible to company freelancer{% endtrans %}
+                </div> 
+                <div class="col-md-12 form-group">
+                    <p>{% trans %}List description:{% endtrans %}</p>
+                    {{ form_widget(form.description ) }}
+                </div>
+                {{ form_widget(form._token) }}
+                <div class="col-md-12 btn-action">
+                    <button class="btn btn-sm btn-primary btn-save" type="submit">{% trans %}Save changes{% endtrans %}</button>
+                    <span>{% trans %}or{% endtrans %}</span> <a class="btn-cancel" href="{{ path ('wwsc_thalamus_project_todos', {'project': oTask.project.slug }) }}"> {% trans %}Cancel{% endtrans %} </a> 
+                </div>
+            </div>
+        </form>
+    </div>
+</div>            

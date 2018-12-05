@@ -1,0 +1,175 @@
+<?php
+
+namespace WWSC\ThalamusBundle\Controller;
+
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Session;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use WWSC\ThalamusBundle\Form\CommentForm;
+use Symfony\Component\HttpFoundation\JsonResponse;
+
+/**
+ * Comment controler
+ *
+ * In this controller describes the functions of describes the functions of adding, editing, deleting and display comment.
+ */
+class CommentController extends Controller {
+
+    /**
+     *  Method add
+     *
+     *  This method is responsible for create new comment
+     * 
+     *  @return If successful creation of new comment, returned template info about a new comment(method ajax) on  the page  "comments to task item". When an error occurs an error message
+     */
+    public function addAction(Request $request) {
+
+        $oParent = $this->getDoctrine()->getRepository('WWSCThalamusBundle:' . $request->get('type'))->find($request->get('parent'));
+        $fComment = $this->createForm(new CommentForm());
+        $oProject = $this->getDoctrine()->getRepository('WWSCThalamusBundle:Project')->findOneBy(array('slug' => $request->get('project')));
+        $isTimeTracker = false;
+        if ($request->get('type') == 'TaskItem' && ($this->container->get('security.context')->isGranted('ROLE_PROVIDER') || $this->container->get('security.context')->isGranted('ROLE_FREELANCER'))) {
+            if ($oParent->getTask()->getIsTimeTracker()) {
+                $isTimeTracker = true;
+                $fComment->add('time_tracker', new \WWSC\ThalamusBundle\Form\TimeTrackerForm());
+            }
+        }
+        if ($request->getMethod() == 'POST') {
+            $output = array();
+            $fComment->bind($request);
+            if ($fComment->isValid()) {
+                $em = $this->getDoctrine()->getManager();
+                $fComment = $fComment->getData();
+                $fComment->setParentId($oParent->getId());
+                $fComment->setType($request->get('type'));
+                $em->persist($fComment);
+                if ($isTimeTracker) {
+                    $fComment->getTimeTracker()->setComment($fComment);
+                }
+                $em->flush();
+                if ($request->get('aFiles')) {
+                    \WWSC\ThalamusBundle\Entity\Files::saveAttachmentFiles($request->get('aFiles'), $fComment->getId(), $oProject, 'Comment');
+                }
+                if ($request->get('type') == 'TaskItem' && ($this->container->get('security.context')->isGranted('ROLE_PROVIDER') || $this->container->get('security.context')->isGranted('ROLE_FREELANCER'))) {
+                    if ($fComment->getParentInfo()->getActiveSubscribed() != $request->get('aSubspeople')) {
+                        \WWSC\ThalamusBundle\Entity\SubscribeEmail::saveSubscribeEmail($request->get('aSubspeople'), $fComment->getParentInfo()->getId(), 'TaskItem');
+                        $output['notificationSidebar'] = $this->renderView('WWSCThalamusBundle:SubscribeEmail:comments_notification-sidebar.html.twig', array('oParent' => $fComment->getParentInfo(), 'type' => 'TaskItem', 'slugProject' => $request->get('project')));
+                    }
+                }
+                if ($fComment->getParentInfo()->getActiveSubscribed()) {
+                    $this->sendSubscribeEmail($fComment, 'Comment');
+                }
+                $output['htmlComment'] = $this->renderView('WWSCThalamusBundle:Comment:comment-info.html.twig', array('oComment' => $fComment, 'slugProject' => $request->get('project')));
+                return new JsonResponse($output);
+            }
+            $errors = $fComment->getErrors();
+            $output['error'] = $errors[0]->getMessage();
+            return new JsonResponse($output);
+        }
+        return $this->render('WWSCThalamusBundle:Comment:add.html.twig', array('form' => $fComment->createView(), 'type' => $request->get('type'), 'oParent' => $oParent, 'slugProject' => $request->get('project')));
+    }
+
+    /**
+     *  Method edit
+     *
+     *  This method is responsible  for edit comment
+     * 
+     *  @return If successful updated  comment, returned template info about updated comment(method ajax) on  the page  "comments to task item". When an error occurs an error message
+     */
+    public function editAction(Request $request) {
+        $oComment = $this->getDoctrine()->getRepository('WWSCThalamusBundle:Comment')->find($request->get('id'));
+        $oProject = $this->getDoctrine()->getRepository('WWSCThalamusBundle:Project')->findOneBy(array('slug' => $request->get('project')));
+        $fComment = $this->createForm(new CommentForm(), $oComment);
+        if ($oComment->getTimeTracker()) {
+            $fComment->add('time_tracker', new \WWSC\ThalamusBundle\Form\TimeTrackerForm());
+        }
+        if ($request->getMethod() == 'POST') {
+            $output = array();
+            $fComment->bind($request);
+            if ($fComment->isValid()) {
+                $fComment = $fComment->getData();
+                $em = $this->getDoctrine()->getManager();
+                $em->persist($fComment);
+                $em->flush();
+                if ($request->get('aFiles')) {
+                    \WWSC\ThalamusBundle\Entity\Files::saveAttachmentFiles($request->get('aFiles'), $fComment->getId(), $oProject, 'Comment');
+                }
+                if ($fComment->getType() == 'TaskItem') {
+                    if ($fComment->getParentInfo()->getActiveSubscribed() != $request->get('aSubspeople')) {
+                        \WWSC\ThalamusBundle\Entity\SubscribeEmail::saveSubscribeEmail($request->get('aSubspeople'), $fComment->getParentInfo()->getId(), 'TaskItem');
+                        $output['notificationSidebar'] = $this->renderView('WWSCThalamusBundle:SubscribeEmail:comments_notification-sidebar.html.twig', array('oParent' => $fComment->getParentInfo(), 'type' => 'TaskItem', 'slugProject' => $request->get('project')));
+                    }
+                }
+                $output['htmlComment'] = $this->renderView('WWSCThalamusBundle:Comment:comment-info.html.twig', array('oComment' => $fComment, 'slugProject' => $request->get('project')));
+                return new JsonResponse($output);
+            }
+            $errors = $fComment->getErrors();
+            $output = array();
+            $output['error'] = $errors[0]->getMessage();
+            return new JsonResponse($output);
+        }
+        return $this->render('WWSCThalamusBundle:Comment:edit.html.twig', array('form' => $fComment->createView(), 'slugProject' => $request->get('project'), 'oComment' => $oComment));
+    }
+
+    /**
+     *  Method delete
+     * 
+     *  This method is responsible for deletecomment
+     * 
+     *  @return If successful deleteed  comment, delete this comment (method jquery) on  the page  "comments to task item".
+     */
+    public function deleteAction(Request $request) {
+        $em = $this->getDoctrine()->getManager();
+        $oComment = $this->getDoctrine()->getRepository('WWSCThalamusBundle:Comment')->find($request->get('id'));
+        if (!$this->container->get('security.context')->isGranted('ROLE_PROVIDER') && $oComment->getType() == 'TaskItem') {
+            return $this->render('WWSCThalamusBundle:Content:not_permission.html.twig');
+        }
+
+        $oComment->setIsDeleted(1);
+        $em->flush();
+        return new Response(1);
+    }
+
+    /**
+     *  Method images
+     *
+     *  This method is responsible for display all images for comments
+     */
+    public function imagesAction(Request $request) {
+        $oComment = $this->getDoctrine()->getRepository('WWSCThalamusBundle:Comment')->find($request->get('id'));
+        return $this->render('WWSCThalamusBundle:Comment:images.html.twig', array('aImages' => $oComment->getFiles("IMG")));
+    }
+
+    /**
+     *  Method send comment to email
+     *
+     *  The method responsible for  sending  comment  to users who have subscribed to this task
+     */
+    public function sendSubscribeEmail($object, $type) {
+        if ($object->getType() == 'Message') {
+            $subject = 'Re:[' . $object->getParentInfo()->getProject()->getName() . '] ' . $object->getParentInfo()->getTitle();
+            $template = 'subscribe_comment_to_message.txt.twig';
+        } elseif ($object->getType() == 'TaskItem') {
+            $subject = 'Re:[' . $object->getParentInfo()->getTask()->getProject()->getName() . '] ' . $object->getParentInfo()->getDescription();
+            $template = 'subscribe_comment_to_task.txt.twig';
+        }
+        $aUsers = $object->getParentInfo()->getActiveSubscribed('info');
+        $message = \Swift_Message::newInstance()
+                ->setSubject($subject)
+                ->setFrom($this->container->getParameter('admin_email'))
+                ->setReplyTo(
+                        $object->getParentInfo()->getReplyUID()
+                        . "@" . $this->container->getParameter('auto_reply_email_domain')
+                )
+                ->setContentType("text/html")
+                ->setTo($aUsers['email'])
+                ->setBody($this->renderView('WWSCThalamusBundle:Mail:' . $template, array(
+                    'oElement' => $object,
+                    'aUsers' => $aUsers['name']
+        )));
+        $this->get('mailer')->send($message);
+    }
+
+}
+

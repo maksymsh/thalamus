@@ -1,0 +1,95 @@
+{% extends "WWSCThalamusBundle:Content:layout.html.twig" %}
+{% block title %}
+    {% trans %}Personal  timetracking{% endtrans %}
+{% endblock %} 
+{% block content %}
+
+    <div class="row">
+        <div class="panel panel-default col-md-12">
+            <div class="panel-heading  col-xs-12">
+                <div class="col-xs-6">
+                    {% trans %}Personal  timetracking{% endtrans %}
+                </div>
+            </div>
+            <div class="panel-body personal-timetracking">
+                <div class="row margin-top-2x">
+                    <div class="col-md-12  margin-top-2x">
+                        <div class="float-left font-bold"><a href="{{ url ('wwsc_thalamus_personal_timetracking') }}?date={{ app.user.prevDay(date) }}"><<</a> </div>
+                        <input date-format-js="{{app.user.convertDateFormat(date)}}" type="text" id="filter_personal_timetracking" class="min-form-control datepicker" value="{{ date }}">
+                        <div class="float-left font-bold"><a href="{{ url ('wwsc_thalamus_personal_timetracking') }}?date={{ app.user.nextDay(date) }}">>></a></div>
+                    </div>
+                    <div class="col-md-4">
+                        <div id='calendar'
+                             {% if  app.user.role == 'ROLE_ACCOUNTING' or (app.user.convertDateFormat(date,"object")|date("z") <= "now"|date("z")) and (app.user.convertDateFormat(date,"object")|date("z") >= "now"|date_modify("-2 day")|date("z"))%}
+                                 data-editable = 1
+                             {% else %}
+                                 data-editable = 0
+                             {% endif %}
+                             data-url="{{ url ('wwsc_thalamus_personal_timetracking') }}?date={{ date }}&ajax=1&user={{ app.request.get('user') }}">
+                        </div>
+                    </div>
+                    <div class="col-md-8 margin-top-1x box-all-tracked-hours">
+                        <div class="col-md-12 box-timetracking-info">
+                            <div class="col-md-12 without-padding">
+                                <div class="col-md-6 without-padding">
+                                    <h2>{% trans %}Selected day{% endtrans %}</h2>
+                                    <div class="total-hours-select-day">
+                                        <span class="day_billable_hours">{{app.user.formatHours(aTotalHours["total_billable_hours"]) }} </span> {% trans %} billable hours{% endtrans %}<br>
+                                        <span class="day_non_billable_hours">{{app.user.formatHours(aTotalHours['total_non_billable_hours'])}} </span> {% trans %} non billable{% endtrans %}
+                                    </div>
+                                </div>
+                                {% if  app.user.role == 'ROLE_ACCOUNTING' %}
+                                    <div class="col-md-6" class="user-personal-timetracking-box">
+                                        <h2>{% trans %}Selected user{% endtrans %}</h2>
+                                        {% include 'WWSCThalamusBundle:TimeTracker:filter-responsible.html.twig' with {
+                                              'aUsersForFilterTime': aUsersForFilterTime,
+                                              'filter_responsible':app.request.get('user')?:app.session.get('userPersonalTimetracking'),
+                                            }
+                                        %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <hr>
+
+                            {% if  app.user.role == 'ROLE_ACCOUNTING' or (app.user.getDateObject(date)|date("z") <= "now"|date("z")) and (app.user.getDateObject(date)|date("z") >= "now"|date_modify("-3 day")|date("z"))%}
+                                <a  class="btn btn-primary add-manuel-entry margin-top-2x" date-url = "{{ url ('wwsc_thalamus_add_personal_timetracking') }}?date={{ date }}">Add manual entry</a>
+                                <div class="form-box"></div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-12 box-tracked-hours">
+                            <div class="col-md-12">
+                                <h3>{% trans %}My Tracked{% endtrans %}</h3>
+                                {% include 'WWSCThalamusBundle:TimeTracker:table-tracked-hours.html.twig' with { 'aSumPersonalTrackedHours': aSumPersonalTrackedHours } %}
+                            </div>
+                            {% if  app.user.role == 'ROLE_ACCOUNTING' %}
+                                <div class="col-md-12">
+                                    <h3>{% trans %}My company tracked hours{% endtrans %}</h3>
+                                    {% include 'WWSCThalamusBundle:TimeTracker:table-tracked-hours.html.twig' with { 'aSumPersonalTrackedHours': aSumCompanyTrackedHours } %}
+                                </div>
+                                <div class="col-md-12">
+                                    <h3>{% trans %}All thalamus tracked hours{% endtrans %}</h3>
+                                    {% include 'WWSCThalamusBundle:TimeTracker:table-tracked-hours.html.twig' with { 'aSumPersonalTrackedHours': aSumAccountTrackedHours } %}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>     
+    </div>
+{% endblock %}       
+
+{% block stylesheets %}
+    <link href="{{ asset('bundles/wwscthalamus/css/bootstrap-datepicker.css') }}" type="text/css" rel="stylesheet" />      
+    <link href="{{ asset('bundles/wwscthalamus/fullcalendar/fullcalendar.css') }}" type="text/css" rel="stylesheet" />
+    <link rel="stylesheet" href="{{ asset('bundles/wwscthalamus/css/bootstrap-select.min.css') }}">
+{% endblock %}
+{% block javascripts %}
+    <script src="{{ asset('bundles/wwscthalamus/fullcalendar/moment.min.js') }}"></script>
+    <script src="{{ asset('bundles/wwscthalamus/fullcalendar/fullcalendar.min.js') }}"></script>
+    <script src="{{ asset('bundles/wwscthalamus/js/time-tracker.js') }}"></script>
+    <script src="{{ asset('bundles/wwscthalamus/js/bootstrap-datepicker.js') }}"></script>
+    <script src="{{ asset('bundles/wwscthalamus/js/bootstrap-datepicker.de.js') }}"></script>
+    <script src="{{ asset('bundles/wwscthalamus/js/bootstrap-select.min.js') }}"></script>
+{% endblock %}

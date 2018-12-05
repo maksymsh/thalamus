@@ -1,0 +1,56 @@
+<div class="relations-task">       
+        <strong>
+            <i class="fa fa-code-fork" aria-hidden="true"></i>
+            {% trans %} Relations: {% endtrans %}
+          </strong>
+           {% if oItem.parentTask %}
+            <div class=" parent-tasks {% if oItem.parentTask.status == 1 %} close-item {% endif %}">
+                <span>
+
+                &nbsp;&nbsp;&nbsp;<i class="fa fa-level-up" aria-hidden="true"></i>
+                {% trans %} Mother: {% endtrans %} </span>
+                <a href="{{path('wwsc_thalamus_project_task_item_comments',{'project':oItem.parentTask.task.project.slug,'task':oItem.parentTask.task.id, 'id':oItem.parentTask.id })}}">
+                    #{{oItem.parentTask.id }} {{ oItem.parentTask.description }}
+                </a>
+                <span>—
+                  {% if  oItem.parentTask.state %}
+                    {{ oItem.parentTask.stateValue }} -
+                  {% endif %}
+                  {% if  oItem.parentTask.responsible %}
+                    {{ oItem.parentTask.responsible.firstName }} {{ oItem.parentTask.responsible.lastName }}
+                  {% endif %}
+                </span>
+           </div>
+           {% endif %}
+           {% if oItem.childTasks is defined %}
+            <div class="heading-light childs-tasks">
+                {% for childTask in oItem.childTasks %}
+                    <div class="childs-task {% if childTask.status == 1 %} close-item {% endif %}">
+                        &nbsp;&nbsp; {% trans %} Child {% endtrans %}
+                        <a href="{{path('wwsc_thalamus_project_task_item_comments',{'project':childTask.task.project.slug,'task':childTask.task.id, 'id':childTask.id })}}">
+                            #{{childTask.id }} {{ childTask.description }}
+                        </a>
+                        <span>—
+                          {% if  childTask.state %}
+                            {{ childTask.stateValue }} -
+                          {% endif %}
+                          {% if  childTask.responsible %}
+                            {{ childTask.responsible.firstName }} {{ childTask.responsible.lastName }}
+                          {% endif %}
+                        </span>
+                         <a class="btn-delete-relation-task" href="{{ path('wwsc_thalamus_project_relation_task_delete',{'project':childTask.task.project.slug, 'id': childTask.id}) }}">
+                           <i class="fa fa-chain-broken" aria-hidden="true"></i>
+                         </a>
+                    </div>
+                {% endfor %}
+                <a href="#selected-relations-task" id="link-show-modal-relations-task" data-url="{{path('wwsc_thalamus_project_selected_relations_task',{'project':oItem.task.project.slug,'task':oItem.task.id, 'item':oItem.id })}}">
+                  <i class="fa fa-plus" aria-hidden="true"></i>
+                  {% trans %} Add relation {% endtrans %}
+                </a>
+           </div>
+           {% endif %}    
+    <div class="modal fade"  id="selected-relations-task">
+        <div class="modal-content">
+        </div>
+    </div>
+</div>

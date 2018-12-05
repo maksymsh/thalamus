@@ -1,0 +1,147 @@
+{% extends "WWSCThalamusBundle:Content:layout.html.twig" %}
+{% block title %}
+    {% trans %}Edit project{% endtrans %} {{ form.name.vars.value }}
+{% endblock %} 
+{% block content %}   
+    <div class="row">
+        <div class="panel panel-default col-md-9">
+            <div class="panel-heading">
+                {% trans %}Project Settings{% endtrans %}
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                    {% include 'WWSCThalamusBundle:Content:flash_notice.html.twig' %}
+                    {% if form_errors(form) %}
+                        <div class="alert alert-error error" role="alert">{{ form_errors(form) }}</div>
+                    {% endif %}
+                    <div class="panel-forms form-edit-project">
+                        <form action="{{ path('wwsc_thalamus_project_edit', {'project': oProject.slug} ) }}"  method="Post">
+                            <h1>{% trans %}Project name{% endtrans %}</h1>
+                            <p>{% trans %}The project name appears at the top of every page.{% endtrans %}</p>
+                            <div class="col-xs-12 form-group">   
+                                {{ form_widget(form.name ) }}
+                            </div>
+                            <div class="col-xs-12 form-group without-padding">
+                                <div class="col-md-5 without-padding ">
+                                    <div class="float-left col-md-3 without-padding">
+                                        <h4>{% trans %}Project ID {% endtrans %}</h4>
+                                    </div>
+                                    <div class="col-md-5 without-padding">
+                                        {{ form_widget(form.project_id ) }}
+                                    </div>
+                                </div>
+                            </div>
+                            <h1  class="col-xs-12 without-padding">{% trans %}Overview page announcement{% endtrans %}</h1>
+                            <p>
+                                {% trans %}Create an announcement that appears at the top of this project's Overview page. 
+                                    You can use this to describe the project, to make a special announcement, etc.{% endtrans %}
+                                </p>
+                                <div class="col-xs-12 form-group">   
+                                    {{ form_widget(form.description ) }}
+                                    <div class="col-xs-12 form-group">
+                                        {{ form_widget(form.is_public_description ) }}<span class="right_label">{% trans %}Is public description{% endtrans %}</span>
+                                    </div>
+                                </div>
+                                <div class="col-xs-12 form-group">
+                                    {% trans %}JSON-Config{% endtrans %}
+                                    <div class="col-xs-12 form-group">
+                                        {{ form_widget(form.config ) }}
+                                    </div>
+                                </div>
+                                <h1  class="col-xs-12 without-padding">{% trans %}Finance{% endtrans %}</h1>
+                                <div class="col-xs-12 form-group">
+                                    <div class="col-md-6"> 
+                                        {% trans %}Project-type{% endtrans %}
+                                        {{ form_widget(form.type) }}
+                                    </div>
+                                </div>
+                                <div class="col-xs-12 form-group">
+                                    <div class="col-md-6">
+                                        {% trans %}Project budget{% endtrans %}
+                                        {{ form_widget(form.budget) }}
+                                    </div>
+                                </div>
+                                <div class="col-xs-12 form-group">
+                                    {{ form_widget(form.is_billable_hours ) }}<span class="right_label">{% trans %}Is hours billable{% endtrans %}</span>
+                                </div>
+                                <h1  class="col-xs-12 without-padding">{% trans %}Global task list{% endtrans %}</h1>
+                                <div class="col-xs-12 form-group">
+                                    {{ form_widget(form.exlude_from_global_task_list ) }}<span class="right_label">{% trans %}Exlude from a global task list{% endtrans %}</span>
+                                </div>
+                                <h1  class="col-xs-12 without-padding">{% trans %}Select the primary company for this project{% endtrans %}</h1>
+                                <p>
+                                    {% trans %}Select the company you want this project to be associated with in the "Your Projects" list on the Dashboard. The company name will also be displayed at the top of each project page and elsewhere where necessary.
+                                        Finally, the company logo will appear at the top of the All Messages page for this project.{% endtrans %}
+                                    </p>
+                                    <div class="col-xs-12 form-group">
+                                        <div class="col-md-6">
+                                            {% trans %}File under this company:{% endtrans %} {{ form_widget(form.responsible_company ) }}
+                                        </div>
+                                    </div>
+                                    <h1  class="col-xs-12 without-padding">{% trans %}Projectleader{% endtrans %}</h1>
+                                    <div class="col-xs-12 form-group">
+                                        <div class="col-md-6 projectleaderBox">
+                                            {{ form_widget(form.projectleader ) }}
+                                        </div>
+                                    </div>    
+                                    <h1 class="col-xs-12 without-padding">{% trans %}Post tasks via email{% endtrans %}</h1>    
+                                    <div class="col-xs-12 form-group reply-UID-Task">
+                                        <div class="col-md-12">
+                                            <span>{% trans %}Send an email to{% endtrans %} </span> {{ form_widget(form.reply_uid_task ) }}@thalamus.io  {% trans %}and it will be posted as a task to the task list selected below.{% endtrans %}
+                                        </div>
+                                        <div class="col-md-6 margin-top-1x">
+                                            <div>{% trans %}Please select task list:{% endtrans %} {{ form_widget(form.post_task_via_email ) }}</div>
+                                        </div>
+                                    </div>
+                                    {{ form_widget(form._token) }}
+                                    <h1 class="col-xs-12 without-padding"></h1>
+                                    <div class="col-xs-12 form-group">
+                                        <div class="col-md-6 margin-top-1x">
+                                            <div>
+                                                {% trans %}Google Drive - Ticket Folder ID:{% endtrans %}
+                                                {{ form_widget(form.google_drive_folder_id ) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-12 btn-action">
+                                        <button class="btn btn-sm btn-primary btn-save" type="submit">{% trans %}Save changes{% endtrans %}</button>
+                                        {% trans %}or{% endtrans %} <a class="btn-cancel" href="{{ path ('wwsc_thalamus_account_dashboard') }}"> {% trans %}Cancel{% endtrans %} </a> 
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>  
+                </div>
+                <div class="col-md-3 sidebar">
+                    {% if is_granted('ROLE_PROVIDER') %} 
+                        <div class="col">
+                            <div class="title-panel">{% trans %}Delete this project?{% endtrans %}</div>
+                            <div class="info-panel">
+                                {% trans %}Deleting a project deletes all the data associated with this project (messages, milestones, to-do lists, files, writeboards, etc).{% endtrans %}<br> 
+                                <a class="btn-delete-project" href="{{path('wwsc_thalamus_project_delete',{'project': oProject.slug })}}">{% trans %}Yes, I understand — delete this project{% endtrans %}</a>
+                            </div>
+                            <div class="title-panel">{% trans %}Close this project?{% endtrans %}</div>
+                            <div class="info-panel">
+                                <p>{% trans %}Closed project are not displayed at the project overview anymore.{% endtrans %}</p>
+                                <p>{% trans %}Client do not have access to the project anymore.{% endtrans %}</p>
+                                {% set statusProject = oProject.closedProject == 1? 'open': 'closed' %}
+                                <div>
+                                    <input class ="change-status-project" data-href="{{path('wwsc_thalamus_project_change_status',{'project': oProject.slug, 'status': statusProject })}}" type = "checkbox"  {{oProject.closedProject == 1? 'checked ': ''}}>
+                                    {% trans %}Project is closed.{% endtrans %}
+                                </div>   
+                            </div>   
+                        </div>
+                    {% endif %}    
+                </div><!--/span-->                    
+            </div>
+            {% endblock %}       
+
+                {% block stylesheets %}
+                    <link href="{{ asset('bundles/wwscthalamus/markdown/css/bootstrap-markdown.min.css') }}" type="text/css" rel="stylesheet" />
+                {% endblock %}
+                {% block javascripts %}
+                    <script src="{{ asset('bundles/wwscthalamus/markdown/js/to-markdown.js') }}"></script>
+                    <script src="{{ asset('bundles/wwscthalamus/markdown/js/markdown.js') }}"></script>
+                    <script src="{{ asset('bundles/wwscthalamus/markdown/js/bootstrap-markdown.js') }}"></script>
+                {% endblock %}
+

@@ -1,0 +1,68 @@
+{% for typeEntity, aSearchResult  in  aSearchResults %}
+    {% for aSearchResultEntity  in aSearchResult %}
+        <div class="search-result col-md-10">
+            <div class="desc">
+            <span class="type-entity {{ typeEntity | lower}}">{{ typeEntity }}</span>
+                {% if   typeEntity == 'Message' %}    
+                    {% autoescape false %}
+                        <a href="{{path('wwsc_thalamus_project_message_comments',{'project': projectSlug, 'id': aSearchResultEntity['message_id']} )}}">
+                            {{ aSearchResultEntity['message_title']  }}
+                        </a>
+                        <div class="more-info">
+                            {{ aSearchResultEntity['message_description']  }}
+                        </div>   
+                    {% endautoescape %}
+                {% elseif typeEntity == 'Comment'%}
+                    {% autoescape false %}
+                        {% if aSearchResultEntity['comment_type'] == 'TaskItem' %}
+                            <a href="{{path('wwsc_thalamus_project_task_item_comments',{'project': projectSlug, 'task': aSearchResultEntity['task_id'], 'id': aSearchResultEntity['comment_parent_id']} )}}">
+                                {{ aSearchResultEntity['comment_description']  }}
+                            </a>
+                        {% elseif  aSearchResultEntity['comment_type'] == 'Message' %}
+                            <a href="{{path('wwsc_thalamus_project_message_comments',{'project': projectSlug, 'id': aSearchResultEntity['comment_parent_id']} )}}">
+                                {{ aSearchResultEntity['comment_description']  }}
+                            </a>
+                        {% endif %}
+                    {% endautoescape %}
+                {% elseif  typeEntity == 'Taskitem' %}    
+                    {% autoescape false %}
+                        <a href="{{path('wwsc_thalamus_project_task_item_comments',{'project': projectSlug, 'task': aSearchResultEntity['task_id'], 'id': aSearchResultEntity['task_item_id']} )}}">
+                            {{ aSearchResultEntity['task_description']  }}
+                        </a>
+                    {% endautoescape %}
+                {% elseif  typeEntity == 'Task' %}    
+                    {% autoescape false %}
+                        <a href="{{path('wwsc_thalamus_project_task_show',{'project': projectSlug, 'id': aSearchResultEntity['task_id']} )}}">
+                            {{ aSearchResultEntity['tasklist_title']  }}
+                        </a>
+                        <div class="more-info">
+                            {{ aSearchResultEntity['tasklist_description']  }}
+                        </div>   
+                    {% endautoescape %}
+                    {% elseif  typeEntity == 'Writeboard' %}    
+                        {% autoescape false %}
+                            <a href="{{path('wwsc_thalamus_project_writeboard_show',{'project': projectSlug, 'number': aSearchResultEntity['writeboard_number']} )}}">
+                                {{ aSearchResultEntity['writeboard_title']  }}
+                            </a>
+                            <div class="more-info">
+                                {{ aSearchResultEntity['writeboard_description']  }}
+                            </div>   
+                        {% endautoescape %}
+                    {% elseif  typeEntity == 'Files' %}    
+                        {% autoescape false %}
+                            <a href="{{path('wwsc_thalamus_project_file_download',{'project': projectSlug, 'name': aSearchResultEntity['file_name']} )}}">
+                                {{ aSearchResultEntity['file_name']  }}
+                            </a>
+                            <div class="more-info">
+                                {{ aSearchResultEntity['file_description']  }}
+                            </div>   
+                        {% endautoescape %}    
+                {% endif %}
+            </div>    
+            <div class="data">
+                {% trans %}Posted by{% endtrans %}  {{aSearchResultEntity['user_first_name']}}  {{aSearchResultEntity['user_last_name']}},  {{ aSearchResultEntity['created_date']| date("j F Y") }}
+            </div>
+        </div>
+    {% endfor %} 
+{% endfor %}                                   
+                              

@@ -1,0 +1,80 @@
+<div class="avatar-user">
+    {% if app.user.avatar %}
+        {% set icon = (asset('uploads/user/') ~ app.user.avatar) %}
+    {% else %}
+        {% set icon = asset('bundles/wwscthalamus/images/user_icon.png') %}
+    {% endif %}
+    <img src="{{ icon | imagine_filter('my_thumb',{"thumbnail": {"size": [48, 48] }}) }}">
+</div>
+<form class="form-add-comment" action="{{ path('wwsc_thalamus_project_comment_add', {'project':slugProject,'type':type,'parent':oParent.id})}}" method="Post">
+    <div class="error"></div>
+    <div class="form-group">
+        <p>{% trans %} Leave a comment...{% endtrans %}</p>
+        <div class="markdown">
+        {% if form.time_tracker is defined and ((is_granted('ROLE_PROVIDER')) or  (is_granted('ROLE_FREELANCER')))%}
+            <textarea id="wwsc_thalamusbundle_comment_description" name="wwsc_thalamusbundle_comment[description]"  data-task-id="{{ oParent.id }}" data-provide="markdown" rows="5"></textarea>
+        {% else %}
+            <textarea id="wwsc_thalamusbundle_comment_description" name="wwsc_thalamusbundle_comment[description]" data-task-id="{{ oParent.id }}"  required="required" data-provide="markdown" rows="5"></textarea>
+        {% endif %}
+        </div>
+    </div>
+    {% if (is_granted('ROLE_PROVIDER')) or  (is_granted('ROLE_FREELANCER')) %}
+        {% if form.time_tracker is defined %}
+            <div class="form-group time-tracker-form">
+                <h3> {% trans %} Time tracking to this comment{% endtrans %}</h3>
+                {% include 'WWSCThalamusBundle:Comment:time-tracker-form.html.twig' with {'form':form.time_tracker, 'isBillableHours':oParent.task.project.isBillableHours} %}
+            </div>
+        {% endif %}
+    {% endif %}
+    {% if type == 'TaskItem'%}
+        {% if (is_granted('ROLE_PROVIDER')) %}
+            <div class="col-md-12 form-group">
+                {{ form_widget(form.private ) }}
+                {% trans %} Private: (Visible only to agency companies){% endtrans %}
+            </div>
+        {% endif %}
+        <div class="col-md-12 info-panel">
+            <div class="col-md-6">
+                Status
+                <select id="wwsc_thalamusbundle_task_item_state" name="wwsc_thalamusbundle_task_item[state]" class="form-control">
+                    <option value="">{% trans %}  Select please ...{% endtrans %}</option>
+                    {% for taskItemStateKey, tasItemState in aTaskItemStates %}
+                        <option {% if oParent.state == taskItemStateKey %}selected="selected" {% endif %} value="{{ taskItemStateKey }}">{{ tasItemState }}</option>
+                    {%endfor%}
+                </select>
+            </div>
+            <div class="col-md-6">
+                {% trans %} Who's responsible?{% endtrans %}
+                <select id="wwsc_thalamusbundle_task_item_responsible" name="wwsc_thalamusbundle_task_item[responsible]" class="form-control">
+                    <option value="{{ app.user.id }}" >{% trans %}Me{% endtrans %}({{ app.user.firstName }} {{ app.user.lastName }})</option>
+                    <option disabled value="">----------</option>
+                    {% for oResponsibleCompany in oParent.task.project.subspeople(false,false,true) %}
+                        {% if (oResponsibleCompany ['role'] == 'ROLE_PROVIDER') or  (oParent.task.visibleClient == 1 and oResponsibleCompany['role'] == 'ROLE_CLIENT') or (oParent.task.visibleFreelancer == 1 and oResponsibleCompany['role'] == 'ROLE_FREELANCER')%}
+                            {% if oResponsibleCompany.people is defined %}
+                                {% if oResponsibleCompany['people']|length > 1 or (oResponsibleCompany['people']|length == 1 and app.user.id in oResponsibleCompany['people']|keys == false ) %}
+                                    <option disabled value="">{{ oResponsibleCompany['name'] }}</option>
+                                    {% for key,val in oResponsibleCompany['people'] %}
+                                        {% if app.user.id != key %}
+                                            <option {% if key == oParent.responsible.id %} selected {% endif %}  value={{ key }} >{{ val }}</option>
+                                        {% endif %}
+                                    {%endfor%}
+                                    <option disabled value="">----------</option>
+                                {% endif %}
+                            {% endif %}
+                        {% endif %}
+                    {%endfor%}
+                </select>
+            </div>
+        </div>
+    {% endif %}
+    <div class="form-group">
+        {% include 'WWSCThalamusBundle:File:attachment-form.html.twig'%}
+    </div>
+    <input type="hidden" id="wwsc_thalamusbundle_comment__token" name="wwsc_thalamusbundle_comment[_token]" value="{{ form._token.vars.value }}">
+    {% if type == 'TaskItem'%}
+        {% include 'WWSCThalamusBundle:SubscribeEmail:block-subscribed-people.html.twig'  with {'aSubsCompanies': oParent.task.project.subspeople(false,false,true) , 'activeSubscribed':oParent.activeSubscribed, 'type': 'Task', 'oParent':oParent.task } %}
+    {% endif %}
+    <div class="form-group  btn-action">
+        <button class="btn btn-save btn-primary" type="submit">{% trans %}Add this Comment{% endtrans %}</button>
+    </div>
+</form>

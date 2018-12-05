@@ -1,0 +1,541 @@
+<?php
+
+namespace WWSC\ThalamusBundle\Entity;
+
+use WWSC\ThalamusBundle\WWSCThalamusBundle;
+use Doctrine\Common\Collections\ArrayCollection;
+use Gedmo\Mapping\Annotation as Gedmo;
+use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+use Doctrine\Common\Collections\Criteria;
+use Doctrine\ORM\Event\LifecycleEventArgs;
+
+/**
+ * Cost
+ *
+ * @ORM\Entity
+ * @ORM\HasLifecycleCallbacks
+ * @ORM\Table(name="finance")
+ */
+class Finance extends Base{
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="id", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
+     */
+    private $id;
+
+    /**
+     * @ORM\Column(name="invoice_date", type="datetime", nullable=true)
+    */
+    private $invoice_date;
+    
+    /**
+     * @ORM\Column(name="due_date", type="datetime", nullable=true)
+     */
+    private $due_date;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="description", type="text", nullable=true)
+     */
+    private $description;
+     /**
+     * @var float
+     *
+     * @ORM\Column(name="amount", type="float", nullable=true)
+     */
+    private $amount;
+   
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="status", type="integer", nullable=true)
+     */
+    private $status;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="vat_rate", type="integer", nullable=true)
+     */
+    private $vat_rate;
+    
+     /**
+     * @ORM\ManyToOne(targetEntity="WWSC\ThalamusBundle\Entity\Project", inversedBy="project")
+     */
+    private $project;
+    
+    private $save_to_log = 1;
+
+    /**
+     * @var \DateTime $created
+     *
+     * @ORM\Column(type="datetime")
+     * @Gedmo\Timestampable(on="create")
+     */
+    
+    private $created;
+
+    /**
+     * @var \DateTime $updated
+     * @Gedmo\Timestampable(on="update")
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $updated;
+
+    /**
+     * @var integer
+     * 
+     * @ORM\ManyToOne(targetEntity="WWSC\ThalamusBundle\Entity\User")
+     */
+    private $user_created;
+
+    /**
+     * @var integer
+     * 
+     * @ORM\ManyToOne(targetEntity="WWSC\ThalamusBundle\Entity\User")
+     */
+    private $user_updated;
+
+    /**
+     * @ORM\Column(name="is_deleted", type="boolean", nullable=true)
+     */
+    private $is_deleted = 0;
+
+    /**
+     * @ORM\Column(name="billable", type="boolean", nullable=true)
+     */
+    private $billable = 1;
+
+    /**
+     * Get id
+     *
+     * @return integer
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * Set invoiceDate
+     *
+     * @param \DateTime $invoiceDate
+     *
+     * @return Cost
+     */
+    public function setInvoiceDate($invoiceDate)
+    {
+        $this->invoice_date = new \DateTime($invoiceDate);
+        return $this;
+    }
+
+    /**
+     * Get invoiceDate
+     *
+     * @return \DateTime
+     */
+    public function getInvoiceDate()
+    {
+        if (gettype($this->invoice_date) == 'object') {
+            return $this->invoice_date->format('m/d/Y');
+        }
+        return $this->invoice_date;
+    }
+
+    /**
+     * Set dueDate
+     *
+     * @param \DateTime $dueDate
+     *
+     * @return Cost
+     */
+    public function setDueDate($dueDate)
+    {   
+        $this->due_date = new \DateTime($dueDate);
+        return $this;
+    }
+
+    /**
+     * Get dueDate
+     *
+     * @return \DateTime
+     */
+    public function getDueDate()
+    {
+         if (gettype($this->due_date) == 'object') {
+            return $this->due_date->format('m/d/Y');
+        }
+        return $this->due_date;
+    }
+
+    /**
+     * Set description
+     *
+     * @param string $description
+     *
+     * @return Cost
+     */
+    public function setDescription($description)
+    {
+        $this->description = $description;
+
+        return $this;
+    }
+
+    /**
+     * Get description
+     *
+     * @return string
+     */
+    public function getDescription()
+    {
+        return $this->description;
+    }
+
+    /**
+     * Set amount
+     *
+     * @param float $amount
+     *
+     * @return Cost
+     */
+    public function setAmount($amount)
+    {
+        $this->amount = str_replace(',', '.', $amount);
+        return $this;
+    }
+
+    /**
+     * Get amount
+     *
+     * @return float
+     */
+    public function getAmount()
+    {        
+        if(WWSCThalamusBundle::getContainer()->get('session')->get('_localeThalamus') == 'de') {
+             return  number_format($this->amount, 2, ',', '');
+        }
+        return  number_format($this->amount, 2, '.', ''); 
+    }
+
+    /**
+     * Set status
+     *
+     * @param integer $status
+     *
+     * @return Cost
+     */
+    public function setStatus($status)
+    {
+        $this->status = $status;
+
+        return $this;
+    }
+
+    /**
+     * Get status
+     *
+     * @return integer
+     */
+    public function getStatus($type = 'code')
+    {
+        if($type == 'value'){
+            if(isset($this::$aStatus[$this->status])){
+                return $this::$aStatus[$this->status];
+            }
+        }
+        return $this->status;
+    }
+
+    /**
+     * Set created
+     *
+     * @param \DateTime $created
+     *
+     * @return Cost
+     */
+    public function setCreated($created)
+    {
+        $this->created = $created;
+
+        return $this;
+    }
+
+    /**
+     * Get created
+     *
+     * @return \DateTime
+     */
+    public function getCreated()
+    {
+        return $this->created;
+    }
+
+    /**
+     * Set updated
+     *
+     * @param \DateTime $updated
+     *
+     * @return Cost
+     */
+    public function setUpdated($updated)
+    {
+        $this->updated = $updated;
+
+        return $this;
+    }
+
+    /**
+     * Get updated
+     *
+     * @return \DateTime
+     */
+    public function getUpdated()
+    {
+        return $this->updated;
+    }
+
+    /**
+     * Set isDeleted
+     *
+     * @param boolean $isDeleted
+     *
+     * @return Cost
+     */
+    public function setIsDeleted($isDeleted)
+    {
+        $this->is_deleted = $isDeleted;
+
+        return $this;
+    }
+
+    /**
+     * Get isDeleted
+     *
+     * @return boolean
+     */
+    public function getIsDeleted()
+    {
+        return $this->is_deleted;
+    }
+
+    /**
+     * Set userCreated
+     *
+     * @param \WWSC\ThalamusBundle\Entity\User $userCreated
+     *
+     * @return Cost
+     */
+    public function setUserCreated(\WWSC\ThalamusBundle\Entity\User $userCreated = null)
+    {
+        $this->user_created = $userCreated;
+
+        return $this;
+    }
+
+    /**
+     * Get userCreated
+     *
+     * @return \WWSC\ThalamusBundle\Entity\User
+     */
+    public function getUserCreated()
+    {
+        return $this->user_created;
+    }
+
+    /**
+     * Set userUpdated
+     *
+     * @param \WWSC\ThalamusBundle\Entity\User $userUpdated
+     *
+     * @return Cost
+     */
+    public function setUserUpdated(\WWSC\ThalamusBundle\Entity\User $userUpdated = null)
+    {
+        $this->user_updated = $userUpdated;
+
+        return $this;
+    }
+
+    /**
+     * Get userUpdated
+     *
+     * @return \WWSC\ThalamusBundle\Entity\User
+     */
+    public function getUserUpdated()
+    {
+        return $this->user_updated;
+    }
+
+    /**
+     * Set project
+     *
+     * @param \WWSC\ThalamusBundle\Entity\Project $project
+     *
+     * @return Finance
+     */
+    public function setProject(\WWSC\ThalamusBundle\Entity\Project $project = null)
+    {
+        $this->project = $project;
+
+        return $this;
+    }
+
+    /**
+     * Get project
+     *
+     * @return \WWSC\ThalamusBundle\Entity\Project
+     */
+    public function getProject()
+    {
+        return $this->project;
+    }
+    
+    public static $aStatus = array(
+       '1'=> 'planned',
+       '2' => 'send',
+       '3' => 'payed'
+    );
+
+    public static $aVATrate = array(
+       '19' => '19%',
+       '7' => '7%',
+       '0'=> 'n/a'
+    );
+        
+    public static function getFinanseAllProject($total = false , $project = false, $company = 'all'){
+        
+        $accountId = WWSCThalamusBundle::getContainer()->get('session')->get('account')->id; 
+        $qb = WWSCThalamusBundle::getContainer()->get('doctrine')->getManager()->createQueryBuilder();
+        $oUser = WWSCThalamusBundle::getContainer()->get('security.context')->getToken()->getUser();
+        if($oUser->getRole() == 'ROLE_ACCOUNTING'){
+            $aProjectsIds = $oUser->getProjectsForAccount(true);
+        }else{
+            $aProjectsIds = $oUser->getResponsibleProjects();
+        }
+        if(!$projectIds = implode(',', $aProjectsIds)){
+            $projectIds = 0;
+        }
+        if($project){
+            $whereProject = 'p.id ='.$project;
+        }else{
+            $whereProject = 'p.id  IN ('.$projectIds.') and p.is_deleted = 0 AND p.closed_project = 0';
+        }
+        $whereCompany = '';
+        if($company != 'all'){
+            $whereCompany = ' AND  p.responsible_company_id = '.$company;
+        }
+        
+        
+        $sql = 'SELECT
+                p.name  AS project_name,
+                p.slug  AS project_slug,
+                rs_comp.name  AS company_name,
+                rs_comp.id  AS company_id,
+                ROUND(p.budget, 2)  AS project_budget,
+                ROUND (f.already_billed, 2) AS already_billed,
+                ROUND (f.third_party, 2)  AS third_party,
+                ROUND (SUM(case when comp.roles = "ROLE_PROVIDER" then tt.time * comp.rate_internal else 0 end)/60, 2) AS  tracked_personnel_cost,
+                ROUND (SUM(case when comp.roles = "ROLE_FREELANCER" then tt.time * comp.rate_internal else 0 end)/60, 2) AS  tracked_freelancer_cost,
+                ROUND ((IFNULL(p.budget,0) - f.already_billed_not_planned), 2) as still_open_value,
+                ROUND ((IFNULL(p.budget,0)  + IFNULL(f.third_party,0) - SUM(IFNULL(tt.time,0) * IFNULL(comp.rate_internal,0))/60 ), 2) as  gross_profit,
+                
+                ROUND (SUM(case when (tt.billable = 1 and comp.roles = "ROLE_PROVIDER")  then tt.time * comp.rate_internal else 0 end)/60, 2) AS billable_personnel_cost,
+                ROUND (SUM(case when  (tt.billable = 1 and comp.roles = "ROLE_FREELANCER") then tt.time * comp.rate_internal else 0 end)/60, 2) AS billable_sub_contractor_cost,
+                ROUND (SUM(case when (tt.billable = 0 and comp.roles = "ROLE_PROVIDER")  then tt.time * comp.rate_internal else 0 end)/60, 2) AS non_billable_personnel_cost,
+                ROUND (SUM(case when  (tt.billable = 0 and comp.roles = "ROLE_FREELANCER") then tt.time * comp.rate_internal else 0 end)/60, 2) AS non_billable_sub_contractor_cost
+                
+                FROM project AS p
+                LEFT JOIN (SELECT project_id, 
+                           sum(case when amount > 0 then amount else 0 end) as already_billed,
+                           sum(case when amount < 0 then amount else 0 end) as third_party,
+                           sum(case when amount > 0 and  status <> 1 then amount else 0 end) as already_billed_not_planned
+                           FROM finance  WHERE is_deleted = 0 GROUP BY project_id)  AS f on(f.project_id = p.id)
+                LEFT JOIN task AS t ON (t.project_id = p.id AND t.is_deleted = 0 AND p.is_deleted = 0 AND p.closed_project = 0) 
+                LEFT JOIN  taskitem AS ti ON (ti.task_id = t.id AND ti.is_deleted = 0)
+                LEFT JOIN  comment AS c ON (ti.id = c.parent_id AND c.type = "TaskItem" AND c.is_deleted = 0)
+                LEFT JOIN  time_tracker AS tt ON (tt.comment_id = c.id)
+                LEFT JOIN  company_user AS cu ON (tt.person_id = cu.user_id)
+                LEFT JOIN  company AS comp ON (cu.company_id = comp.id AND comp.account_id = '.$accountId.' )
+                JOIN  company AS rs_comp ON ( p.responsible_company_id = rs_comp.id )
+                WHERE '.$whereProject.$whereCompany.'  
+                group by p.name, p.budget, f.already_billed, f.third_party  ORDER BY rs_comp.name, p.name';
+        
+        $aFinances = WWSCThalamusBundle::getContainer()->get('database_connection')->query($sql)->fetchAll();
+        if($total){
+            $aData = array('aFinances' => $aFinances);
+            $aTotalFinces = array();     
+            foreach ($aFinances as $k => $subArray) {
+              foreach ($subArray as $id => $value) {
+                  if(!isset($aTotalFinces[$id])){
+                    $aTotalFinces[$id] = $value;
+                  }else{
+                    $aTotalFinces[$id]+= $value;
+                  }
+              }
+            }
+            $aData['aTotalFinces'] = $aTotalFinces;
+            return $aData;
+        }else{
+            return $aFinances;
+        }
+        
+    }
+    
+    public function allCostLines(){
+        $accountId = WWSCThalamusBundle::getContainer()->get('session')->get('account')->id; 
+        $qb = WWSCThalamusBundle::getContainer()->get('doctrine')->getManager()->createQueryBuilder();
+        $oUser = WWSCThalamusBundle::getContainer()->get('security.context')->getToken()->getUser();
+        $projectIds = implode(',', $oUser->getProjectsForAccount(true));
+        $sql = 'SELECT
+                p.name  AS project_name,
+                p.slug  AS project_slug,
+                f.description  AS description,
+                f.status AS status,
+                f.due_date  AS due_date,
+                f.invoice_date  AS invoice_date,
+                f.amount  AS net_value,
+                IFNULL(f.amount + (f.amount * (f.vat_rate/100)),f.amount) AS gross_value
+                FROM project AS p
+                JOIN  finance AS f ON (p.id = f.project_id and p.is_deleted = 0 AND p.closed_project = 0 )
+                WHERE p.id  IN ('.$projectIds.')   
+                ORDER BY f.due_date DESC, p.name';
+        $aAllCostLines = WWSCThalamusBundle::getContainer()->get('database_connection')->query($sql)->fetchAll();
+        return $aAllCostLines;
+    }
+    
+    /**
+     * Set vatRate
+     *
+     * @param integer $vatRate
+     *
+     * @return Finance
+     */
+    public function setVatRate($vatRate)
+    {
+        $this->vat_rate = $vatRate;
+    
+        return $this;
+    }
+
+    /**
+     * Get vatRate
+     *
+     * @return integer
+     */    
+    public function getVatRate($type = 'code')
+    {
+        if($type == 'value'){
+            if(isset($this::$aVATrate[$this->vat_rate])){
+                return $this::$aVATrate[$this->vat_rate];
+            }
+        }
+        return $this->vat_rate;
+    }
+}

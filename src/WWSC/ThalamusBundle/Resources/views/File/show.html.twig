@@ -1,0 +1,62 @@
+<div class="file-item col-md-12 {% if (oFile.type == 'Message') %} message-in-files-list {% endif %}">
+    <div class="show-file">
+        <div class="actions-panel">
+            <a class="btn-delete-file"
+               href={{ path('wwsc_thalamus_project_file_delete',{'project': oFile.project.slug, 'id':oFile.id}) }}><img
+                        src="{{ asset('bundles/wwscthalamus/images/remove_icon.png') }}"></a>
+            <a class="btn-edit-file"
+               href={{ path('wwsc_thalamus_project_file_edit',{'project': oFile.project.slug, 'id':oFile.id}) }}>{% trans %}Edit{% endtrans %}</a>
+        </div>
+        <div class="file-icon col-md-1">
+            {% if (oFile.formatFile == "IMG") %}
+                <a href=" {{ oFile.fileSrc }} " class="fancy">
+                    <img src="{{ oFile.fileIcon| imagine_filter('my_thumb',{"thumbnail": {"size": [64, 52] }}) }}">
+                </a>
+            {% else %}
+                <a href="{{ oFile.fileSrc }}">
+                    <img src="{{ oFile.fileIcon }}">
+                </a>
+            {% endif %}
+        </div>
+        <div class="file-info col-md-11">
+            <div class="title">
+                <a href="{{ oFile.fileSrc }}">
+                    {{ oFile.name }}
+                </a>
+                {% if(oFile.private) %}
+                    <span class="private">{% trans %}private{% endtrans %}</span>
+                {% endif %}
+            </div>
+            {% if(oFile.parentInfo) %}
+                <div class="file-parent-info">
+                    {% if(oFile.type == 'Message') %}
+                        <a href="{{ path('wwsc_thalamus_project_message_comments',{'project':oFile.project.slug, 'id':oFile.parentInfo.id }) }}">{{ oFile.parentInfo.title }} </a>
+                    {% elseif (oFile.type == 'Comment') %}
+                        {% if(oFile.parentInfo.type == 'Message') %}
+                            <a href="{{ path('wwsc_thalamus_project_message_comments',{'project':oFile.project.slug, 'id':oFile.parentInfo.parentInfo.id }) }}">{{ oFile.parentInfo.parentInfo.description }}</a>
+                        {% else %}
+                            {% if oFile.parentInfo.parentInfo %}
+                                <a href="{{ path('wwsc_thalamus_project_task_item_comments',{'project':oFile.project.slug, 'task':oFile.parentInfo.parentInfo.task.id ,'id':oFile.parentInfo.parentInfo.id }) }}">{{ oFile.parentInfo.parentInfo.description }}</a>
+                            {% endif %}
+                        {% endif %}
+                    {% endif %}
+                    <span class="dash">—</span>
+                    {{ oFile.parentInfo.description|length > 100 ? oFile.parentInfo.description|slice(0, 100) ~ '...' : oFile.parentInfo.description }}
+                </div>
+            {% endif %}
+            {% if(oFile.description) %}
+                <div class="description">
+                    {{ oFile.description }}
+                </div>
+            {% endif %}
+            <div class="author">
+                {% trans %}by{% endtrans %} {{ oFile.userCreated.firstName }} {{ oFile.userCreated.lastName }}
+                {% if(oFile.category) %}
+                    {% trans %}in{% endtrans %} <a href="#">{{ oFile.category.name }}</a>
+                {% endif %}
+                {% trans %}on{% endtrans %} {{ oFile.created|date("d M") }}
+                , {{ (oFile.fileSize * 0.000000954)|round(2, 'ceil') }} Mb
+            </div>
+        </div>
+    </div>
+</div>

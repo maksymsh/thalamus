@@ -1,0 +1,486 @@
+wwsc_thalamus_account_dashboard:
+    path:     /
+    defaults: { _controller: WWSCThalamusBundle:Account:dashboard }
+
+wwsc_thalamus_short_task_link:
+    path:     /short-task-link/{task}
+    defaults: { _controller: WWSCThalamusBundle:TaskItem:shortTaskLink}
+
+wwsc_thalamus_show_short_info_task:
+    path:     /show-short-info-task/{task}
+    defaults: { _controller: WWSCThalamusBundle:TaskItem:showShortInfoTask}
+    
+wwsc_thalamus_presentation_mode:
+    path:     /presentation-mode
+    defaults: { _controller: WWSCThalamusBundle:Account:presentationMode }   
+    
+wwsc_thalamus_account_change:
+    path:     /changeAccount/{account}
+    defaults: { _controller: WWSCThalamusBundle:Account:changeAccount }
+
+wwsc_thalamus_account_all_people:
+    path:     /all_people
+    defaults: { _controller: WWSCThalamusBundle:Account:allPeople }
+
+
+wwsc_thalamus_account_order_project_list:
+    path:     /order_project_list/{order}
+    defaults: { _controller: WWSCThalamusBundle:Account:orderProjectList }
+    
+wwsc_thalamus_account_list_closed_projects:
+    path:     /list-closed-projects/
+    defaults: { _controller: WWSCThalamusBundle:Account:listClosedProjects }
+    
+wwsc_thalamus_account_my_todos:
+    path:     /my-todos/
+    defaults: { _controller: WWSCThalamusBundle:Task:myTodos}
+    
+wwsc_thalamus_account_tasks:
+    path:     /tasks/
+    defaults: { _controller: WWSCThalamusBundle:Account:showTasks}
+
+wwsc_thalamus_show_image_with_annotations:
+    path:     /project/{project}/image-with-annotations/{id}
+    defaults: { _controller: WWSCThalamusBundle:File:showImageWithAnnotations}
+
+wwsc_thalamus_project_add:
+    path:     /project/add
+    defaults: { _controller: WWSCThalamusBundle:Project:add }
+
+wwsc_thalamus_project_edit:
+    path:     /project/{project}/edit
+    defaults: { _controller: WWSCThalamusBundle:Project:edit }    
+
+wwsc_thalamus_project_delete:
+    path:     /project/{project}/delete
+    defaults: { _controller: WWSCThalamusBundle:Project:delete }  
+
+wwsc_thalamus_project_change_status:
+    path:     /project/{project}/status/{status}
+    defaults: { _controller: WWSCThalamusBundle:Project:changeStatus }
+    
+wwsc_thalamus_project_overview:
+    path:     /project/{project}/overview
+    defaults: { _controller: WWSCThalamusBundle:Project:overview }
+
+wwsc_thalamus_project_show_table:
+     path: /project/{project}/show-log/{page}
+     defaults: { _controller: WWSCThalamusBundle:Project:showTable, page: 1 }
+
+wwsc_thalamus_project_todos:
+    path:     /project/{project}/todos/{action}
+    defaults: { _controller: WWSCThalamusBundle:Task:list, action: null  }
+    
+wwsc_thalamus_project_task_add:
+    path:     /project/{project}/task/add
+    defaults: { _controller: WWSCThalamusBundle:Task:add }
+
+wwsc_thalamus_project_show_closed_task_items:
+    path: /project/{project}/task/{id}/show-closed-task-items/{offset}
+    defaults: { _controller: WWSCThalamusBundle:Task:getClosedTaskItems, offset: 0}
+    
+wwsc_thalamus_project_task_show:
+    path:     /project/{project}/task/{id}
+    defaults: { _controller: WWSCThalamusBundle:Task:show }
+
+wwsc_thalamus_project_search_task_by_id:
+    path:     /task/search-by-id
+    defaults: { _controller: WWSCThalamusBundle:Task:searchById }
+    
+wwsc_thalamus_project_task_edit:
+    path:     /project/{project}/task/{id}/edit
+    defaults: { _controller: WWSCThalamusBundle:Task:edit }
+        
+wwsc_thalamus_project_task_delete:
+    path:     /project/{project}/task/{id}/delete
+    defaults: { _controller: WWSCThalamusBundle:Task:delete }    
+
+wwsc_thalamus_project_task_item_edit:
+    path:     /project/{project}/task/{task}/item/{id}/edit
+    defaults: { _controller: WWSCThalamusBundle:TaskItem:edit }
+
+wwsc_thalamus_project_task_item_responsible:
+    path:     /project/{project}/task-list/responsible
+    defaults: { _controller: WWSCThalamusBundle:TaskItem:taskResponsible }
+    
+wwsc_thalamus_project_task_item_change_status:
+    path:     /project/{project}/task/{task}/item/{id}/status/{status}
+    defaults: { _controller: WWSCThalamusBundle:TaskItem:changeStatus }
+    
+wwsc_thalamus_project_task_item_delete:
+    path:     /project/{project}/task/{task}/item/{id}/delete
+    defaults: { _controller: WWSCThalamusBundle:TaskItem:delete }
+    
+wwsc_thalamus_project_task_item_add:
+    path:     /project/{project}/task/{task}/item/add
+    defaults: { _controller: WWSCThalamusBundle:TaskItem:add } 
+
+wwsc_thalamus_project_task_item_sort:
+    path:     /project/{project}/task/{task}/sort
+    defaults: { _controller: WWSCThalamusBundle:TaskItem:changeSort } 
+
+wwsc_thalamus_project_task_item_comments:
+    path:     /project/{project}/task/{task}/item/{id}/comments
+    defaults: { _controller: WWSCThalamusBundle:TaskItem:Comments }
+#    schemes:    [https]
+
+wwsc_thalamus_closing_task_via_mail:
+    path:      /project/{project}/task/{task}/item/{id}/closingTaskViaMail
+    defaults: { _controller: WWSCThalamusBundle:TaskItem:closingTaskViaMail }
+#    schemes:    [https]
+
+wwsc_thalamus_project_task_item_comments_reported_hours:
+    path:     /project/{project}/item/{id}/get_reported_hours
+    defaults: { _controller: WWSCThalamusBundle:TaskItem:GetReportedHours }
+
+wwsc_thalamus_create_google_drive_folder:
+    path:     /create-google-drive-folder
+    defaults: { _controller: WWSCThalamusBundle:TaskItem:createGoogleDriveFolder}
+
+wwsc_thalamus_project_file_add:
+    path:     /project/{project}/file/add
+    defaults: { _controller: WWSCThalamusBundle:File:add }
+
+wwsc_thalamus_project_file_create_archive:
+    path:     /project/{project}/file/createArchive
+    defaults: { _controller: WWSCThalamusBundle:File:createArchive }
+
+wwsc_thalamus_project_file_download:
+    path:     /project/{project}/file/{name}/download
+    defaults: { _controller: WWSCThalamusBundle:File:downloadArchive }
+
+    
+wwsc_thalamus_project_file_edit:
+    path:     /project/{project}/file/{id}/edit
+    defaults: { _controller: WWSCThalamusBundle:File:edit }
+    
+wwsc_thalamus_project_file_delete:
+    path:     /project/{project}/file/{id}/delete
+    defaults: { _controller: WWSCThalamusBundle:File:delete }
+    
+wwsc_thalamus_project_file_list:
+    path:     /project/{project}/file/list
+    defaults: { _controller: WWSCThalamusBundle:File:list }
+    
+wwsc_thalamus_category_save:
+    path:     /category/{project}/save/
+    defaults: { _controller: WWSCThalamusBundle:Category:save }
+
+wwsc_thalamus_category_delete:
+    path:     /category/delete/{id}
+    defaults: { _controller: WWSCThalamusBundle:Category:delete }    
+    
+wwsc_thalamus_project_comment_add:
+    path:     /project/{project}/type/{type}/parent/{parent}/comment/add
+    defaults: { _controller: WWSCThalamusBundle:Comment:add } 
+    
+wwsc_thalamus_project_comment_edit:
+    path:     /project/{project}/comment/{id}/edit
+    defaults: { _controller: WWSCThalamusBundle:Comment:edit } 
+    
+wwsc_thalamus_project_comment_delete:
+    path:     /project/comment/{id}/delete
+    defaults: { _controller: WWSCThalamusBundle:Comment:delete }
+
+wwsc_thalamus_project_comment_download_all_files:
+    path:     /project/{project}/comment/{id}/download-all-files
+    defaults: { _controller: WWSCThalamusBundle:Comment:downloadAllFiles }
+
+wwsc_thalamus_project_view_all_images:
+    path:     /project/{project}/file/{type}/{id}/images
+    defaults: { _controller: WWSCThalamusBundle:File:viewAllImages }
+    
+wwsc_thalamus_company_edit:
+    path:     /company/edit/{id}
+    defaults: { _controller: WWSCThalamusBundle:Company:edit }
+
+wwsc_thalamus_company_delete:
+    path:     /company/delete/{id}
+    defaults: { _controller: WWSCThalamusBundle:Company:delete }
+
+wwsc_thalamus_company_user:
+    path:     /company/users/{id}
+    defaults: { _controller: WWSCThalamusBundle:Company:getUsers }
+    
+wwsc_thalamus_add_company:
+    path:     /company/add
+    defaults: { _controller: WWSCThalamusBundle:Company:add }
+
+wwsc_thalamus_user_edit:
+    path:     /user/edit/{id}
+    defaults: { _controller: WWSCThalamusBundle:User:edit }
+
+wwsc_thalamus_user_myinfo:
+    path:     /user/myinfo
+    defaults: { _controller: WWSCThalamusBundle:User:myInfo }
+        
+wwsc_thalamus_user_add:
+    path:     /company/{company}/user/add/{project}
+    defaults: { _controller: WWSCThalamusBundle:User:add, project: null  }
+    
+wwsc_thalamus_user_save:
+    path:     /company/{company}/user/save
+    defaults: { _controller: WWSCThalamusBundle:User:save }
+    
+wwsc_thalamus_check_user_exist:
+    path:     /company/{company}/user/check-user-exist
+    defaults: { _controller: WWSCThalamusBundle:User:checkUserExist }
+
+wwsc_thalamus_add-existent-user-to-company:
+    path:     /company/{company}/user/add-existent-user-to-company/{user}/{project}
+    defaults: { _controller: WWSCThalamusBundle:User:addExistentUserToCompany, project: null }     
+
+wwsc_thalamus_user_acccept_invitation:
+    path:     /user_acccept_invitation/{account}/company/{company}/user/{salt}
+    defaults: { _controller: WWSCThalamusBundle:User:userAccceptInvitation }
+    
+wwsc_thalamus_user_reject_invitation:
+    path:     /user_reject_invitation/{account}/company/{company}/user/{salt}
+    defaults: { _controller: WWSCThalamusBundle:User:userRejectInvitation }
+    
+wwsc_thalamus_user_update:
+    path:     /user/update/{id}
+    defaults: { _controller: WWSCThalamusBundle:User:update }
+    
+wwsc_thalamus_user_delete:
+    path:     /user/delete/{id}
+    defaults: { _controller: WWSCThalamusBundle:User:delete }
+    
+wwsc_thalamus_user_activation:    
+    path:     /activation/{account}/user/{token}
+    defaults: { _controller: WWSCThalamusBundle:User:activationUser }
+
+wwsc_thalamus_user_resend_email:    
+    path:     /user/{id}/resend-email
+    defaults: { _controller: WWSCThalamusBundle:User:resendEmail }
+
+wwsc_thalamus_user_exist-user-resend-email:    
+    path:     /user/{user}/company/{company}/exist-user-resend-email
+    defaults: { _controller: WWSCThalamusBundle:User:resendEmailExistUser }    
+    
+wwsc_thalamus_change_sort_elements:
+    path:     /sort/type/{type}/field/{field}/value/{value}
+    defaults: { _controller: WWSCThalamusBundle:SortElements:changeSort }
+
+wwsc_thalamus_change_sort_tasks_elements:
+    path:     /sort-tasks/
+    defaults: { _controller: WWSCThalamusBundle:SortElements:changeSortTasks }
+
+wwsc_thalamus_project_project_people:
+    path:     /project/{project}/project-people
+    defaults: { _controller: WWSCThalamusBundle:Project:projectpeople }
+    
+wwsc_thalamus_add_project_people:
+    path:     /project/{project}/add-project-people
+    defaults: { _controller: WWSCThalamusBundle:Project:addpeopleProject }
+    
+wwsc_thalamus_remove_company_project:
+    path:     /project/{project}/remove-company-project/{id}
+    defaults: { _controller: WWSCThalamusBundle:Project:removeCompanyProject }
+    
+wwsc_thalamus_status_user_project:
+    path:     /project/{project}/user-project/{id}
+    defaults: { _controller: WWSCThalamusBundle:Project:statusUserProject }
+    
+wwsc_thalamus_change_status_all_users_project:
+    path:     /project/{project}/change-status-all-people/{company}/{action}
+    defaults: { _controller: WWSCThalamusBundle:Project:changeStatusAllpeopleProject }    
+    
+wwsc_thalamus_project_time_list:
+    path:     /project/{project}/time/list
+    defaults: { _controller: WWSCThalamusBundle:TimeTracker:list }
+
+wwsc_thalamus_time_list:
+    path:     /time/time-all-projects
+    defaults: { _controller: WWSCThalamusBundle:TimeTracker:timeAllProjects }    
+    
+wwsc_thalamus_project_time_export_to_csv:
+    path:     /project/{project}/time/export_to_csv
+    defaults: { _controller: WWSCThalamusBundle:TimeTracker:exportToCsv }
+    
+wwsc_thalamus_t_time_export_to_csv:
+    path:     /time/export_to_csv_account
+    defaults: { _controller: WWSCThalamusBundle:TimeTracker:exportToCsvAccount }
+
+wwsc_thalamus_project_messages_guid:
+    path:     /project/{project}/messages/guid
+    defaults: { _controller: WWSCThalamusBundle:Message:guidMessages }
+    
+wwsc_thalamus_project_messages:
+    path:     /project/{project}/messages/{cat}
+    defaults: { _controller: WWSCThalamusBundle:Message:list, cat: null  }
+   
+wwsc_thalamus_project_message_add:
+    path:     /project/{project}/message/add
+    defaults: { _controller: WWSCThalamusBundle:Message:add }
+    
+wwsc_thalamus_project_message_edit:
+    path:     /project/{project}/message/{id}/edit
+    defaults: { _controller: WWSCThalamusBundle:Message:edit }
+        
+wwsc_thalamus_project_message_delete:
+    path:     /project/{project}/message/{id}/delete
+    defaults: { _controller: WWSCThalamusBundle:Message:delete }
+
+wwsc_thalamus_project_message_comments:
+    path:     /project/{project}/message/{id}/comments
+    defaults: { _controller: WWSCThalamusBundle:Message:Comments }
+
+wwsc_thalamus_project_subscribe_email_remove:
+    path:     /project/{project}/subscribe_email/type/{type}/object/{parent}/remove
+    defaults: { _controller: WWSCThalamusBundle:SubscribeEmail:remove }
+
+wwsc_thalamus_project_subscribe_email_add:
+    path:     /project/{project}/subscribe_email/type/{type}/object/{parent}/add
+    defaults: { _controller: WWSCThalamusBundle:SubscribeEmail:add }
+
+wwsc_thalamus_project_form_add_child_task:
+    path:     /project/{project}/task/{task}/item/{item}/form-add-child
+    defaults: { _controller: WWSCThalamusBundle:TaskItem:formAddChild}
+
+wwsc_thalamus_project_selected_relations_task:
+    path:     /project/{project}/task/{task}/item/{item}/selected-relations-task
+    defaults: { _controller: WWSCThalamusBundle:TaskItem:selectedRelationsTask}
+
+wwsc_thalamus_project_relation_task_delete:
+    path:     /project/{project}/item/{id}/delete-relations-task
+    defaults: { _controller: WWSCThalamusBundle:TaskItem:deleteRelationTask}
+    
+wwsc_thalamus_project_writeboards:
+    path:     /project/{project}/writeboards
+    defaults: { _controller: WWSCThalamusBundle:Writeboard:list }
+    
+wwsc_thalamus_project_writeboard_add:
+    path:     /project/{project}/writeboards/add
+    defaults: { _controller: WWSCThalamusBundle:Writeboard:add }
+    
+wwsc_thalamus_project_writeboard_show:
+    path:     /project/{project}/writeboards/{number}/show
+    defaults: { _controller: WWSCThalamusBundle:Writeboard:Show }
+
+wwsc_thalamus_project_writeboard_show_version:
+    path:     /project/{project}/writeboards/{id}/show_version
+    defaults: { _controller: WWSCThalamusBundle:Writeboard:showVersion }
+    
+wwsc_thalamus_project_writeboard_edit:
+    path:     /project/{project}/writeboards/{id}/edit
+    defaults: { _controller: WWSCThalamusBundle:Writeboard:edit }
+        
+wwsc_thalamus_project_writeboard_delete:
+    path:     /project/{project}/writeboards/{number}/delete
+    defaults: { _controller: WWSCThalamusBundle:Writeboard:delete }
+
+wwsc_thalamus_project_writeboard_status_user:
+    path:     /project/{project}/writeboards/{id}/status-user
+    defaults: { _controller: WWSCThalamusBundle:Writeboard:statusUserWriteboard }
+
+wwsc_thalamus_project_writeboard_update_name:
+    path:     /project/{project}/writeboards/{id}/update-name
+    defaults: { _controller: WWSCThalamusBundle:Writeboard:updateName}
+
+wwsc_thalamus_time_track_today:
+    path:     /time-track-today
+    defaults: { _controller: WWSCThalamusBundle:Company:timeTrackToday}
+
+wwsc_thalamus_user_time_track_today:
+    path:     /user/time-track-today
+    defaults: { _controller: WWSCThalamusBundle:User:timeTrackToday}
+    
+wwsc_thalamus_project_finance:
+    path:     /project/{project}/finance
+    defaults: { _controller: WWSCThalamusBundle:Finance:list}
+
+wwsc_thalamus_finance_change_date_range_filter:
+    path:     /finance/change-date-range-filter/{project}
+    defaults: { _controller: WWSCThalamusBundle:Finance:dateRangeFilter, project: all}
+    
+wwsc_thalamus_finance_clear_date_range_filter:
+    path:     /finance/clear-date-range-filter/{project}
+    defaults: { _controller: WWSCThalamusBundle:Finance:clearDateRangeFilter, project: all}
+    
+    
+wwsc_thalamus_finance_export_to_csv:
+    path:     /finance/export/csv/{company}
+    defaults: { _controller: WWSCThalamusBundle:Finance:exportToCsv, company: all}
+
+
+wwsc_thalamus_finance:
+    path:     /finance/{company}
+    defaults: { _controller: WWSCThalamusBundle:Finance:listProject, company: all}    
+
+wwsc_thalamus_project_finance_add:
+    path:     /project/{project}/finance/add
+    defaults: { _controller: WWSCThalamusBundle:Finance:add}
+    
+wwsc_thalamus_project_finance_edit:
+    path:     /project/{project}/finance/edit
+    defaults: { _controller: WWSCThalamusBundle:Finance:edit}   
+
+wwsc_thalamus_project_finance_dublicate:
+    path:     /project/{project}/finance/dublicate
+    defaults: { _controller: WWSCThalamusBundle:Finance:dublicate}   
+
+wwsc_thalamus_project_finance_delete:
+    path:     /project/{project}/finance/delete
+    defaults: { _controller: WWSCThalamusBundle:Finance:delete}       
+ 
+wwsc_thalamus_search:
+    path:     /project/{project}/search
+    defaults: { _controller: WWSCThalamusBundle:Search:searchProject, project: all}
+    
+wwsc_thalamus_clear_search_history:
+    path:     /project/{project}/clear-search-history
+    defaults: { _controller: WWSCThalamusBundle:Search:clearSearchHistory, project: all}
+    
+wwsc_thalamus_personal_timetracking:
+    path:     /project/{project}/personal_timetracking
+    defaults: { _controller: WWSCThalamusBundle:TimeTracker:personalTimetracking, project: all}
+
+wwsc_thalamus_change_user_personal_timetracking:
+    path:     /project/personal_timetracking/change-user
+    defaults: { _controller: WWSCThalamusBundle:TimeTracker:changeUserPersonalTimetracking}
+    
+wwsc_thalamus_add_personal_timetracking:
+    path:     /personal_timetracking/add/
+    defaults: { _controller: WWSCThalamusBundle:TimeTracker:addPersonalTimetracking}
+    
+wwsc_thalamus_edit_personal_timetracking:
+    path:     /personal_timetracking/edit/{id}
+    defaults: { _controller: WWSCThalamusBundle:TimeTracker:EditpersonalTimetracking, project: all}
+
+wwsc_thalamus_personal_timetracking_user_for_select:
+    path:     /personal-timetracking/user-for-select
+    defaults: { _controller: WWSCThalamusBundle:TimeTracker:getUsersForSelect}  
+
+wwsc_thalamus_get_tasks_project_for_select:
+    path:     /getTasksProjectForSelect/{project}
+    defaults: { _controller: WWSCThalamusBundle:TimeTracker:getTasksProjectForSelect} 
+
+wwsc_thalamus_cange_personal_timetracking_ajax:
+    path:     /cangePersonalTimetrackingAjax/{id}
+    defaults: { _controller: WWSCThalamusBundle:TimeTracker:cangePersonalTimetrackingAjax}
+
+wwsc_thalamus_finance_export_time_to_csv:
+    path:     /finance/export/time/csv/{company}
+    defaults: { _controller: WWSCThalamusBundle:Finance:exportTimeToCsv, company: all}
+
+
+wwsc_thalamus_oauth_clear_token_data:
+    path:     /user_oauth/clear_token_data
+    defaults: { _controller: WWSCThalamusBundle:User:userClearOauthTokenData }
+
+wwsc_thalamus_oauth_save_tokens:
+    path:     /user_oauth/save_tokens
+    defaults: { _controller: WWSCThalamusBundle:User:userSaveOauthTokens }
+
+wwsc_thalamus_oauth_get_token:
+    path:     /user_oauth/get
+    defaults: { _controller: WWSCThalamusBundle:User:userGetOauthToken }
+
+wwsc_thalamus_oauth_get_code:
+    path:     /user_oauth/get_code
+    defaults: { _controller: WWSCThalamusBundle:User:userGetOauthCode }
+
+wwsc_thalamus_oauth_update_access_token:
+    path:     /user_oauth/update_access_token
+    defaults: { _controller: WWSCThalamusBundle:User:userGetOauthUpdateAccessToken }

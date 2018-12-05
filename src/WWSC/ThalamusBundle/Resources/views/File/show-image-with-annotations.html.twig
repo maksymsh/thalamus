@@ -1,0 +1,32 @@
+{% extends "::base.html.twig" %}
+{% block body %}
+    <img id="image-with-annotations" src="{{ oFile.fileIcon }}">
+{% endblock %}
+{% block stylesheets %}
+    <link href="{{ asset('bundles/wwscthalamus/annotorios/annotorious.css') }}" type="text/css" rel="stylesheet" />
+    <link href="{{ asset('bundles/wwscthalamus/annotorios/annotorious-dark.css') }}" type="text/css" rel="stylesheet" />
+{% endblock %}
+{% block javascripts %}
+    <script src="{{ asset('bundles/wwscthalamus/annotorios/annotorious.min.js') }}"></script>
+    <script type="text/javascript">
+        $(window).bind("load", function () {
+            anno.makeAnnotatable(document.getElementById('image-with-annotations'));
+            var dataAnnotations = {{ oFile.annotations| raw }};
+            var srcFile = document.getElementById('image-with-annotations').getAttribute('src');
+            $.each( dataAnnotations, function( key, obj ) {
+                obj.src = srcFile;
+                delete obj.context;
+                anno.addAnnotation(obj);
+                anno.highlightAnnotation(obj);
+                $('.annotorious-annotationlayer').append($('.annotorious-popup').first().clone().addClass('Hunter-pop-up'));
+            });
+            $('.annotorious-popup').first().remove();
+            anno.setProperties({
+                outline: 'red',
+                fill: 'rgba(46, 138, 138, 0.5)',
+                hi_fill:'rgba(46, 138, 138, 0.5)'
+            });
+            anno.hideSelectionWidget();
+        });
+    </script>
+{% endblock %}

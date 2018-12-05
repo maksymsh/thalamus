@@ -1,0 +1,87 @@
+php app/console cache:clear --env=prod  -clear cache
+
+php app/console generate:bundle --namespace=WWSC/ThalamusBundle --format=yml
+
+php app/console generate:doctrine:form WWSCThalamusBundle:Account create form
+
+php app/console doctrine:generate:entity --entity="WWSCThalamusBundle:Account"
+
+php app/console doctrine:generate:entities WWSCThalamusBundle:Project
+
+php app/console doctrine:schema:update --force
+
+php app/console  doctrine:migrations:execute
+
+php app/console doctrine:fixtures:load 
+
+composer update
+
+instal composer 
+
+@ORM\PreUpdate z
+
+curl -s http://getcomposer.org/installer | php
+php composer.phar install
+composer update 
+
+Transtable 
+StofDoctrineExtensionsBundle
+
+Instal web:
+php app/console assets:install web
+
+Sonata and Fos User Bundle:
+http://symfony2.ylly.fr/sonataadminbundle-fosuserbundle-have-a-good-base-project-jordscream/
+http://blog.dayo.fr/2012/12/symfony2-1-sonata-admin-sonata-user-fos-userbundle-en/
+
+php app/console sonata:easy-extends:generate SonataUserBundle
+
+
+create New Bundle with Sonata
+http://www.ens.ro/2012/07/13/symfony2-jobeet-day-12-the-admin-bundle/
+
+
+php app/console fos:user:create admin admin@example.com admin --super-admin
+
+Tine MCE Bundle
+https://github.com/stfalcon/TinymceBundle
+
+
+I18N:
+php app/console translation:extract ru --bundle=DevComTimeTrekingBundle --default-output-format=po
+
+get culture
+{{ app.request.get('_locale') }}
+
+php documentator
+bin\phpdoc run -d C:\wamp\www\thalamus\src\  -t C:\wamp\www\thalamus\src\WWSC\ThalamusBundle\Resources\public\phpdocumentor\
+
+http://thalamus/bundles/wwscthalamus/phpdocumentor/index.html
+
+Phpmd:
+bin\phpmd src\WWSC\ThalamusBundle
+
+bin\phpmd src\WWSC\ThalamusBundle xml codesize --reportfile phpmd.xml
+
+php vendor/phpmd/phpmd/src/bin/phpmd src/WWSC/ThalamusBundle xml codesize --reportfile web/phpmd.xml
+
+php app/console translation:update de WWSCThalamusBundle --force
+
+php app/console translation:update --force --output-format=po de WWSCThalamusBundle
+
+API:
+
+Login:
+https://thalamus.io/api?method=login&login=slfedyna@gmail.com&password=popilpopil
+
+get accounts
+https://thalamus.io/api?method=getAccounts&login=slfedyna@gmail.com&password=popilpopil
+
+get projects
+https://thalamus.io/api?method=getProjects&login=slfedyna@gmail.com&password=popilpopil&account=2
+
+get task List
+https://thalamus.io/api?method=getTaskList&project=7&login=slfedyna@gmail.com&password=popilpopil&account=2
+
+get tasks
+https://thalamus.io/api?method=getTask&project=7&login=slfedyna@gmail.com&password=popilpopil&account=2&task=51

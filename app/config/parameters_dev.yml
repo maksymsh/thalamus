@@ -1,0 +1,29 @@
+# This file is auto-generated during the composer install
+parameters:
+    database_driver: pdo_mysql
+    database_host: localhost
+    database_port: null
+    database_name: thalamus_new
+    database_user: root
+    database_password: null
+    mailer_transport: gmail
+    mailer_host:
+    mailer_user: pioneer2407@gmail.com
+    mailer_password: rasmus98
+    mailer_port:
+    mailer_encryption:
+    locale: en
+    secret: d66e05c573854a179533f535409ef33c12fecc65
+    debug_toolbar: false
+    debug_redirects: false
+    use_assetic_controller: true
+    admin_email: pioneer2407@gmail.com
+    auto_reply_email_domain: thalamus.io
+    parse_imap_host: localhost
+    parse_imap_login: catch-all@thalamus.io
+    parse_imap_password: 0RhDvKcDy1PWnbZ
+    allowed_file_types: 'jpeg, gif, png, doc, docs, zip, xl, xls, jpg, tif, gzip'
+    google_api_key: AIzaSyBI8VrDkXJOnkq50OxwJOhf1eS8VVAQMG8
+    google_client_id: 937626635370-8rt5mjcf378us0l2bm08b3ln3n99nok1.apps.googleusercontent.com
+    google_client_secret: lMGAd8TEn7Julinv-kxZo0Wl
+    base_domain: thalamus.dev

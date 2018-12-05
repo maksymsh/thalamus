@@ -1,0 +1,53 @@
+<div class="table-responsive">
+    <table class="table table-striped ">
+        <thead>
+            <tr>
+                <th>{% trans %}_{% endtrans %}</th>
+                <th>{% trans %}Last week{% endtrans %}</th>
+                <th>{% trans %}Last month{% endtrans %}</th>
+                <th>{% trans %}This year{% endtrans %}</th>
+                <th>{% trans %}This month{% endtrans %}</th>
+                <th>{% trans %}This week{% endtrans %}</th>
+                <th>{% trans %}Today{% endtrans %}</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>{% trans %}Billable{% endtrans %}</td>
+                <td>{{ aSumPersonalTrackedHours['total_last_week_billable_hours'] }}</td>
+                <td>{{ aSumPersonalTrackedHours['total_last_month_billable_hours'] }}</td>
+                <td>{{ aSumPersonalTrackedHours['total_year_billable_hours'] }}</td>
+                <td>{{ aSumPersonalTrackedHours['total_month_billable_hours'] }}</td>
+                <td>{{ aSumPersonalTrackedHours['total_week_billable_hours'] }}</td>
+                <td>{{ aSumPersonalTrackedHours['total_day_billable_hours'] }}</td>
+            </tr>
+            <tr>
+                <td>{% trans %}Non billable{% endtrans %}</td>
+                <td>{{ aSumPersonalTrackedHours['total_last_week_non_billable_hours'] }}</td>
+                <td>{{ aSumPersonalTrackedHours['total_last_month_non_billable_hours'] }}</td>
+                <td>{{ aSumPersonalTrackedHours['total_year_non_billable_hours'] }}</td>
+                <td>{{ aSumPersonalTrackedHours['total_month_non_billable_hours'] }}</td>
+                <td>{{ aSumPersonalTrackedHours['total_week_non_billable_hours'] }}</td>
+                <td>{{ aSumPersonalTrackedHours['total_day_non_billable_hours'] }}</td>
+            </tr>
+            <tr>
+                <td>{% trans %}Sum{% endtrans %}</td>
+                <td>{{ aSumPersonalTrackedHours['total_last_week_all_hours'] }}</td>
+                <td>{{ aSumPersonalTrackedHours['total_last_month_all_hours'] }}</td>
+                <td>{{ aSumPersonalTrackedHours['total_year_all_hours'] }}</td>
+                <td>{{ aSumPersonalTrackedHours['total_month_all_hours'] }} </td>
+                <td>{{ aSumPersonalTrackedHours['total_week_all_hours'] }}</td>
+                <td>{{ aSumPersonalTrackedHours['total_day_all_hours'] }}</td>
+            </tr>
+            <tr>
+                <td>{% trans %}Productivity{% endtrans %}</td>
+                <td>{{ aSumPersonalTrackedHours['productivity_last_week'] }} %</td>
+                <td>{{ aSumPersonalTrackedHours['productivity_last_month'] }} %</td>
+                <td>{{ aSumPersonalTrackedHours['productivity_year'] }} %</td>
+                <td>{{ aSumPersonalTrackedHours['productivity_month'] }} %</td>
+                <td>{{ aSumPersonalTrackedHours['productivity_week'] }} %</td>
+                <td>{{ aSumPersonalTrackedHours['productivity_day'] }} %</td>
+            </tr>
+        </tbody>
+     </table>    
+</div> 

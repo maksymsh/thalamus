@@ -1,0 +1,41 @@
+<div class="title-panel">{% trans %}Comment Notification{% endtrans %}</div>
+{% if app.user.id in oParent.activeSubscribed|keys == false %}
+    <div class="panel-offer panel-subscribed"><strong>
+            {% if type == 'Writeboard' %}
+                <a href="{{path ('wwsc_thalamus_project_subscribe_email_add',{'parent':oParent.number, 'project': slugProject, 'type':type }) }}">
+            {% else %}
+                    <a href="{{path ('wwsc_thalamus_project_subscribe_email_add',{'parent':oParent.id, 'project': slugProject, 'type':type }) }}">
+            {% endif %}
+                {% trans %}Subscribe to this{% endtrans %} {% if type == 'Message' %} {% trans %}message{% endtrans %}{% elseif type == 'Writeboard' %} writeboard {% else %} {% trans %}to-do{% endtrans %} {% endif %}
+            </a>
+        </strong> {% trans %}to receive an email when new comments are posted.{% endtrans %}</div>
+{% endif %}
+<div class="info-panel">
+    {% if oParent.activeSubscribed %}
+        {% trans %}These people are subscribed to receive email notifications when new comments are posted.{% endtrans %}
+        <div class="subscribed-users-info">
+            {% for key, oCompanySubscribed in oParent.activeSubscribed('company-info') %}
+                <div class="company-subscribed">{{ key }}</div>
+                <ul>
+                    {% for key, val in oCompanySubscribed %}
+                        {% if  app.user.id == key %}
+                            <li>{% trans %}You{% endtrans %}  
+                                <span>
+                                    {% if type == 'Writeboard' %}
+                                         (<a href="{{path ('wwsc_thalamus_project_subscribe_email_remove',{'parent':oParent.number, 'project': slugProject, 'type': type }) }}">{% trans %}Unsubscribe{% endtrans %}</a>)
+                                    {% else %}
+                                        (<a href="{{path ('wwsc_thalamus_project_subscribe_email_remove',{'parent':oParent.id, 'project': slugProject, 'type': type }) }}">{% trans %}Unsubscribe{% endtrans %}</a>)    
+                                    {% endif %}
+                                </span>
+                            </li>
+                            {% else %}
+                            <li>{{ val }}</li>
+                            {% endif %}
+                        {% endfor %}
+                </ul>
+            {% endfor %}
+        </div>
+    {% else %}
+        {% trans %}If you post a comment you'll automatically be subscribed to receive email notifications.{% endtrans %}
+    {% endif %}   
+</div>

@@ -1,0 +1,295 @@
+<?php
+
+namespace WWSC\ThalamusBundle\Entity;
+
+use WWSC\ThalamusBundle\WWSCThalamusBundle;
+use Doctrine\Common\Collections\ArrayCollection;
+use Gedmo\Mapping\Annotation as Gedmo;
+use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+use Doctrine\Common\Collections\Criteria;
+/**
+ * Category
+ *
+ * @ORM\Entity
+ * @ORM\HasLifecycleCallbacks
+ * @ORM\Table(name="category")
+ */
+class Category {
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="id", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
+     */
+    private $id;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="name" ,type="string", length=255, nullable=true)
+     */
+    private $name;
+    
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="type",type="string", length=255)
+     */
+    private $type;
+
+    /**
+     * @var \DateTime $created
+     *
+     * @ORM\Column(type="datetime")
+     * @Gedmo\Timestampable(on="create")
+     */
+    private $created;
+
+    /**
+     * @var \DateTime $updated
+     * @Gedmo\Timestampable(on="update")
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $updated;
+
+    /**
+     * @var integer
+     * 
+     * @ORM\ManyToOne(targetEntity="WWSC\ThalamusBundle\Entity\User")
+     */
+    private $user_created;
+
+    /**
+     * @var integer
+     * 
+     * @ORM\ManyToOne(targetEntity="WWSC\ThalamusBundle\Entity\User")
+     */
+    private $user_updated;
+    
+    /**
+     * @ORM\ManyToOne(targetEntity="WWSC\ThalamusBundle\Entity\Account")
+     */
+    private $account;
+    /**
+     * @ORM\Column(name="is_deleted", type="boolean", nullable=true)
+     */
+    private $is_deleted = 0;
+    
+    /**
+     * Get id
+     *
+     * @return integer 
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * Set description
+     *
+     * @param string $name
+     * @return File
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
+
+        return $this;
+    }
+
+    /**
+     * Get name
+     *
+     * @return string 
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * Set created
+     *
+     * @param \DateTime $created
+     * @return Files
+     */
+    public function setCreated($created)
+    {
+        $this->created = $created;
+
+        return $this;
+    }
+
+    /**
+     * Get created
+     *
+     * @return \DateTime 
+     */
+    public function getCreated()
+    {
+        return $this->created;
+    }
+
+    /**
+     * Set updated
+     *
+     * @param \DateTime $updated
+     * @return Files
+     */
+    public function setUpdated($updated)
+    {
+        $this->updated = $updated;
+
+        return $this;
+    }
+
+    /**
+     * Get updated
+     *
+     * @return \DateTime 
+     */
+    public function getUpdated()
+    {
+        return $this->updated;
+    }
+
+    /**
+     * Set is_deleted
+     *
+     * @param boolean $isDeleted
+     * @return Files
+     */
+    public function setIsDeleted($isDeleted)
+    {
+        $this->is_deleted = $isDeleted;
+
+        return $this;
+    }
+
+    /**
+     * Get is_deleted
+     *
+     * @return boolean 
+     */
+    public function getIsDeleted()
+    {
+        return $this->is_deleted;
+    }
+
+
+    /**
+     * Set user_created
+     * @ORM\PrePersist()
+     *
+     * @param \WWSC\ThalamusBundle\Entity\User $userCreated
+     * @return Files
+     */
+    public function setUserCreated($userCreated)
+    {
+        $this->user_created = WWSCThalamusBundle::getContainer()->get('security.context')->getToken()->getUser();
+
+        return $this;
+    }
+
+    /**
+     * Get user_created
+     *
+     * @return \WWSC\ThalamusBundle\Entity\User 
+     */
+    public function getUserCreated()
+    {
+        return $this->user_created;
+    }
+
+    /**
+     * @ORM\PrePersist()
+     * @ORM\PreUpdate
+     * Set user_updated
+     *
+     * @param \WWSC\ThalamusBundle\Entity\User $userUpdated
+     * @return Files
+     */
+    public function setUserUpdated($userUpdated)
+    {
+        $this->user_updated = WWSCThalamusBundle::getContainer()->get('security.context')->getToken()->getUser();
+
+        return $this;
+    }
+
+    /**
+     * Get user_updated
+     *
+     * @return \WWSC\ThalamusBundle\Entity\User 
+     */
+    public function getUserUpdated()
+    {
+        return $this->user_updated;
+    }
+
+
+    /**
+     * Set account
+     * @ORM\PrePersist()
+     * @ORM\PreUpdate
+     * @param \WWSC\ThalamusBundle\Entity\Account $account
+     * @return CategoryFile
+     */
+    public function setAccount($account)
+    {
+        $this->account = WWSCThalamusBundle::getContainer()->get('security.context')->getToken()->getUser()->getCompany()->getAccount();
+        return $this;
+    }
+
+    /**
+     * Get account
+     *
+     * @return \WWSC\ThalamusBundle\Entity\Account 
+     */
+    public function getAccount()
+    {
+        return $this->account;
+    }
+
+    /**
+     * Set type
+     *
+     * @param string $type
+     * @return Category
+     */
+    public function setType($type)
+    {
+        $this->type = $type;
+
+        return $this;
+    }
+
+    /**
+     * Get type
+     *
+     * @return string 
+     */
+    public function getType()
+    {
+        return $this->type;
+    }
+    public static function getACategory($par){
+        $critCategory = WWSCThalamusBundle::getContainer()->get('doctrine')->getRepository('WWSCThalamusBundle:Category')->findBy(array(
+            'is_deleted' => 0,
+            'account' => $par['account'],
+            'type' => $par['type']
+        ));
+        $aCategory= array();
+        if($critCategory){
+            foreach($critCategory as $oCategory){
+                $aCategory[$oCategory->getId()] = $oCategory->getName();
+            }
+        }
+        $aCategory['add!'] = '— add a new category —';
+        return $aCategory;
+    }
+}
+

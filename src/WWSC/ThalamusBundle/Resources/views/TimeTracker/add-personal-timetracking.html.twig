@@ -1,0 +1,54 @@
+<div class="form-add-new-entry col-md-10 without-padding margin-top-2x">
+    <div class="col-md-12">
+        <h4>{% trans %}Add manual time recording{% endtrans %}</h4>
+    </div>
+    <form accept-charset="UTF-8" id="form-add-new-entry" action="/personal_timetracking/add/" method="post">
+        <input type="hidden"  name="personal-timetracking[date]" value="{{date}}" class="form-control">
+        <div class="col-md-12 margin-top-1x">
+            <select required   name="personal-timetracking[project]" class="form-control select-project-personal-timetracking" autofocus>
+                <option>{% trans %}Project{% endtrans %}</option>
+                {% for aCompanyProject in app.user.getProjectsForAccount(false, true, true, "alphabet") %}
+                     <optgroup label="{{aCompanyProject['name']}}">
+                    {% for idProject, nameProject in aCompanyProject['projects'] %}
+                        <option value="{{ idProject }}">{{ nameProject }}</option>
+                    {% endfor %}
+                     </optgroup>
+                {% endfor %}
+            </select>
+        </div>  
+        <div class="col-md-12 margin-top-1x">
+            <select required class="select-tasks-personal-timetracking form-control">
+                <option>{% trans %}Choose Task{% endtrans %}</option>
+            </select>
+        </div>
+        {% if  app.user.role == 'ROLE_ACCOUNTING' %}    
+        <div class="col-md-12 margin-top-1x">
+            <select required name="personal-timetracking[responsible-user]" class="select-user-personal-timetracking form-control">
+                <option>{% trans %}Select User{% endtrans %}</option>
+            </select>
+        </div>
+        {% endif %}      
+        <div class="col-md-12 margin-top-1x">
+            {% trans %}Timetracking comment:{% endtrans %}
+            <input required name="personal-timetracking[comment-description]" class="form-control">
+        </div>
+        <div class="col-md-12 margin-top-1x without-padding">
+            <div class="col-md-4">
+                 <div class="float-left margin-top-1x ">{% trans %}Start: {% endtrans %} </div>
+                 <div class="float-left time-input"> <input  required placeholder = "13:30" type="text" pattern="([01]?[0-9]|2[0-3]):[0-5][0-9]" name="personal-timetracking[start-time]"  class="form-control" value="{{ lastTimeTrackerDate|date('H:i') }}"></div>
+            </div>
+            <div class="col-md-4">
+                 <div class="float-left margin-top-1x ">{% trans %}End: {% endtrans %}</div>
+                 <div class="float-left time-input"> <input  placeholder = "{{ 'now'|date('H:i') }}" value="{{ 'now'|date('H:i') }}" required type="text" pattern="([01]?[0-9]|2[0-3]):[0-5][0-9]" name="personal-timetracking[end-time]" class="form-control"></div>
+            </div>
+            <div class="col-md-4">
+                <div class="float-left margin-top-1x ">{% trans %}Billable:  {% endtrans %}  </div>  
+                 <div class=" margin-top-1x">    <input type="checkbox"  checked="checked" name="personal-timetracking[billable]"></div>
+            </div>      
+        </div>
+        <div class="col-md-12 margin-top-2x clear-both">
+            <button class="btn btn-sm btn-primary btn-save" type="submit">Save Data</button>
+            <span>or</span>  <a class="btn-cancel" href="#"> cancel </a>
+        </div>         
+    </form>
+</div>

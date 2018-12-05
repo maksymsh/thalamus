@@ -1,0 +1,24 @@
+<div class="col-md-12 info-panel">
+    <div class=" from-group col-md-12">
+        <span class="col-md-2">{% trans %}Description:{% endtrans %}</span>
+        <div class="col-md-10"><input type="text" id="wwsc_thalamusbundle_comment_time_tracker_description" name="wwsc_thalamusbundle_comment[time_tracker][description]" required="required" class="form-control" value="{{ form.description.vars.value }}" maxlength="2000"></div>
+    </div>
+    <div class=" from-group col-md-12">
+        <div class="col-md-8 without-padding">
+            <span class="col-md-3">{% trans %}Time:{% endtrans %}</span>
+            <div class="col-md-4"><input type="text" id="wwsc_thalamusbundle_comment_time_tracker_time" name="wwsc_thalamusbundle_comment[time_tracker][time]" required="required" class="form-control" value="{{ form.time.vars.value }}" pattern="^([0-9])*([.]([0-9]){1,2}|[:](([0-5][0-9])|([6-9])))?$"></div>
+            <span class="col-md-4"><small>(eg 2.5, or 2:30)</small></span>
+        </div>
+        <div class="col-md-4 without-padding">
+            <span >{% trans %}Billable{% endtrans %}</span>
+            <input type="checkbox" {% if isBillableHours  %} checked="checked"  {% endif %} id="wwsc_thalamusbundle_comment_time_tracker_billable" name="wwsc_thalamusbundle_comment[time_tracker][billable]">
+        </div>
+        <div class="timespan-since-last-time col-md-12">
+            {% if app.user.timespanSinceLastTime() %}
+                <a href = "#">
+                    {% trans %} Timespan since last time tracking: {% endtrans %} <span>{{  app.user.timespanSinceLastTime() }}</span>
+                </a>
+            {% endif %}
+        </div>
+    </div>
+</div>

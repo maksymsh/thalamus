@@ -1,0 +1,22 @@
+{% extends "WWSCThalamusBundle:Content:layout.html.twig" %}
+{% block title %}
+    {{ oProject.name }} - {% trans %}Files{% endtrans %}
+{% endblock %} 
+{% block content %}
+    <div class="row blank-slate">
+        <div class="modal-dialog">
+            <div class="col-md-4">
+                <img src="{{ asset('bundles/wwscthalamus/images/blankslate-icon-files.png') }}">
+            </div>
+            <div class="col-md-8">
+                <h1>{% trans %}Upload the first file to share with the team.{% endtrans %}</h1>
+                <p>{% trans %}Upload and share files, documents, images, movies, screenshots, presentations, designs, or any other type of file. Basic version tracking is also available.{% endtrans %}</p>
+                <div class="btn-add-new-task">
+                    <a href="{{ path('wwsc_thalamus_project_file_add',{project:oProject.slug})}}" class="btn btn-default btn-md">
+                        <i class="glyphicon glyphicon-plus"></i> {% trans %}Upload the first file{% endtrans %}
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}       

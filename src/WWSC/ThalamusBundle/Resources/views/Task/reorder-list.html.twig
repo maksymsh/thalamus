@@ -1,0 +1,52 @@
+{% extends "WWSCThalamusBundle:Content:layout.html.twig" %}
+{% block title %}
+    {{ oProject.name }} - {% trans %}Reorder lists{% endtrans %}
+{% endblock %} 
+{% block content %} 
+<div class="row">
+    <div class="panel panel-default col-md-9">
+        <div class="panel-heading col-xs-12">
+            <div class="col-xs-6">
+                {% trans %}To-do lists{% endtrans %}
+            </div>
+            <div class="page_header_links col-xs-6">
+                <a class="remove" href="{{ path ('wwsc_thalamus_project_todos',{'project': oProject.slug })}}">{% trans %}Done reordering list{% endtrans %}</a>
+            </div>
+        </div>
+        <div class="panel-body">
+            <div class="row">
+                <div data-sort-url="{{ path('wwsc_thalamus_change_sort_elements',{'type':'Task','field':'project','value':oProject.id}) }}" class="col-md-12 list-task sort-elements">
+                    {% for oTask in oProject.tasks %}
+                        <div data-id="{{ oTask.id }}" class="task col-md-12">
+                            <img class="btn-sort" src="{{ asset('bundles/wwscthalamus/images/sort_icon.png') }}">
+                            <a class="title" href="{{ path('wwsc_thalamus_project_task_show',{'project':oTask.project.slug,'id':oTask.id}) }}">
+                                {{ oTask.name }}
+                            </a>
+                        </div>         
+                    {% endfor %} 
+                </div><!--/span-->
+            </div>
+        </div>
+    </div>            
+    <div class="col-md-3 sidebar sidebar-filter">
+        <div class="col">
+           {% if is_granted('ROLE_PROVIDER') %}  
+           <div class="btn-add-new-task">
+                <a href="{{ path('wwsc_thalamus_project_task_add',{'project':oProject.slug})}}" class="btn btn-default btn-md">
+                    <i class="glyphicon glyphicon-plus"></i> {% trans %}Create new to-do list{% endtrans %}
+                </a>
+            </div>
+            {% endif %} 
+            <h4>{% trans %}Current to-do lists{% endtrans %}</h4>    
+            <ul class="filter-task">
+              {% for oTask in oProject.tasks %}
+                  <li data-id="{{ oTask.id }}" ><a href="{{ path('wwsc_thalamus_project_task_show',{'project':oProject.slug,'id':oTask.id}) }}">{{ oTask.name }}</a></li>
+              {% endfor %} 
+            </ul>
+        </div>
+    </div><!--/span-->          
+</div>
+{% endblock %}
+{% block javascripts %}
+    <script src="{{ asset('bundles/wwscthalamus/js/todos.js') }}"></script>
+{% endblock %}

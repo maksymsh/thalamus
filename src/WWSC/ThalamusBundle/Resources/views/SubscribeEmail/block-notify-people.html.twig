@@ -1,0 +1,17 @@
+<div class="subscribe-to-email col-md-12">
+    <div class="col-md-12  without-padding">    
+        <strong>{% trans %}Notify people via email{% endtrans %}</strong>
+    </div>
+    <div class="col-md-12 without-padding">
+        {% for  oSubsCompany in aSubsCompanies %}
+            <div class="col-md-12  without-padding"> <input type="checkbox" class="input-subscribed-company" data-id="{{ oSubsCompany['id'] }}">  <strong>{% trans %}All of{% endtrans %} {{ oSubsCompany['name'] }}</strong></div>
+            {% if (oSubsCompany['people'] is defined)%}
+                {% for  key, value in oSubsCompany['people'] %}
+                    <div class="col-md-3  without-padding">
+                        <input  name="aSubspeople[{{key}}]" class="input-people-subscribed"  type="checkbox"  data-company-id={{ oSubsCompany['id'] }}  value="{{key}}">  {{value}}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endfor %}    
+    </div>
+</div>

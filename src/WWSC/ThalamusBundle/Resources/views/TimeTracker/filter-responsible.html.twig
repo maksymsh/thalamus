@@ -1,0 +1,36 @@
+ {% if app.request.attributes.get('_route') == 'wwsc_thalamus_personal_timetracking' %}
+    <select    name="user-personal-timetracking"  id="user-personal-timetracking" class="form-control" data-url ="{{ url ('wwsc_thalamus_change_user_personal_timetracking') }}">
+{% else %}
+    <select  name="filter_time[filter_person]" id="filter_time_filter_person" class="form-control">
+        <option value="">{% trans %}Anyone{% endtrans %}</option>
+{% endif %}   
+        
+    
+    {% if app.request.attributes.get('_route') == 'wwsc_thalamus_personal_timetracking' %}
+        <option {% if  filter_responsible == app.user.id %} selected {% endif %} value="{{ app.user.id }}">{% trans %}Me{% endtrans %} ({{ app.user.firstName }} {{ app.user.lastName }})</option>
+    {% else %}
+        <option {% if  filter_responsible == 'u_'~app.user.id %} selected {% endif %} value="u_{{ app.user.id }}">{% trans %}Me{% endtrans %} ({{ app.user.firstName }} {{ app.user.lastName }})</option>
+    {% endif %}      
+    <option disabled value="">----------</option>
+    {% for oResponsibleCompany in aUsersForFilterTime %}
+         {% if oResponsibleCompany.people is defined %}
+            {% if oResponsibleCompany['people']|length > 1 or (oResponsibleCompany['people']|length == 1 and app.user.id in oResponsibleCompany['people']|keys == false ) %}
+                {% if app.request.attributes.get('_route') == 'wwsc_thalamus_personal_timetracking' %}
+                    <option  disabled>{{ oResponsibleCompany['name']|upper }}</option>
+                {% else %}
+                    <option  {% if 'c_'~ oResponsibleCompany['id'] == filter_responsible %} selected {% endif %} value="c_{{ oResponsibleCompany['id'] }}">{{ oResponsibleCompany['name']|upper }}</option>
+                {% endif %}
+            {% for key,val in oResponsibleCompany['people'] %}
+                {% if app.user.id != key %}
+                    {% if app.request.attributes.get('_route') == 'wwsc_thalamus_personal_timetracking' %}
+                        <option {% if key == filter_responsible %} selected {% endif %}  value={{ key }} >{{ val }}</option>
+                    {% else %}
+                        <option {% if 'u_'~ key == filter_responsible %} selected {% endif %}  value=u_{{ key }} >{{ val }}</option>
+                    {% endif %}    
+                {% endif %}
+            {%endfor%}
+             <option disabled value="">----------</option>
+            {% endif %}
+        {% endif %} 
+    {%endfor%}   
+</select>

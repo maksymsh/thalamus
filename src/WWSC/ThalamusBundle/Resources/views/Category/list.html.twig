@@ -1,0 +1,15 @@
+<ul id="category-file-list">
+    <li><a {% if (app.request.get('cat') == '') %} class="active" {% endif %} href="?cat">{{ app.request.get('cat') }}{% trans %} All files{% endtrans %}</a></li>
+    {% for oCategory in aCategory %}
+        <li>
+            <a  {% if (app.request.get('cat') == oCategory.id ) %} class="active" {% endif %}  data-cat-id="{{ oCategory.id }}" href="?cat={{ oCategory.id }}">
+                {{ oCategory.name }}
+            </a>
+            <span class="actions-panel">
+                 <a class="btn-rename-category" data-name="{{ oCategory.name }}" data-id="{{ oCategory.id }}">{% trans %} Rename{% endtrans %}</a> 
+                 <a class="btn-delete-category" data-id="{{ oCategory.id }}"><img src="/bundles/wwscthalamus/images/remove_icon.png"></a>
+            </span>
+        </li>
+    {% endfor %}
+    <li class="btn-add-new-categoty"><a href="#">{% trans %} Add new category{% endtrans %}</a></li>
+</ul>    

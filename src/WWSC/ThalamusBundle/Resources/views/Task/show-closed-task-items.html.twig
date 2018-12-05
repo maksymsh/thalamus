@@ -1,0 +1,11 @@
+{% block content %}
+    {% for aItem in aTaskItems %}
+        {% include 'WWSCThalamusBundle:TaskItem:item-show.html.twig' with {'aItem': aItem, 'projectSlug': projectSlug, 'status':1, 'taskId': taskId} %}
+    {% endfor %}
+    {% if app.request.attributes.get('_route') == 'wwsc_thalamus_project_todos' %}
+        {% if aTaskItems|length > 3 %}
+            <a class="view_all_completed_items" href="{{path('wwsc_thalamus_project_task_show',{'project':projectSlug, 'id':taskId})}}">
+                {% trans %}View all{% endtrans %} {{ aTaskItems|length  }} {% trans %}completed items{% endtrans %}</a>
+        {% endif %}
+    {% endif %}
+{% endblock %}

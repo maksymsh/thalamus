@@ -1,0 +1,18 @@
+<div class="date_range_filter-box col-md-12 without-padding">
+    <div class="date_range_filter" data-url="{{path('wwsc_thalamus_finance_change_date_range_filter',{'project':projectSlug})}}">
+        <strong>{% trans %}Date-Range{% endtrans %}:</strong>
+        {% trans %}From{% endtrans %}
+        {% set dateFromRangeFilter = null %}
+        {% set dateToRangeFilter = null %}
+            {% if app.session.get('aDateRangeFilter')[projectSlug]['date_from'] is defined %}
+                {% set dateFromRangeFilter = app.session.get('aDateRangeFilter')[projectSlug]['date_from'] %}
+            {% endif %}
+            {% if app.session.get('aDateRangeFilter')[projectSlug]['date_to'] is defined %}
+                {% set dateToRangeFilter = app.session.get('aDateRangeFilter')[projectSlug]['date_to'] %}
+            {% endif %}
+            <input type="text" id="date_from_range_filter" value= "{{dateFromRangeFilter}}" name="date_range_filter[date_from]" class="min-form-control datepicker" data-provide="datepicker">
+        {% trans %}To{% endtrans %}
+            <input type="text" id="date_to_range_filter" value= "{{dateToRangeFilter}}" name="date_range_filter[date_to]" class="min-form-control datepicker" data-provide="datepicker">
+    </div>
+        <a class="remove clear-date-range" href="{{path('wwsc_thalamus_finance_clear_date_range_filter',{'project':projectSlug})}}"> {% trans %}Clear Range{% endtrans %}</a>
+</div>

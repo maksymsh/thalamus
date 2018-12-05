@@ -1,0 +1,58 @@
+<div class="task-information">
+    {% if (is_granted('ROLE_PROVIDER')) or  (is_granted('ROLE_CLIENT')) %}
+        <a class="btn-edit-task-item fa fa-pencil"
+           href={{ path('wwsc_thalamus_project_task_item_edit',{project:oItem.task.project.slug, task:oItem.task.id, id:oItem.id}) }}?layout=comment></a>
+    {% endif %}
+    <div {% if oItem.status == 1 %} class="close-item" {% endif %}>
+        {% if (is_granted('ROLE_PROVIDER')) or  (is_granted('ROLE_CLIENT')) %}
+            <input type="checkbox"
+                   class="task-item-status no-print-this-part"
+                   data-url="{{ path('wwsc_thalamus_project_task_item_change_status',{'project':oItem.task.project.slug, 'task':oItem.task.id, 'id':oItem.id ,'status':1 }) }}"
+                   name="task_item_status[{{ oItem.id }}]"
+            >
+        {% else %}
+            <input type="checkbox" disabled class="no-print-this-part">
+        {% endif %}
+        {% if oItem.fastTrack %}FAST-TRACK {% else %}{% endif %}
+        <span class="task-item-update-title">{{ oItem.description }}</span>
+    </div>
+    <div class="heading-light">
+        <i class="fa fa-user" aria-hidden="true"></i> <span class="responsible"> <a
+                    href="{{ url('wwsc_thalamus_account_tasks', {'filter': 1, 'filter_tasks[filter_task_status]':1, 'filter_time[filter_person]': 'u_'~oItem.responsible.id}) }}">{{ oItem.responsible.firstName }} {{ oItem.responsible.lastName }} </a></span>
+        —
+        <span class="task-item-update-status">{{ oItem.stateValue }}</span>
+        <br>
+        #{{ oItem.id }}
+
+        —
+        {% if (app.session.get('presentationMode') == false  and oItem.task.isTimeTracker == 1 and  is_granted('ROLE_PROVIDER')) %}
+            <i class="fa fa-clock-o" aria-hidden="true"></i> <span
+                data-url={{ path('wwsc_thalamus_project_task_item_comments_reported_hours',{ project:oItem.task.project.slug, 'id': oItem.id }) }}   id="sumReportedHours">{% trans %}reported:{% endtrans %}
+            <span>{{ oItem.sumHoursTimeTracker }}</span>  hr</span>
+        {% endif %}
+        {% if is_granted('ROLE_PROVIDER')  and app.session.get('presentationMode') == false %}
+            {% include 'WWSCThalamusBundle:TaskItem:relations-task.html.twig' with {'oItem': oItem} %}
+        {% endif %}
+    </div>
+
+    {% if googleDriveFolderId %}
+        <div class="heading-google-drive-folder-id">
+            {% if oItem.getGoogleDriveItemFolderId() %}
+                <a href="{{ 'https://drive.google.com/drive/folders/' ~ oItem.getGoogleDriveItemFolderId() }}"
+                   target="_blank">
+                    <i class="fa fa-folder" aria-hidden="true"></i>
+                    <span class="responsible">
+                        {% trans %}Open Ticket-Folder{% endtrans %}
+                    </span>
+                </a>
+            {% else %}
+                <a href="{{ path('wwsc_thalamus_create_google_drive_folder') ~ '?item=' ~ oItem.id }}">
+                    <i class="fa fa-folder" aria-hidden="true"></i>
+                    <span class="responsible">
+                        {% trans %}Create a folder for this ticket{% endtrans %}
+                    </span>
+                </a>
+            {% endif %}
+        </div>
+    {% endif %}
+</div>

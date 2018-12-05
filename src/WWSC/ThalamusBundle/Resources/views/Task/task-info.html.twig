@@ -1,0 +1,12 @@
+<div class="title">
+    <a class="name" href="{{ path('wwsc_thalamus_project_task_show',{'project':projectSlug,'id':aTask["id"]}) }}">{{ aTask["name"] }}</a>
+    {% if( aTask["visible_client"] == 0 and   aTask["visible_freelancer"] == 0)%}
+        <span class="private"> {% trans %}private{% endtrans %} </span>
+    {% endif %}
+</div>
+{% if(aTask["description"])%}
+    <div class="description">
+        {{ aTask["description"]|markdown|purify  }}
+    </div>
+{% endif %}
+

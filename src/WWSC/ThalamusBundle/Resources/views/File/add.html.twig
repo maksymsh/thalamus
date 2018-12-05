@@ -1,0 +1,55 @@
+{% extends "WWSCThalamusBundle:Content:layout.html.twig" %}
+{% block title %}
+    {{ oProject.name }} - {% trans %}Upload a file{% endtrans %}
+{% endblock %} 
+{% block content %}
+<div class="row">
+    <div class="panel panel-default col-md-9">
+        <div class="panel-heading">
+            {% trans %}Upload a file{% endtrans %}
+        </div>
+        <div class="panel-body">
+            <div class="row ">
+                <div class="col-md-12">
+                    <form id="fileupload" action="{{ path('wwsc_thalamus_project_file_add',{'project': oProject.slug })}}" method="POST" enctype="multipart/form-data">
+                        <!-- Redirect browsers with JavaScript disabled to the origin page -->
+                        <div class="files col-md-12"></div>
+                        <div class="col-md-12">
+                            <div class="row fileupload-buttonbar">
+                                <span class="fileupload-process"></span>
+                               <div class="col-lg-12 fileupload-progress fade">
+                                    <div class="progress progress-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100">
+                                        <div class="progress-bar progress-bar-success" style="width:0%;"></div>
+                                    </div>
+                                    <div class="progress-extended">&nbsp;</div>
+                                </div>
+                                <div class="col-lg-7" id="category-list" data-url="{{ path('wwsc_thalamus_category_save',{ project:oProject.slug }) }}">
+                                    <h4>{% trans %}Choose a file to upload{% endtrans %}</h4>
+                                    <span class="btn btn-sm btn-primary fileinput-button">
+                                        <i class="glyphicon glyphicon-plus"></i>
+                                        <span>{% trans %}Add files...{% endtrans %}</span>
+                                        <input  type="file" name="files" multiple />
+                                    </span>
+                                </div>
+                                <div class="col-md-12">
+                                    {% include 'WWSCThalamusBundle:SubscribeEmail:block-notify-people.html.twig'  with {'aSubsCompanies': oProject.subspeople} %}
+                                   <button class="btn btn-sm btn-primary start" type="submit">{% trans %}Upload the file{% endtrans %}</button>
+                                   <span> or </span> <a class="btn-cancel" href="{{ path('wwsc_thalamus_project_file_list',{'project': oProject.slug })}}"> {% trans %}Cancel{% endtrans %}</a> 
+                                 </div>
+                            </div>
+                        </div>                            
+                    </form>
+                </div>    
+            </div>
+        </div>
+    </div>
+</div>    
+{% include 'WWSCThalamusBundle:File:jQUploadTemplate.html.twig'%}
+{% endblock %}
+{% block stylesheets %}
+    <link href="{{ asset('bundles/wwscthalamus/jQUpload/css/jquery.fileupload.css') }}" type="text/css" rel="stylesheet" />
+    <link href="{{ asset('bundles/wwscthalamus/jQUpload/css/jquery.fileupload-ui.css') }}" type="text/css" rel="stylesheet" />
+{% endblock %}
+{% block javascripts %}
+    {% include 'WWSCThalamusBundle:File:jQUploadScript.html.twig'%}
+{% endblock %}

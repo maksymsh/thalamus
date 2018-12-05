@@ -1,0 +1,69 @@
+parameters:
+    web_dir: '%kernel.root_dir%/../web'
+services:
+    wwsc.thalamus.task_item:
+        class: WWSC\ThalamusBundle\Entity\TaskItem
+        arguments:
+            entityManager: "@doctrine.orm.default_entity_manager"
+            
+    wwsc_thalamus.upload_listener:
+        class: WWSC\ThalamusBundle\EventListener\UploadListener
+        arguments: [@doctrine]
+        tags:
+            - { name: kernel.event_listener, event: oneup_uploader.post_persist, method: onUpload }
+
+    kernel.listener.exception_listener:
+        class: WWSC\ThalamusBundle\Listener\ExceptionListener
+        arguments: ["@templating", "@kernel", "@logger"]
+        tags:
+            - { name: kernel.event_listener, event: kernel.exception, method: onKernelException }
+            
+    google_user_provider:
+        class: WWSC\ThalamusBundle\Security\Core\User\FOSUBUserProvider
+        arguments: [@fos_user.user_manager,{google: googleID}]
+
+    oauth.google_extension:
+        class: WWSC\ThalamusBundle\OAuth\GoogleGrantExtension
+        arguments:
+            userProvider: "@google_user_provider"
+            respourceOwner: "@hwi_oauth.resource_owner.google"
+        tags:
+            - { name: fos_oauth_server.grant_extension, uri: 'https://thalamus.io/google/login'  }
+
+    oauth.sync_token_with_extension:
+        class: WWSC\ThalamusBundle\OAuth\SyncTokenWithExtension
+        arguments:
+            userProvider: "@google_user_provider"
+        tags:
+            - { name: fos_oauth_server.grant_extension, uri: 'https://thalamus.io/api/v1/login'  }
+
+    authentication_handler:
+        class:        WWSC\ThalamusBundle\Handler\AuthenticationHandler
+        arguments:    [@router, @security.context, @fos_user.user_manager, @service_container]
+
+    authentication_handler.logout_success_handler:
+        class:  WWSC\ThalamusBundle\Handler\LogoutSuccessHandler
+        tags:
+            - { name: 'monolog.logger', channel: 'security' }
+
+    listener.requestresponse:
+        class: WWSC\ThalamusBundle\Listener\PageLoadListener
+        arguments: [@security.context,  @service_container ]
+        tags:
+          - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest }
+
+    service.api:
+        class: WWSC\ThalamusBundle\Service\ApiService
+        arguments: [@service_container ]
+
+    service.form_validation:
+        class: WWSC\ThalamusBundle\Service\FormValidationService
+        arguments: [@service_container ]
+
+    fos_oauth_server.controller.token:
+        class: WWSC\ThalamusBundle\Security\SecurityAPI
+        arguments: [@fos_oauth_server.server, @doctrine.orm.entity_manager]
+
+    app.mail.service:
+        class: WWSC\ThalamusBundle\Service\MailService
+        arguments: [@mailer]

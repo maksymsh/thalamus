@@ -1,0 +1,124 @@
+{% extends "WWSCThalamusBundle:Content:layout.html.twig" %}
+{% block title %}
+    {% trans %}My info{% endtrans %}
+{% endblock %} 
+{% block content %}
+    <div class="row col-xs-offset-2 col-md-7">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            {% trans %}Update your Thalamus ID details{% endtrans %}
+        </div>
+        <div class="panel-body">
+            <div class="row">
+                {% include 'WWSCThalamusBundle:Content:flash_notice.html.twig' %}
+                {% if form_errors(form) %}
+                    <div class="alert alert-error error" role="alert">{{ form_errors(form) }}</div>
+                {% endif %}
+                <div class="panel-forms">
+                    <form class="my-info" action="{{ path('wwsc_thalamus_user_myinfo' ) }}" {{ form_enctype(form) }}
+                          method="Post">
+                        <div class="form-group col-md-12">
+                            <div class="avatar-user col-md-2">
+                                {% if app.user.avatar %}
+                                    {% set icon = (asset('uploads/user/')~ app.user.avatar) %}
+                                {% else %}
+                                    {% set icon = asset('bundles/wwscthalamus/images/user_icon.png') %}
+                                {% endif %}
+                                <img src="{{ icon | imagine_filter('my_thumb',{"thumbnail": {"size": [64, 64] }}) }}">
+                            </div>
+                            <div class="col-md-7">
+                                {{ form_label(form.avatarFile) }}
+                                {{ form_widget(form.avatarFile) }}
+                            </div>
+                        </div>
+                        <div class="form-group col-xs-12">
+                            {{ form_label(form.first_name ) }}
+                            <div class="col-md-7">
+                                {{ form_widget(form.first_name ) }}
+                            </div>
+                        </div>
+                        <div class="form-group col-xs-12">
+                            {{ form_label(form.last_name ) }}
+                            <div class="col-md-7">
+                                {{ form_widget(form.last_name ) }}
+                            </div>
+                        </div>
+                        <div class="form-group col-xs-12">
+                            {{ form_label(form.email ) }}
+                            <div class="col-md-7">
+                                {{ form_widget(form.email ) }}
+                            </div>
+                        </div>
+                        {% if aRoles is defined %}
+                            <div class="form-group col-xs-12">
+                                <label class="control-label col-md-2" for="wwsc_thalamusbundle_user_language">Role
+                                    User</label>
+                                <div class="col-md-4">
+                                    <select name="role-user" class="form-control">
+                                        <option></option>
+                                        {% for oRole in aRoles %}
+                                            <option {% if app.user.role == oRole.key %} selected {% endif %}
+                                                    value="{{ oRole.key }}">{{ oRole.name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                        {% endif %}
+                        <div class="form-group  col-xs-12">
+                            {{ form_label(form.language) }}
+                            <div class="col-md-7">
+                                {{ form_widget(form.language) }}
+                            </div>
+                        </div>
+                        <div class="form-group col-xs-12">
+                            <label class="control-label col-md-2" for="wwsc_thalamusbundle_user_language">
+                                {% trans %}Project for Screenshot Tool{% endtrans %}
+                            </label>
+                            <div class="col-md-7">
+                                {% include 'WWSCThalamusBundle:Project:project-for-screenshot-tool.html.twig' with {'oUser': app.user} %}
+                            </div>
+                        </div>
+                        <div class="form-group  col-xs-12">
+                            {{ form_label(form.timeZone) }}
+                            <div class="col-md-7">
+                                {{ form_widget(form.timeZone) }}
+                            </div>
+                        </div>
+                        <div class="form-group col-xs-12 plain-password">
+                            <label class="control-label col-xs-2 "
+                                   for="wwsc_thalamusbundle_user_plainPassword">{% trans %}
+                                Password:{% endtrans %}</label>
+                            <div class="col-md-7">
+                                {% set msgValidPassword = app.user.languageCode =='de' ? 'Passwort nicht korrekt. Mind. 6 Zeichen, inkl. 1 Grossbuchstabe und eine Ziffer erforderlich.': 'Password incorrect. 6 characters necessary including 1 uppercase and 1 numeric.' %}
+                                {{ form_widget(form.plainPassword.first, {'attr': {'title':'"'~ msgValidPassword ~'"'} } ) }}
+                                {{ form_widget(form.plainPassword.second, {'attr': {'title':'"'~ msgValidPassword ~'"'} } ) }}
+                            </div>
+                        </div>
+                        <div class="form-group col-xs-12">
+                            <label class="control-label col-md-2"></label>
+                            <div class="col-md-7">
+                                <b>{% trans %}Sync with services:{% endtrans %}</b>
+                            </div>
+                        </div>
+                        {{ form_widget(form._token) }}
+                        <div class="form-group col-xs-12 btn-action">
+                            <label class="control-label col-md-2"></label>
+                            <div class="col-md-7">
+                                <button class="btn btn-sm btn-primary btn-save" type="submit">{% trans %}Save
+                                    changes{% endtrans %}</button>
+                                or <a class="btn-cancel" href="{{ path ('wwsc_thalamus_account_all_people') }}"> {% trans %}
+                                    Cancel{% endtrans %} </a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block javascripts %}
+    <script src="https://apis.google.com/js/platform.js?onload=init" async defer></script>
+{% endblock %}
+{% block oauth %}
+    <meta name="google-signin-client_id" content="937626635370-n4hom44245qcqo9flf2sflu34tboppqb.apps.googleusercontent.com">
+{% endblock %}

@@ -1,0 +1,14 @@
+{% for aCompProjects in aProjects %}
+    <div class="item-compnay">{{ aCompProjects['company_name'] }}</div>
+        <div class="list-projects">
+            {% for aProject in  aCompProjects['projects'] %}
+            <div class="item-project">
+              <a href="{{ path ('wwsc_thalamus_project_todos',{'project': aProject.slug })}}">
+                {{ aProject['name'] }}
+
+              </a>
+
+            </div>
+            {% endfor%}
+            </div>
+{% endfor%}

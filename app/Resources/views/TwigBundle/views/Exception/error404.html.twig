@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <title>{% block title %}Thalamus{% endblock %}</title>
+        <link href="{{ asset('bundles/wwscthalamus/css/bootstrap.min.css') }}" type="text/css" rel="stylesheet" />
+        <link href="{{ asset('bundles/wwscthalamus/css/app.css') }}" type="text/css" rel="stylesheet" />
+        {% block stylesheets %}
+        {% endblock %}
+        <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
+    </head>
+    <body>
+        {% block body %}
+		<div class="logo">
+			<p>OOPS! - Could not Find it</p>
+			<img src="images/404-1.png">
+			<div class="sub">
+			  <p><a href="#">Back </a></p>
+			</div>
+		</div>
+		{% endblock %}
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+        <script src="https://code.jquery.com/ui/1.11.1/jquery-ui.js"></script>
+        <script src="{{ asset('bundles/wwscthalamus/js/app.js') }}"></script>
+        {% block javascripts %}
+        {% endblock %}
+    </body>
+</html>

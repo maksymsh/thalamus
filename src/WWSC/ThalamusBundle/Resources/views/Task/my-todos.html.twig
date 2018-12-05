@@ -1,0 +1,52 @@
+{% extends "WWSCThalamusBundle:Content:layout.html.twig" %}
+{% block title %}
+   {% trans %}my To-DoS{% endtrans %}
+{% endblock %}
+{% block content %}
+<div class="row">
+    <div class="panel panel-default col-md-12">
+        <div class="panel-heading col-xs-12">
+            <div class="col-xs-12">
+                {% trans %}my To-DoS{% endtrans %}
+            </div>
+        </div>
+        <div class="panel-body">
+            <div class="row">
+               {% for oProject in oAccount.getProjects %}
+                  {% if oProject.tasks(aFilter)|length > 0 %}
+                   <div class="col-md-12 project-title-todos">
+                        <h3>
+                            <a href="{{ path('wwsc_thalamus_project_todos',{project:oProject.slug})}}?filter_tasks[filter_responsible]={{ app.user.id }}&filter_tasks[filter_due]=#">
+                                {{ oProject.name }}
+                            </a>
+                        </h3>
+                    </div>
+                    <div class="col-md-12 list-task">
+                        {# tasks lists of current project #}
+                        {% for aTask in oProject.tasks(aFilter, "array") %}
+                            <div data-id="{{  aTask["info"]["id"]  }}" class="task col-md-12">
+                                {# tasks of current task list #}
+                                <div class="show-task">
+                                    {% include 'WWSCThalamusBundle:Task:task-block.html.twig' with {'aTask': aTask, 'projectSlug': oProject.slug,  lCompletedItems: 3} %}
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div><!--/span-->
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block stylesheets %}
+    <link href="{{ asset('bundles/wwscthalamus/markdown/css/bootstrap-markdown.min.css') }}" type="text/css" rel="stylesheet" />
+    <link href="{{ asset('bundles/wwscthalamus/css/bootstrap-datepicker.css') }}" type="text/css" rel="stylesheet" />
+{% endblock %}
+{% block javascripts %}
+    <script src="{{ asset('bundles/wwscthalamus/markdown/js/to-markdown.js') }}"></script>
+    <script src="{{ asset('bundles/wwscthalamus/markdown/js/markdown.js') }}"></script>
+    <script src="{{ asset('bundles/wwscthalamus/markdown/js/bootstrap-markdown.js') }}"></script>
+    <script src="{{ asset('bundles/wwscthalamus/js/todos.js') }}"></script>
+    <script src="{{ asset('bundles/wwscthalamus/js/bootstrap-datepicker.js') }}"></script>
+{% endblock %}

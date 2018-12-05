@@ -1,0 +1,20 @@
+{% extends '::base.html.twig' %}
+{% block stylesheets %}{% endblock %}
+{% block body %}
+    <script>
+        let google_client_id = "{{ google_client_id }}";
+        let google_client_secret = "{{ google_client_secret }}";
+        let google_api_key = "{{ google_api_key }}";
+    </script>
+    {{ block ('fos_user_content') }}
+    {% if(app.request.get('project') and app.request.get('project') != 'all') %}
+        {{ render(controller('WWSCThalamusBundle:Project:header',{'project': app.request.get('project'),'route': app.request.get('_route'), 'route_params': app.request.get('_route_params') })) }}
+    {% else %}
+        {{ render(controller('WWSCThalamusBundle:Account:header',{'route': app.request.get('_route'), 'route_params': app.request.get('_route_params')})) }}
+    {% endif %}
+    <div class="container {% if(app.request.get('_route') == 'wwsc_thalamus_finance') %} container-finance {% endif %}"> 
+        {% block content %}
+        {% endblock %}
+        {% include 'WWSCThalamusBundle:Content:footer.html.twig' %}    
+    </div>
+{% endblock %}

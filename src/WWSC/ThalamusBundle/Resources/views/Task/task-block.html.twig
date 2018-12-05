@@ -1,0 +1,62 @@
+<div class="task-box">
+    {% if is_granted('ROLE_PROVIDER') %}
+        {# actions-panel for task list#}
+        <div class="actions-panel">
+            <a class="btn-delete-task" href={{path('wwsc_thalamus_project_task_delete',{'project': projectSlug, 'id': aTask["info"]["id"]})}}><img src="{{ asset('bundles/wwscthalamus/images/remove_icon.png') }}"></a>
+            <a class="btn-edit-task" href={{path('wwsc_thalamus_project_task_edit',{'project': projectSlug, 'id': aTask["info"]["id"]})}}>{% trans %}Edit{% endtrans %}</a>
+        </div>
+        {# End open tasks #}
+    {% endif %}
+    <div class="task-info">
+        {% include 'WWSCThalamusBundle:Task:task-info.html.twig' with {'projectSlug': projectSlug, 'taskId': aTask["info"]["id"],  'aTask': aTask["info"]} %}
+    </div>
+</div>
+<div data-sort-url="{{ path('wwsc_thalamus_change_sort_elements',{'type':'TaskItem','field':'task','value': aTask["info"]["id"]}) }}" class="list-task-items open-task-items sort-elements" >
+    {% if aTask["taskitems"]["OPEN"]  is defined  %}
+    {# open tasks begin#}
+         {% for aItem in aTask["taskitems"]["OPEN"] %}
+             {% include 'WWSCThalamusBundle:TaskItem:item-show.html.twig' with {'projectSlug': projectSlug, 'status': 0, 'taskId': aTask["info"]["id"], 'aItem': aItem} %}
+         {% endfor %}
+    {# End open tasks #}
+    {% endif %}
+</div>
+
+{# separate line  for hold tasks  #}
+<div class="line-separate-tasks-hold"><span class="line">&nbsp;</span> <span class="text">on hold</span> <span class="line">&nbsp;</span></div>
+<div class="list-task-items tasks-status-on-hold">
+    {% if aTask["taskitems"]["ON_HOLD"]  is defined  %}
+        {# hold tasks begin#}
+        {% for aItem in aTask["taskitems"]["ON_HOLD"] %}
+            {% include 'WWSCThalamusBundle:TaskItem:item-show.html.twig' with {'projectSlug': projectSlug, 'status': 0, 'taskId': aTask["info"]["id"],  'aTaskItems': aItem} %}
+        {% endfor %}
+        {# End hold tasks#}
+   {% endif %}
+</div>
+<div class="col-md-12">
+    {% if (is_granted('ROLE_PROVIDER')) or  (is_granted('ROLE_CLIENT')) %}
+        <div class="task-item-add col-md-11">
+            <div class="col-md-12 btn-add-new-item">
+                <i class="fa fa-plus" aria-hidden="true"></i> &nbsp;
+                <a href={{path('wwsc_thalamus_project_task_item_add',{project:projectSlug, task: aTask["info"]["id"]})}}>
+                {% trans %}Add an item{% endtrans %}
+              </a>
+            </div>
+        </div>
+    {% endif %}
+</div>
+
+{# separate line  for closed tasks  #}
+{#
+  <div class="line-separate-tasks-closed"><span class="line"></span> <span class="text">closed</span> <span class="line"></span></div>
+#}
+<div id="show-next-closed-items" class="list-task-items close-task-items" data-url-task={{ path('wwsc_thalamus_project_show_closed_task_items', {'project':projectSlug,'id': aTask["info"]["id"]})}} >
+    {# close tasks begin#}
+    {% if aTask["taskitems"]["CLOSED"]  is defined  %}
+         {% include 'WWSCThalamusBundle:Task:show-closed-task-items.html.twig' with  { 'projectSlug': projectSlug,  'taskId': aTask["info"]["id"], 'aTaskItems':aTask["taskitems"]["CLOSED"] } %}
+    {% endif %}
+    {# End close tasks#}
+    <p class="loader-closed-tasks spinner-closed-tasks" ></p>
+</div>
+{% if app.request.attributes.get('_route') == 'wwsc_thalamus_project_task_show'%}
+    <p class="show_more_closed_task_items view_next_closed_items" style="display: none">Show more &#8595;</p>
+{% endif %}

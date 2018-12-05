@@ -1,0 +1,24 @@
+{% extends "WWSCThalamusBundle:Content:layout.html.twig" %}
+{% block title %}
+    {{ oProject.name }} - {% trans %}Writeboards{% endtrans %}
+{% endblock %} 
+{% block content %}
+    <div class="row blank-slate">
+        <div class="modal-dialog">
+            <div class="col-md-4">
+                <img src="{{ asset('bundles/wwscthalamus/images/blankslate-icon-writeboard.png') }}">
+            </div>
+            <div class="col-md-8">
+                <h1>{% trans %}Start a Writeboard and write together.{% endtrans %}</h1>
+                <p>{% trans %}Writeboards make collaborative writing easy. Track changes, make corrections, review multiple versions of a document, and write without overwriting someone else.{% endtrans %}</p>
+                {% if (is_granted('ROLE_PROVIDER')) %}  
+                <div class="btn-add-new-task">
+                    <a href="{{ path('wwsc_thalamus_project_writeboard_add',{project:oProject.slug})}}" class="btn btn-default btn-md">
+                        <i class="glyphicon glyphicon-plus"></i> {% trans %}Create a new writeboard{% endtrans %}
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endblock %}       

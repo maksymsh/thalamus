@@ -1,0 +1,499 @@
+<?php
+
+namespace WWSC\ThalamusBundle\Entity;
+
+use WWSC\ThalamusBundle\WWSCThalamusBundle;
+use Doctrine\Common\Collections\ArrayCollection;
+use Gedmo\Mapping\Annotation as Gedmo;
+use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Event\LifecycleEventArgs;
+use WWSC\ThalamusBundle\Entity\Comment as Comments;
+use Symfony\Component\Validator\Constraints as Assert;
+use Doctrine\Common\Collections\Criteria;
+
+/**
+ * taskItem
+ *
+ * @ORM\Entity
+ * @ORM\HasLifecycleCallbacks
+ * @ORM\Table(name="taskitem")
+ */
+class TaskItem extends Base{
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="id", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
+     */
+    private $id;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="reply_uid", type="string", length=255, nullable=true)
+     *
+     */
+    private $replyUID;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="description", type="text")
+     * @Assert\NotBlank(message="Please enter your item description.")
+     * @Assert\Length(
+     *     min=3,
+     *     minMessage="The description item is too short.",
+     * )
+     */
+    private $description;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="WWSC\ThalamusBundle\Entity\User", inversedBy="responsible")
+     */
+    private $responsible;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="WWSC\ThalamusBundle\Entity\Task", inversedBy="task")
+     */
+    private $task;
+
+    /**
+     * @ORM\Column(name="due_date", type="datetime", nullable=true)
+     */
+    private $due_date;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="status", type="boolean", nullable=true)
+     */
+    private $status;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="sort", type="integer", nullable=true)
+     */
+    private $sort;
+
+    /**
+     * Constructor
+     */ /**
+     * @var \DateTime $created
+     *
+     * @ORM\Column(type="datetime")
+     * @Gedmo\Timestampable(on="create")
+     */
+    private $created;
+
+    /**
+     * @var \DateTime $updated
+     * @Gedmo\Timestampable(on="update")
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $updated;
+
+    /**
+     * @var integer
+     * 
+     * @ORM\ManyToOne(targetEntity="WWSC\ThalamusBundle\Entity\User")
+     */
+    private $user_created;
+
+    /**
+     * @var integer
+     * 
+     * @ORM\ManyToOne(targetEntity="WWSC\ThalamusBundle\Entity\User")
+     */
+    private $user_updated;
+
+    /**
+     * @ORM\Column(name="is_deleted", type="boolean", nullable=true)
+     */
+    private $is_deleted = 0;
+    private $comments;
+
+    /**
+     * Get id
+     *
+     * @return integer 
+     */
+    public function getId() {
+        return $this->id;
+    }
+
+    /**
+     * Set description
+     *
+     * @param string $description
+     * @return TaskItem
+     */
+    public function setDescription($description) {
+        $this->description = $description;
+
+        return $this;
+    }
+
+    /**
+     * Get description
+     *
+     * @return string 
+     */
+    public function getDescription() {
+        return $this->description;
+    }
+
+    /**
+     * Set due_date
+     *
+     * @param \DateTime $dueDate
+     * @return TaskItem
+     */
+    public function setDueDate($dueDate) {
+        $this->due_date = $dueDate;
+
+        return $this;
+    }
+
+    /**
+     * Get due_date
+     *
+     * @return \DateTime 
+     */
+    public function getDueDate() {
+        return $this->due_date;
+    }
+
+    /**
+     * Set status
+     *
+     * @param boolean $status
+     * @return TaskItem
+     */
+    public function setStatus($status) {
+        $this->status = $status;
+
+        return $this;
+    }
+
+    /**
+     * Get status
+     *
+     * @return boolean 
+     */
+    public function getStatus() {
+        return $this->status;
+    }
+
+    /**
+     * Set sort
+     *
+     * @param integer $sort
+     * @return TaskItem
+     */
+    public function setSort($sort) {
+        $this->sort = $sort;
+
+        return $this;
+    }
+
+    /**
+     * Get sort
+     *
+     * @return integer 
+     */
+    public function getSort() {
+        return $this->sort;
+    }
+
+    /**
+     * Set created
+     *
+     * @param \DateTime $created
+     * @return TaskItem
+     */
+    public function setCreated($created) {
+        $this->created = $created;
+
+        return $this;
+    }
+
+    /**
+     * Get created
+     *
+     * @return \DateTime 
+     */
+    public function getCreated() {
+        return $this->created;
+    }
+
+    /**
+     * Set updated
+     *
+     * @param \DateTime $updated
+     * @return TaskItem
+     */
+    public function setUpdated($updated) {
+        $this->updated = $updated;
+
+        return $this;
+    }
+
+    /**
+     * Get updated
+     *
+     * @return \DateTime 
+     */
+    public function getUpdated() {
+        return $this->updated;
+    }
+
+    /**
+     * Set user_created
+     * @ORM\PrePersist()
+     * @param \WWSC\ThalamusBundle\Entity\User $userCreated
+     * @return Company
+     */
+    public function setUserCreated($userCreated) {
+        $this->user_created = WWSCThalamusBundle::getContainer()->get('security.context')->getToken()->getUser();
+
+        return $this;
+    }
+
+    /**
+     * Get user_created
+     *
+     * @return \WWSC\ThalamusBundle\Entity\User 
+     */
+    public function getUserCreated() {
+        return $this->user_created;
+    }
+
+    /**
+     * @ORM\PrePersist()
+     * @ORM\PreUpdate
+     * Set user_updated
+     *
+     * @param \WWSC\ThalamusBundle\Entity\User $userUpdated
+     * @return Company
+     */
+    public function setUserUpdated($userUpdated) {
+        $this->user_updated = WWSCThalamusBundle::getContainer()->get('security.context')->getToken()->getUser();
+        return $this;
+    }
+
+    /**
+     * Get user_updated
+     *
+     * @return \WWSC\ThalamusBundle\Entity\User 
+     */
+    public function getUserUpdated() {
+        return $this->user_updated;
+    }
+
+    /**
+     * Set is_deleted
+     *
+     * @param boolean $isDeleted
+     * @return TaskItem
+     */
+    public function setIsDeleted($isDeleted) {
+        $this->is_deleted = $isDeleted;
+
+        if($isDeleted == 1){
+            if($this->getComments()){
+                foreach($this->getComments() as $item){
+                    $item->setIsDeleted(1);
+                }
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * Get is_deleted
+     *
+     * @return boolean 
+     */
+    public function getIsDeleted() {
+
+        return $this->is_deleted;
+    }
+
+    /**
+     * Set responsible
+     *
+     * @param \WWSC\ThalamusBundle\Entity\User $responsible
+     * @return TaskItem
+     */
+    public function setResponsible(\WWSC\ThalamusBundle\Entity\User $responsible = null) {
+        $this->responsible = $responsible;
+
+        return $this;
+    }
+
+    /**
+     * Get responsible
+     *
+     * @return \WWSC\ThalamusBundle\Entity\User 
+     */
+    public function getResponsible() {
+        return $this->responsible;
+    }
+
+    /**
+     * Set task
+     *
+     * @param \WWSC\ThalamusBundle\Entity\Task $task
+     * @return TaskItem
+     */
+    public function setTask(\WWSC\ThalamusBundle\Entity\Task $task = null) {
+        $this->task = $task;
+
+        return $this;
+    }
+
+    /**
+     * Get task
+     *
+     * @return \WWSC\ThalamusBundle\Entity\Task 
+     */
+    public function getTask() {
+        return $this->task;
+    }
+
+    /**
+     * Get comments
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getComments() {
+        $entityManager = WWSCThalamusBundle::getContainer()->get('doctrine')->getManager();
+        return $entityManager->getRepository('WWSCThalamusBundle:Comment')->findBy(array(
+                    'is_deleted' => 0, 'parent_id' => $this->id, 'type' => 'TaskItem'
+        ));
+    }
+
+    public function getSumHoursTimeTracker() {
+        $sumHours = 0;
+        foreach ($this->getComments() as $oComment) {
+            if ($oComment->getTimeTracker()) {
+                $sumHours = $sumHours + $oComment->getTimeTracker()->getTime();
+            }
+        }
+        if ($sumHours <= 0) {
+            return 0;
+        }
+        return round($sumHours, 2);
+    }
+
+    /**
+     * Set int sort
+     * @ORM\PrePersist()
+     */
+    public function setSortNewElem() {
+        $entityManager = WWSCThalamusBundle::getContainer()->get('doctrine')->getManager();
+        $crit = array(
+            'is_deleted' => 0,
+            'status' => 0,
+            'task' => $this->task
+        );
+        $oItem = $entityManager->getRepository('WWSCThalamusBundle:TaskItem')->findOneBy($crit, array('sort' => 'DESC'));
+        if ($oItem) {
+            $this->setSort($oItem->getSort()+1);
+        } else {
+            $this->setSort(0);
+        }
+    }
+    
+    private function getLogInfoByTaskItem($entity){
+        $aRes = array();
+        $aRes['object_id'] = $entity->getId();
+        $url = WWSCThalamusBundle::getContainer()->get('router')->generate(
+            'wwsc_thalamus_project_task_item_comments',
+            array(
+                'project' => $entity->getTask()->getProject()->getSlug(),
+                'task' => $entity->getTask()->getId(),
+                'id' => $entity->getId()
+            )
+        );
+        $aRes['description'] =  "<a href='" . $url . "'>" . $this->truncation($entity->getDescription(), 100) . "</a>";
+        $aRes['project'] = $entity->getTask()->getProject();
+        return $aRes;
+    }
+
+    /**
+     * @ORM\PreUpdate
+     */
+    public function preUpdate(LifecycleEventArgs $args) {
+      if(!$args->hasChangedField('is_deleted')){   
+         $aParams = $this->getLogInfoByTaskItem($args->getEntity());
+         $aParams['action'] = 'Updated by';
+         $this->things[] = $aParams;
+       }
+    }
+
+    /**
+     * @ORM\PostPersist
+     */
+    public function postPersist(LifecycleEventArgs $args) {
+        $aParams = $this->getLogInfoByTaskItem($args->getEntity());
+        $aParams['action'] = 'Posted by';
+        $this->saveLog($aParams);
+    }
+    
+    public  function  getActiveSubscribed($typeShow = 'id'){
+        $em = WWSCThalamusBundle::getContainer()->get('doctrine')->getManager();
+        $critSubspeople = $em->getRepository('WWSCThalamusBundle:SubscribeEmail')->findBy(array('type' => 'TaskItem', 'parent' => $this->id));
+        $aSubspeople = array();
+        if($typeShow == 'id'){
+            foreach($critSubspeople as $oSubsPeople){
+               $aSubspeople[$oSubsPeople->getUser()->getId()] = $oSubsPeople->getUser()->getId();
+            } 
+        }
+        if($typeShow == 'info'){      
+            foreach($critSubspeople as $oSubsPeople){
+               $aSubspeople['email'][$oSubsPeople->getUser()->getId()] = $oSubsPeople->getUser()->getEmail();
+               $aSubspeople['name'][$oSubsPeople->getUser()->getId()] = $oSubsPeople->getUser()->getFirstName().' '.$oSubsPeople->getUser()->getLastName();
+            }
+        }
+        if($typeShow == 'company-info'){      
+            foreach($critSubspeople as $oSubsPeople){
+               $aSubspeople[$oSubsPeople->getUser()->getCompany()->getName()][$oSubsPeople->getUser()->getId()] = $oSubsPeople->getUser()->getFirstName().' '.$oSubsPeople->getUser()->getLastName();
+            }
+        }
+        return $aSubspeople;
+    }
+
+       
+    /**
+     * @ORM\PrePersist()
+     * Set replyUID
+     *
+     * @param string $replyUID
+     * @return $replyUID
+     */
+    public function setReplyUID($replyUID)
+    {
+        $this->replyUID = 'ti_'
+            . $this->getId()
+            . md5(uniqid(rand(), true)) ;
+        WWSCThalamusBundle::getContainer()->get('doctrine')->getManager()->flush();
+
+        return $this;
+    }
+
+    /**
+     * Get replyUID
+     *
+     * @return string 
+     */
+    public function getReplyUID()
+    {
+        return $this->replyUID;
+    }
+}
+

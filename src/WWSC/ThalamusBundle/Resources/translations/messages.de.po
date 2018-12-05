@@ -1,0 +1,1456 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: de\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"X-Generator: Poedit 1.8.11\n"
+
+msgid "   Edit"
+msgstr "Bearbeite"
+
+msgid "  Delete company"
+msgstr "Unternehmen löschen"
+
+msgid "  Edit company"
+msgstr "Unternehmen bearbeiten"
+
+msgid "  Select please ..."
+msgstr "Bitte wählen..."
+
+msgid " Add a comment"
+msgstr "Kommentar hinzufügen"
+
+msgid " Add a new company"
+msgstr "Neues Unternehmen hinzufügen"
+
+msgid " Add new category"
+msgstr "Kategorie hinzufügen"
+
+msgid "Add this Comment"
+msgstr "Kommentar hinzufügen"
+
+msgid " After you add a company you'll be able to add people to that company."
+msgstr " After you add a company you'll be able to add people to that company."
+
+msgid " All files"
+msgstr "Alle Dateien"
+
+msgid " Cancel"
+msgstr "abbrechen"
+
+msgid " Company logo"
+msgstr "Firmenlogo"
+
+msgid " Create company"
+msgstr "Firma erstellen"
+
+msgid " Enter a new company name"
+msgstr "Name des Unternehmens"
+
+msgid " Leave a comment..."
+msgstr "Hinterlassen Sie einen Kommentar"
+
+msgid " Original Version"
+msgstr "Urfassung"
+
+msgid " Private: (Visible only to agency companies)"
+msgstr "Privat: (Sichtbar nur für Agentur-Nutzer)"
+
+msgid " Registration"
+msgstr "Registrierung"
+
+msgid " Rename"
+msgstr "Umbenennen"
+
+msgid " Save changes"
+msgstr "Änderungen speichern"
+
+msgid " Select please ..."
+msgstr "Bitte wählen..."
+
+msgid " Select the role of company"
+msgstr "Wählen Sie die Rolle des Unternehmens"
+
+msgid " Time tracking to this comment"
+msgstr "Zeiterfassung für diesen Kommentar"
+
+msgid " Who's responsible?"
+msgstr "Wer ist verantwortlich?"
+
+msgid " Your logo appears on  the Dashboard, and Overview pages."
+msgstr "Ihr Logo erscheint auf der Übersicht"
+
+msgid " comments"
+msgstr "Kommentare"
+
+msgid " last by"
+msgstr " last by"
+
+msgid " on"
+msgstr " on"
+
+msgid "( \"Home page redesign\" or \"Marketing ideas\", etc. )"
+msgstr "( \"Home page redesign\" or \"Marketing ideas\", etc. )"
+
+msgid "(Account owner)"
+msgstr "(Account owner)"
+
+msgid "(e.g. \"Things for the meeting\")"
+msgstr "(e.g. \"Things for the meeting\")"
+
+msgid "(or create a <a class='link-add-new-company'href=\"#\">new company"
+msgstr "(or create a <a class='link-add-new-company'href=\"#\">new company"
+
+msgid "(you can add people to it next)"
+msgstr "(you can add people to it next)"
+
+msgid "<p>After your account is created, you can sign in with the same <strong>username and password</strong> that you use with your other accounts.</p>"
+msgstr "<p>After your account is created, you can sign in with the same <strong>username and password</strong> that you use with your other accounts.</p>"
+
+msgid ""
+"<strong>Note: The email address above is unique to you and this project.</strong>\n"
+"                    This is how the system knows who wrote the message. Do not share the email address above with anyone else in your account (each person will see their own unique email address)."
+msgstr ""
+"<strong>Note: The email address above is unique to you and this project.</strong>\n"
+"                    This is how the system knows who wrote the message. Do not share the email address above with anyone else in your account (each person will see their own unique email address)."
+
+msgid ">INVITED"
+msgstr ">INVITED"
+
+msgid "A few details and you're on your way"
+msgstr "A few details and you're on your way"
+
+msgid "Accept invitation :"
+msgstr "Accept invitation :"
+
+msgid "Account:"
+msgstr "Konto:"
+
+msgid "Activation user"
+msgstr "Activation user"
+
+msgid "Add a new company "
+msgstr "Add a new company "
+
+msgid "Add a new person"
+msgstr "Add a new person"
+
+msgid "Add a new person to"
+msgstr "Add a new person to"
+
+msgid "Add a person to"
+msgstr "Add a person to"
+
+msgid "Add an item"
+msgstr "Neue Aufgabe hinzufügen"
+
+msgid "Add another company to this project"
+msgstr "Eine weiteres Unternehmen dem Projekt hinzufügen"
+
+msgid "Add company to project"
+msgstr "Unternehmen zu Projekt hinzufügen"
+
+msgid "Add files..."
+msgstr "Dateien hinzufügen ..."
+
+msgid "Add new category"
+msgstr "Neue Kategorie hinzufügen"
+
+msgid "Add new person"
+msgstr "Neue Person hinzufügen"
+
+msgid "Add people, remove people, and change permissions"
+msgstr "Add people, remove people, and change permissions"
+
+msgid "Add people, remove people, change permissions"
+msgstr "Add people, remove people, change permissions"
+
+msgid "Add this item"
+msgstr "Dieses Element hinzufügen"
+
+msgid "Add user to account"
+msgstr "Benutzer dem Konto hinzufügen"
+
+msgid "Address1"
+msgstr "Address1"
+
+msgid "Address2"
+msgstr "Address2"
+
+msgid "After you add a company you'll be able to specify which people from this company can access the project."
+msgstr "After you add a company you'll be able to specify which people from this company can access the project."
+
+msgid "All Message"
+msgstr "All Message"
+
+msgid "All Messages"
+msgstr "Alle Nachrichten"
+
+msgid "All People"
+msgstr "Alle Personen"
+
+msgid "All files"
+msgstr "Alle Dateien"
+
+msgid "All of"
+msgstr "Alle Mitglieder von"
+
+msgid "Already have a Thalamus account?"
+msgstr "Already have a Thalamus account?"
+
+msgid "Anyone"
+msgstr "Alle"
+
+msgid "Anyone checked off above will receive an email with the full content of the message."
+msgstr "Anyone checked off above will receive an email with the full content of the message."
+
+msgid "Anytime"
+msgstr "Jederzeit"
+
+msgid "Are you sure you want to add this user to your account?"
+msgstr "Are you sure you want to add this user to your account?"
+
+msgid "As soon as you submit this form, this person will receive a welcome email with a link to pick their own username and password."
+msgstr "As soon as you submit this form, this person will receive a welcome email with a link to pick their own username and password."
+
+msgid "Attach files to this comment"
+msgstr "Dateien zu diesem Kommentar hinzufügen"
+
+msgid "Back to Projects"
+msgstr "Zurück zur Projektübersicht"
+
+msgid "Be notified about major activities across all your projects."
+msgstr "Be notified about major activities across all your projects."
+
+msgid "Cancel"
+msgstr "abbrechen"
+
+msgid "Categories"
+msgstr "Kategorien"
+
+msgid "Category:"
+msgstr "Kategorie:"
+
+msgid "Change your name, photo, email address, username or password."
+msgstr "Change your name, photo, email address, username or password."
+
+msgid "Choose a company"
+msgstr "Choose a company"
+
+msgid "Choose a file to upload"
+msgstr "Choose a file to upload"
+
+msgid "City"
+msgstr "Ort"
+
+msgid "Click this link to get started:"
+msgstr "Click this link to get started:"
+
+msgid "Comment Notification"
+msgstr "Kommentar-Updates"
+
+msgid "Comments"
+msgstr "Kommentare"
+
+msgid "Comments on this to-do"
+msgstr "Kommentare zu dieser Aufgabe aus der Liste"
+
+msgid "Company"
+msgstr "Unternehmen"
+
+msgid "Company Name"
+msgstr "Unternehmensname"
+
+msgid "Company logo"
+msgstr "Logo des Unternehmens"
+
+msgid "Company:"
+msgstr "Company:"
+
+msgid "Confirm password"
+msgstr "Passwort wiederholen"
+
+msgid "Country"
+msgstr "Land"
+
+msgid "Create a project"
+msgstr "Neues Projekt erstellen"
+
+msgid ""
+"Create an announcement that appears at the top of this project's Overview page. \n"
+"                                You can use this to describe the project, to make a special announcement, etc."
+msgstr ""
+"Create an announcement that appears at the top of this project's Overview page. \n"
+"                                You can use this to describe the project, to make a special announcement, etc."
+
+msgid "Create and add company"
+msgstr "Create and add company"
+
+msgid "Create my account"
+msgstr "Konto erstellen"
+
+msgid "Create new Message"
+msgstr "Neue Nachricht erstellen"
+
+msgid "Create new account"
+msgstr "Neues Konto erstellen"
+
+msgid "Create new project"
+msgstr "Neues Projekt erstellen"
+
+msgid "Create new to-do list"
+msgstr "Neue Aufgabenliste erstellen"
+
+msgid "Create the first to-do list"
+msgstr "Erstellen Sie die erste Aufgabenliste"
+
+msgid "Create this list"
+msgstr "Diese Liste erstellen"
+
+msgid "Create this project"
+msgstr "Neues Projekt erstellen"
+
+msgid "Create your first project"
+msgstr "Erstellen Sie Ihr erstes Projekt"
+
+msgid "Current to-do lists"
+msgstr "Aktuelle To-do-Listen"
+
+msgid "Dashboard"
+msgstr "Übersicht"
+
+msgid "Date"
+msgstr "Datum"
+
+msgid "Date and time"
+msgstr "Datum und Uhrzeit"
+
+msgid "Date:"
+msgstr "Date:"
+
+msgid "Delete"
+msgstr "Löschen"
+
+msgid "Delete this list"
+msgstr "Diese Liste löschen"
+
+msgid "Delete this person?"
+msgstr "Diese Person löschen ?"
+
+msgid "Delete this project?"
+msgstr "Dieses Projekt löschen?"
+
+msgid "Deleting a project deletes all the data associated with this project (messages, milestones, to-do lists, files, writeboards, etc)."
+msgstr "Deleting a project deletes all the data associated with this project (messages, milestones, to-do lists, files, writeboards, etc)."
+
+msgid "Description"
+msgstr "Text"
+
+msgid "Description:"
+msgstr "Beschreibung:"
+
+msgid "Don't worry, their messages, comments, and history will not be erased."
+msgstr "Don't worry, their messages, comments, and history will not be erased."
+
+msgid "Done reordering list"
+msgstr "Fertig mit dem Neuordnen der Liste"
+
+msgid "Download this file"
+msgstr "Diese Datei herunterladen"
+
+msgid "Edit"
+msgstr "Bearbeiten"
+
+msgid "Edit message"
+msgstr "Nachricht bearbeiten"
+
+msgid "Edit person"
+msgstr "Person bearbeiten"
+
+msgid "Edit project"
+msgstr "Projekt bearbeiten"
+
+msgid "Edit this comment…"
+msgstr "Bearbeiten Sie diesen Kommentar..."
+
+msgid "Edit this message"
+msgstr "Diese Nachricht bearbeiten"
+
+msgid "Edit your personal information"
+msgstr "Bearbeiten Sie Ihre persönlichen Daten"
+
+msgid "Email"
+msgstr "E-Mail"
+
+msgid "Email notifications"
+msgstr "E-Mail-Benachrichtigungen"
+
+msgid "Enable time tracking for this list"
+msgstr "Zeiterfassung für diese Liste aktivieren (und erzwingen)"
+
+msgid "English"
+msgstr "Englisch"
+
+msgid "Enter a new company name"
+msgstr "Enter a new company name"
+
+msgid "Enter a to-do item"
+msgstr "Titel für die Aufgabe eintragen"
+
+msgid "Every company and person in your system"
+msgstr "Every company and person in your system"
+
+msgid "Everyone"
+msgstr "Alle"
+
+msgid "Everyone on the project will be notified via email."
+msgstr "Everyone on the project will be notified via email."
+
+msgid "Export report to csv:"
+msgstr "Export report to csv:"
+
+msgid "Fast-track"
+msgstr "Fast-Track"
+
+msgid "Fax"
+msgstr "Fax"
+
+msgid "File size"
+msgstr "File size"
+
+msgid "File under this company:"
+msgstr "File under this company:"
+
+msgid "Files"
+msgstr "Dateien"
+
+msgid "Files for this project"
+msgstr "Dateien für dieses Projekt"
+
+msgid "First give the list a name"
+msgstr "Geben Sie dieser Liste erstmal einen Namen"
+
+msgid "First name"
+msgstr "Vorname"
+
+msgid "From"
+msgstr "Von"
+
+msgid "From:"
+msgstr "Von:"
+
+msgid "German"
+msgstr "Deutsch"
+
+msgid "Get milestones from all your projects in a single iCalendar feed."
+msgstr "Get milestones from all your projects in a single iCalendar feed."
+
+msgid "Give access to:"
+msgstr "Give access to:"
+
+msgid "Give everyone from this company access to this project now."
+msgstr "Give everyone from this company access to this project now."
+
+msgid "Global RSS Feed"
+msgstr "Global RSS Feed"
+
+msgid "Global iCalendar"
+msgstr "Global iCalendar"
+
+msgid "Go back"
+msgstr "Zurück"
+
+msgid "Go back to Messages"
+msgstr "Zurück zu Nachrichten"
+
+msgid "Go to message"
+msgstr "Weiter zur Nachricht"
+
+msgid "Go to the registration page"
+msgstr "Go to the registration page"
+
+msgid "HELP"
+msgstr "HILFE"
+
+msgid "Have questions? Contact"
+msgstr "Have questions? Contact"
+
+msgid "Hi"
+msgstr "Hi"
+
+msgid "Hide empty entries:"
+msgstr "Hide empty entries:"
+
+msgid "Home"
+msgstr "Home"
+
+msgid "Hours"
+msgstr "Stunden"
+
+msgid "I'm done adding items"
+msgstr "dieses Fenster schließen und den Vorgang abbrechen"
+
+msgid "I'm not"
+msgstr "I'm not"
+
+msgid "IM Name"
+msgstr "IM Name"
+
+msgid "INVITED"
+msgstr "EINGELADEN"
+
+msgid ""
+"If you believe your access to this page has been denied in error, please contact support@thalamus.io. \n"
+"                    To assist us in responding to your issue, please reference the page \n"
+"                    you were attempting to view (simply copy the URL from your browser and paste it into the email) and indicate your qualification for access to the area."
+msgstr ""
+"If you believe your access to this page has been denied in error, please contact support@thalamus.io. \n"
+"                    To assist us in responding to your issue, please reference the page \n"
+"                    you were attempting to view (simply copy the URL from your browser and paste it into the email) and indicate your qualification for access to the area."
+
+msgid "If you post a comment you'll automatically be subscribed to receive email notifications."
+msgstr "If you post a comment you'll automatically be subscribed to receive email notifications."
+
+msgid "If you'd like, you can"
+msgstr "If you'd like, you can"
+
+msgid "Im Service"
+msgstr "Im Service"
+
+msgid "Important account information from thalamus.io:"
+msgstr "Important account information from thalamus.io:"
+
+msgid "Include a personal note along with the invitation to set up their account?"
+msgstr "Include a personal note along with the invitation to set up their account?"
+
+msgid "Is public description"
+msgstr "Dies ist eine öffentliche Beschreibung"
+
+msgid "It takes just a few seconds and you'll be up and running"
+msgstr "It takes just a few seconds and you'll be up and running"
+
+msgid "Language"
+msgstr "Sprache"
+
+msgid "Last name"
+msgstr "Nachname"
+
+msgid "Last update was"
+msgstr "Letztes Update"
+
+msgid "List description or notes about this list"
+msgstr "Beschreibung oder sichtbare Anmerkungen für die Liste:"
+
+msgid "List description:"
+msgstr "Beschreibung dieser Liste:"
+
+msgid "Make the first to-do list and get organized."
+msgstr "Erstellen Sie die erste Aufgabenliste und organisieren Sie Ihr Projekt."
+
+msgid "Me"
+msgstr "ICH"
+
+msgid "Messages"
+msgstr "Nachrichten"
+
+msgid "Messages are used to discuss ideas, ask questions, or post announcements about a project. Messages are like emails except they don't clutter your inbox."
+msgstr "Messages are used to discuss ideas, ask questions, or post announcements about a project. Messages are like emails except they don't clutter your inbox."
+
+msgid "Mobile"
+msgstr "Mobile"
+
+msgid "My info"
+msgstr "Mein Profil"
+
+msgid "Name the project"
+msgstr "Projektname"
+
+msgid "New file"
+msgstr "Neue Datei"
+
+msgid "New message"
+msgstr "Neue Nachricht"
+
+msgid "New to-do"
+msgstr "Neue Aufgabe"
+
+msgid "New to-do list"
+msgstr "Neue Aufgabenliste"
+
+msgid "No"
+msgstr "No"
+
+msgid "No category"
+msgstr "Keine Kategorie"
+
+msgid "No one"
+msgstr "No one"
+
+msgid "Notify people via email"
+msgstr "Notify people via email"
+
+msgid "Notify the people checked off above that you've edited this message?"
+msgstr "Notify the people checked off above that you've edited this message?"
+
+msgid "Now choose a password"
+msgstr "Wählen Sie ein gutes Passwort"
+
+msgid "OK, let's go"
+msgstr "OK, let's go"
+
+msgid "OWNER"
+msgstr "OWNER"
+
+msgid "Office"
+msgstr "Büro"
+
+msgid "Optional features"
+msgstr "Optional features"
+
+msgid "Or non-profit, organization, group, school, etc."
+msgstr "Or non-profit, organization, group, school, etc."
+
+msgid "Overview"
+msgstr "Übersicht"
+
+msgid "Overview page announcement"
+msgstr "Projektbeschreibung für die Übersichtsseite"
+
+msgid "Password"
+msgstr "Passwort"
+
+msgid "Password:"
+msgstr "Passwort:"
+
+msgid "People & Permissions"
+msgstr "Benutzer & Berechtigungen"
+
+msgid "People &amp; Permissions"
+msgstr "Benutzer &amp; Berechtigungen"
+
+msgid "People on this project"
+msgstr "Projekt-Mitglieder:"
+
+msgid "Permissions"
+msgstr "Berechtigungen"
+
+msgid "Person"
+msgstr "Person"
+
+msgid "Please select task list:"
+msgstr "Bitte wählen Sie eine Task-Liste, in die wir die ToDos zuerst einordnen:"
+
+msgid "Post a new message"
+msgstr "Neue Nachricht schreiben"
+
+msgid "Post messages via email"
+msgstr "Nachrichten per E-Mail erstellen"
+
+msgid "Post tasks via email"
+msgstr "To-Dos per E-Mail erstellen"
+
+msgid "Post the first message"
+msgstr "Die erste Nachricht absenden"
+
+msgid "Post this message"
+msgstr "Diese Nachricht absenden"
+
+msgid "Private"
+msgstr "Privat"
+
+msgid "Private: (Visible only to agency companies)"
+msgstr "Privat: (Sichtbar NUR für Agentur-Nutzer)"
+
+msgid "Private: (Visible only to your company)"
+msgstr "Privat: (Sichtbar NUR für Ihr Unternehmen)"
+
+msgid "Project"
+msgstr "Projekt"
+
+msgid "Project Settings"
+msgstr "Projekteinstellungen"
+
+msgid "Project name"
+msgstr "Projektname"
+
+msgid "Project overview & activity"
+msgstr "Projektübersicht & Aktivitäten"
+
+msgid "Project:"
+msgstr "Projekt:"
+
+msgid "Put this address in the ‘To:’, ‘CC:’, or ‘BCC:’ field of the email."
+msgstr "Put this address in the ‘To:’, ‘CC:’, or ‘BCC:’ field of the email."
+
+msgid "Ready to post the first message to this project?"
+msgstr "Ready to post the first message to this project?"
+
+msgid "Registration"
+msgstr "Регістрація"
+
+msgid "Reject invitation :"
+msgstr "Reject invitation :"
+
+msgid "Related"
+msgstr "Related"
+
+msgid "Remove"
+msgstr "Remove"
+
+msgid "Rename"
+msgstr "Rename"
+
+msgid "Reorder lists"
+msgstr "Aufgabenlisten umsortieren"
+
+msgid "Reply ABOVE THIS LINE to add a comment to this message"
+msgstr "Reply ABOVE THIS LINE to add a comment to this message"
+
+msgid "Sample welcome email"
+msgstr "Sample welcome email"
+
+msgid "Save changes"
+msgstr "Änderungen speichern"
+
+msgid "See all to-do lists"
+msgstr "Alle To-do-Listen zeigen"
+
+msgid "Select please ..."
+msgstr "Bitte wählen..."
+
+msgid ""
+"Select the company you want this project to be associated with in the \"Your Projects\" list on the Dashboard. The company name will also be displayed at the top of each project page and elsewhere where necessary.\n"
+"                                Finally, the company logo will appear at the top of the All Messages page for this project."
+msgstr ""
+"Select the company you want this project to be associated with in the \"Your Projects\" list on the Dashboard. The company name will also be displayed at the top of each project page and elsewhere where necessary.\n"
+"                                Finally, the company logo will appear at the top of the All Messages page for this project."
+
+msgid "Select the primary company for this project"
+msgstr "Wählen Sie das primäre Unternehmen aus, dem dieses Projekt zugewiesen wird"
+
+msgid "Select the role of company"
+msgstr "Select the role of company"
+
+msgid "Send all email notifications and reminders to this address:"
+msgstr "Send all email notifications and reminders to this address:"
+
+msgid "Send an email to"
+msgstr "Send an email to"
+
+msgid "Show to-dos assigned to"
+msgstr "Zeige Aufgaben, die folgenden Personen oder Gruppen zugeordnet sind"
+
+msgid "Show to-dos that are due"
+msgstr "Zeige To-Dos, die fällig sind"
+
+msgid "Sign in here."
+msgstr "Sign in here."
+
+msgid "Sign in to get started with Thalamus"
+msgstr "Sign in to get started with Thalamus"
+
+msgid "Sign in to your account:"
+msgstr "Sign in to your account:"
+
+msgid "Sign out"
+msgstr "Abmelden"
+
+msgid "Sort by"
+msgstr "Sort by"
+
+msgid "State"
+msgstr "State"
+
+msgid "Status"
+msgstr "Status"
+
+msgid "Stay up to date on this project"
+msgstr "Wollen Sie auf dem Laufenden bleiben?"
+
+msgid "Subscribe people to receive email notifications"
+msgstr "Wählen Sie bitte, wer eine Benachrichtigung erhalten soll:"
+
+msgid "Subscribe to this"
+msgstr "Subscribe to this"
+
+msgid "Task-ID"
+msgstr "Task-ID"
+
+msgid "Task-List"
+msgstr "Aufgabenliste"
+
+msgid "Task-Title"
+msgstr "Task-Title"
+
+msgid "Task-Url"
+msgstr "Task-Url"
+
+msgid "Thank you for visiting the Thalamus website. Access to this area is restricted."
+msgstr "Thank you for visiting the Thalamus website. Access to this area is restricted."
+
+msgid "The account you were looking for doesn't exist."
+msgstr "The account you were looking for doesn't exist."
+
+msgid "The email subject will become the message title."
+msgstr "The email subject will become the message title."
+
+msgid "The last invitation was sent on"
+msgstr "The last invitation was sent on"
+
+msgid "The page you are trying to access is restricted based on specific criteria, such as role of your company."
+msgstr "The page you are trying to access is restricted based on specific criteria, such as role of your company."
+
+msgid ""
+"The people you select will get an email when you post this comment.<br>\n"
+"        They'll also be notified by email every time a new comment is added."
+msgstr ""
+"Die ausgewählten Benutzer erhalten eine E-Mail, wenn Sie hier einen Kommentar hinzufügen<br>\n"
+"        Dies passiert auch, wenn jemand anderes einen Kommentar hinzufügt."
+
+msgid "The project name appears at the top of every page."
+msgstr "The project name appears at the top of every page."
+
+msgid "The rest is optional. You can fill it in later if you'd like."
+msgstr "The rest is optional. You can fill it in later if you'd like."
+
+msgid "These people are subscribed to receive email notifications when new comments are posted."
+msgstr "Folgende Personen erhalten E-Mails, sobald neue Kommentare gesendet werden."
+
+msgid "They will also be notified every time a comment is added."
+msgstr "They will also be notified every time a comment is added."
+
+msgid "This Overview screen will show you the latest activity in your project. But before we can show you activity, you'll need to get the project started."
+msgstr "Diese Übersicht zeigt Ihnen die letzten Aktivitäten in Ihrem Projekt. Aber bevor wir Ihnen Aktivitäten zeigen können, müssen Sie das Projekt starten, indem Sie ..."
+
+msgid "This comment was sent to"
+msgstr "Dieser Kommentar wurde gesendet an"
+
+msgid "This message was sent to"
+msgstr "Nachricht wurde gesendet an"
+
+msgid "This person will receive a welcome email with a link to choose their username and password. You can also add a personalized note that will appear at the bottom of the email. Please use plain text (no HTML tags)."
+msgstr "This person will receive a welcome email with a link to choose their username and password. You can also add a personalized note that will appear at the bottom of the email. Please use plain text (no HTML tags)."
+
+msgid "This person's name will be displayed next to their messages, comments, to-dos, milestones, and files."
+msgstr "This person's name will be displayed next to their messages, comments, to-dos, milestones, and files."
+
+msgid "This will permanently remove"
+msgstr "This will permanently remove"
+
+msgid "Time"
+msgstr "Dauer"
+
+msgid "Time Zone"
+msgstr "Zeitzone:"
+
+msgid "Time all project"
+msgstr "Time all project"
+
+msgid "Time tracking"
+msgstr "Übersicht der erfassten Zeiten"
+
+msgid "Time tracking to this comment"
+msgstr "Zeiterfassung für diesen Kommentar"
+
+msgid "Time zone"
+msgstr "Zeitzone"
+
+msgid "Time zone:"
+msgstr "Zeitzone:"
+
+msgid "Time:"
+msgstr "Dauer:"
+
+msgid "Title"
+msgstr "Titel"
+
+msgid "Title:"
+msgstr "Titel:"
+
+msgid "To"
+msgstr "To"
+
+msgid "To-Dos"
+msgstr "Aufgaben"
+
+msgid "To-do list"
+msgstr "Aufgabenliste"
+
+msgid "To-do lists"
+msgstr "Aufgabenlisten"
+
+msgid "To-dos help you keep track of all the little things that need to get done. You can add them for yourself or assign them to someone else."
+msgstr "To-dos help you keep track of all the little things that need to get done. You can add them for yourself or assign them to someone else."
+
+msgid "Today"
+msgstr "Heute"
+
+msgid "Toggle navigation"
+msgstr "Toggle navigation"
+
+msgid "Unsubscribe"
+msgstr "Abbestellen"
+
+msgid "Update this Comment"
+msgstr "Kommentar aktualisieren"
+
+msgid "Update this item"
+msgstr "Dieses Element aktualisieren"
+
+msgid "Update your Thalamus ID details"
+msgstr "Update your Thalamus ID details"
+
+msgid "Upload a file"
+msgstr "Datei hinzufügen"
+
+msgid "Upload and share files, documents, images, movies, screenshots, presentations, designs, or any other type of file. Basic version tracking is also available."
+msgstr "Upload and share files, documents, images, movies, screenshots, presentations, designs, or any other type of file. Basic version tracking is also available."
+
+msgid "Upload the file"
+msgstr "Datei hinzufügen"
+
+msgid "Upload the first file"
+msgstr "Die erste Datei hochladen"
+
+msgid "Upload the first file to share with the team."
+msgstr "Laden Sie die erste Datei, um diese mit dem Team zu teilen."
+
+msgid "Upload your photo"
+msgstr "Foto hochladen"
+
+msgid "Uploaded by"
+msgstr "Hochgeladen von"
+
+msgid "Username:"
+msgstr "Benutzername:"
+
+msgid "View all"
+msgstr "Alles anschauen"
+
+msgid "View all files for this project"
+msgstr "View all files for this project"
+
+msgid "View all of these images at once"
+msgstr "Zeige alle Bilder in einem neuen Fenster"
+
+msgid "Visible company client"
+msgstr "Sichtbar für Benutzer der Rolle \"Kunde\" ..."
+
+msgid "Visible company freelancer"
+msgstr "Sichtbar für Benutzer der Rolle \"Freelancer\""
+
+msgid "Visible to company client"
+msgstr "Sichtbar für Benutzer der Rolle \"Kunde\""
+
+msgid "Visible to company freelancer"
+msgstr "Sichtbar für Benutzer der Rolle \"Freelancer\""
+
+msgid "Web Address"
+msgstr "Web-Adresse"
+
+msgid "Welcome to Thalamus"
+msgstr "Willkommen bei Thalamus"
+
+msgid "Welcome to your Thalamus"
+msgstr "Willkommen bei Thalamus"
+
+msgid "Welcome to your new project"
+msgstr "Willkommen in Ihrem neuen Projekt"
+
+msgid "What happens now?"
+msgstr "What happens now?"
+
+msgid "When is it due?"
+msgstr "Zu wann ist die Aufgabe fällig?"
+
+msgid "When you click the \"Add this person\" button below, we'll fire off a nice invitation to the email address you entered above. The email will contain a link to a web page where this person will complete the setup process by picking their own username and password. Plus, you can immediately start involving them in projects even before they've chosen their username and password."
+msgstr "When you click the \"Add this person\" button below, we'll fire off a nice invitation to the email address you entered above. The email will contain a link to a web page where this person will complete the setup process by picking their own username and password. Plus, you can immediately start involving them in projects even before they've chosen their username and password."
+
+msgid "Which company do you want to add to the project?"
+msgstr "Which company do you want to add to the project?"
+
+msgid "Who's responsible?"
+msgstr "Wer ist verantwortlich?"
+
+msgid "Who’s talking about this message?"
+msgstr "Wer ist an diesem Task beteiligt?"
+
+msgid "Who’s talking about this to-do?"
+msgstr "Who’s talking about this to-do?"
+
+msgid "Yes"
+msgstr "Yes"
+
+msgid "Yes, I understand — delete this project"
+msgstr "Yes, I understand — delete this project"
+
+msgid "Yes, notify the subscribers above of these changes via email."
+msgstr "Yes, notify the subscribers above of these changes via email."
+
+msgid "You"
+msgstr "You"
+
+msgid "You have selected the Free plan. There is no time limit on the free plan — you can use it for free as long as you'd like. You can always upgrade to a paying plan later if you need multiple projects, more file storage, etc."
+msgstr "You have selected the Free plan. There is no time limit on the free plan — you can use it for free as long as you'd like. You can always upgrade to a paying plan later if you need multiple projects, more file storage, etc."
+
+msgid "You're invited to join Thalamus, our project management and collaboration system."
+msgstr "You're invited to join Thalamus, our project management and collaboration system."
+
+msgid "You're just 60 seconds away from your new Thalamus account."
+msgstr "You're just 60 seconds away from your new Thalamus account."
+
+msgid "Your Tgalamus Id"
+msgstr "Ihre Thalamus-Id"
+
+msgid "Your company:"
+msgstr "Ihre Firma"
+
+msgid "ZIP/Postal Code"
+msgstr "ZIP/Postal Code"
+
+msgid "ago"
+msgstr "ago"
+
+msgid "ago."
+msgstr "ago."
+
+msgid "already exists on Thalamus account"
+msgstr "already exists on Thalamus account"
+
+msgid "already matches someone else on Thalamus account named"
+msgstr "already matches someone else on Thalamus account named"
+
+msgid "and it will be posted as a message to the"
+msgstr "and it will be posted as a message to the"
+
+msgid "and it will be posted as a task to the task list selected below."
+msgstr "and it will be posted as a task to the task list selected below."
+
+msgid "at"
+msgstr "at"
+
+msgid "at our online collaboration tool."
+msgstr "at our online collaboration tool."
+
+msgid "by"
+msgstr "by"
+
+msgid "commented on the item task:"
+msgstr "commented on the item task:"
+
+msgid "commented on the message:"
+msgstr "commented on the message:"
+
+msgid "company from this project"
+msgstr "company from this project"
+
+msgid "completed items"
+msgstr "completed items"
+
+msgid "developer"
+msgstr "Developer"
+
+msgid "edited an existing message:"
+msgstr "edited an existing message:"
+
+msgid "email address"
+msgstr "E-Mail Adresse"
+
+msgid "for another"
+msgstr "for another"
+
+msgid "from"
+msgstr "from"
+
+msgid "from your Thalamus account"
+msgstr "from your Thalamus account"
+
+msgid "has invited you to join Thalamus for"
+msgstr "has invited you to join Thalamus for"
+
+msgid "hasn't accepted this invitation yet."
+msgstr "hasn't accepted this invitation yet."
+
+msgid "in"
+msgstr "in"
+
+msgid "just set up an account for you. All you need to do is choose a username and password. It only takes a few seconds."
+msgstr "just set up an account for you. All you need to do is choose a username and password. It only takes a few seconds."
+
+msgid "message"
+msgstr "Nachricht"
+
+msgid "my To-DoS"
+msgstr "Meine To-Dos"
+
+msgid "now"
+msgstr "now"
+
+msgid "on"
+msgstr "on"
+
+msgid "or"
+msgstr "oder"
+
+msgid "or you can send"
+msgstr "or you can send"
+
+msgid "posted a new message:"
+msgstr "posted a new message:"
+
+msgid "posted this message on"
+msgstr "posted this message on"
+
+msgid "private"
+msgstr "private"
+
+msgid "project."
+msgstr "project."
+
+msgid "re-send the email"
+msgstr "re-send the email"
+
+msgid "reported:"
+msgstr "Erfasste Zeit:"
+
+msgid "select an existing company"
+msgstr "Wählen Sie ein bestehendes Unternehmen"
+
+msgid "select from your computer"
+msgstr "Computer durchsuchen"
+
+msgid "this company"
+msgstr "this company"
+
+msgid "this invite link yourself:"
+msgstr "this invite link yourself:"
+
+msgid "to receive an email when new comments are posted."
+msgstr "to receive an email when new comments are posted."
+
+msgid "to skip this form and use the username you already have."
+msgstr "to skip this form and use the username you already have."
+
+msgid "to-do"
+msgstr "to-do"
+
+msgid "upload from Google Drive"
+msgstr "via Google Drive"
+
+msgid "uploaded these new files:"
+msgstr "Diese neue Dateien hochgeladen:"
+
+msgid "Add a new company"
+msgstr "Hinzufügen eines neuen Unternehmens"
+
+msgid ">Projects"
+msgstr "> Projekte"
+
+msgid "Alphabet"
+msgstr "Alphabet"
+
+msgid "Projectleader"
+msgstr "Projektleiter"
+
+msgid "view closed projects"
+msgstr "Zeige alle geschlossenen Projekte"
+
+msgid "Finance"
+msgstr "Finanzen"
+
+msgid "Closed projects"
+msgstr "Inaktive Projecte"
+
+msgid "Leave a comment..."
+msgstr "Leave a comment..."
+
+msgid "After you add a company you'll be able to add people to that company."
+msgstr "After you add a company you'll be able to add people to that company."
+
+msgid "Create company"
+msgstr "Create company"
+
+msgid "Edit company"
+msgstr "Edit company"
+
+msgid "Delete company"
+msgstr "Delete company"
+
+msgid "Your logo appears on  the Dashboard, and Overview pages."
+msgstr "Your logo appears on  the Dashboard, and Overview pages."
+
+msgid "Original Version"
+msgstr "Original Version"
+
+msgid "Download ZIP All Files"
+msgstr "Download ZIP All Files"
+
+msgid "Invoice-Date"
+msgstr "Invoice-Date"
+
+msgid "Due date"
+msgstr "Due date"
+
+msgid "Amount"
+msgstr "Amount"
+
+msgid "Add new cost"
+msgstr "Add new cost"
+
+msgid "I'm done adding cost"
+msgstr "I'm done adding cost"
+
+msgid "Update cost"
+msgstr "Update cost"
+
+msgid "Company name"
+msgstr "Company name"
+
+msgid "Project budget"
+msgstr "Project budget"
+
+msgid "Already billed"
+msgstr "Already billed"
+
+msgid "Tracked personnel cost"
+msgstr "Tracked personnel cost"
+
+msgid "Tracked freelancer cost"
+msgstr "Tracked freelancer cost"
+
+msgid "Third party services"
+msgstr "Third party services"
+
+msgid "Gross profit"
+msgstr "Gross profit"
+
+msgid "Still open project value"
+msgstr "Still open project value"
+
+msgid "Total"
+msgstr "Total"
+
+msgid "Create new cost"
+msgstr "Create new cost"
+
+msgid "comments"
+msgstr "comments"
+
+msgid "last by"
+msgstr "last by"
+
+msgid "Add a comment"
+msgstr "Add a comment"
+
+msgid "Project-type"
+msgstr "Project-type"
+
+msgid "Close this project?"
+msgstr "Close this project?"
+
+msgid "Closed project are not displayed at the project overview anymore."
+msgstr "Closed project are not displayed at the project overview anymore."
+
+msgid "Client do not have access to the project anymore."
+msgstr "Client do not have access to the project anymore."
+
+msgid "Project is closed."
+msgstr "Projekt ist inaktiv."
+
+msgid "Writeboards"
+msgstr "Writeboards"
+
+msgid "Select Child"
+msgstr "Select Child"
+
+msgid "Create a new task"
+msgstr "Create a new task"
+
+msgid "Show closed Task"
+msgstr "Zeige geschlossene Tanks"
+
+msgid "Select list:"
+msgstr "Select list:"
+
+msgid "Select a list"
+msgstr "Select a list"
+
+msgid "Create Relation"
+msgstr "Create Relation"
+
+msgid "Recurring Task  on"
+msgstr "Wiederkehrende Aufgabe  am"
+
+msgid "every month"
+msgstr "jeden Monats"
+
+msgid "Relations:"
+msgstr "Verwandte Aufgaben:"
+
+msgid "Add relation"
+msgstr "Neue Verknüpfung"
+
+msgid "Mother:"
+msgstr "Mutter"
+
+msgid "Child:"
+msgstr "Child:"
+
+msgid "Select a task"
+msgstr "Select a task"
+
+msgid "Merge tasks of same Task-ID:"
+msgstr "Merge tasks of same Task-ID:"
+
+msgid "Sort tasks by Public-ID:"
+msgstr "Sort tasks by Public-ID:"
+
+msgid "Group trackings of Agency-Role users"
+msgstr "Group trackings of Agency-Role users"
+
+msgid "Public-ID"
+msgstr "Public-ID"
+
+msgid "Post a new Writeboard"
+msgstr "Post a new Writeboard"
+
+msgid "Post a new writeboard"
+msgstr "Post a new writeboard"
+
+msgid "Post this Writeboard"
+msgstr "Post this Writeboard"
+
+msgid "Update this Writeboard"
+msgstr "Update this Writeboard"
+
+msgid "Start a Writeboard and write together."
+msgstr "Start a Writeboard and write together."
+
+msgid "Writeboards make collaborative writing easy. Track changes, make corrections, review multiple versions of a document, and write without overwriting someone else."
+msgstr "Writeboards make collaborative writing easy. Track changes, make corrections, review multiple versions of a document, and write without overwriting someone else."
+
+msgid "Create a new writeboard"
+msgstr "Create a new writeboard"
+
+msgid "Add an writeboard"
+msgstr "Add an writeboard"
+
+msgid "Writeboard"
+msgstr "Writeboard"
+
+msgid "Edit title"
+msgstr "Edit title"
+
+msgid "Save"
+msgstr "Save"
+
+msgid "Versions"
+msgstr "Versions"
+
+msgid "version"
+msgstr "version"
+
+msgid "Last Update:"
+msgstr "Last Update:"
+
+msgid "Edit Writeboard"
+msgstr "Edit Writeboard"
+
+msgid "day"
+msgstr "day"
+
+msgid "month"
+msgstr "month"
+
+msgid "Task List:"
+msgstr "Task List:"
+
+msgid "contains only recurring tasks"
+msgstr "contains only recurring tasks"
+
+msgid "show all"
+msgstr "show all"
+
+msgid "Search"
+msgstr "Suche"
+
+msgid "Net value"
+msgstr "Net value"
+
+msgid "VAT rate"
+msgstr "VAT rate"
+
+msgid "Export all cost line:"
+msgstr "Export all cost line:"
+
+msgid "Posted by"
+msgstr "Geschrieben von"
+
+msgid "Search across all projects"
+msgstr "Suche über alle Projekte"
+
+msgid "Search the \"my project\" project or search"
+msgstr "Search the \"my project\" project or search"
+
+msgid "all projects"
+msgstr "alle Projekte"
+
+msgid "Show"
+msgstr "Zeigen"
+
+msgid "All matches"
+msgstr "alle spiele"
+
+msgid "or filter by"
+msgstr "oder filtern nach"
+
+msgid "To-dos"
+msgstr "To-dos"
+
+msgid "Tasks"
+msgstr "Tasks"
+
+msgid "Sorry, your search had no results"
+msgstr "Dieser Task existiert nicht"
+
+msgid "Enter your search terms above"
+msgstr "Geben Sie Ihre Suchbegriffe oben ein"
+
+msgid "Enter your search terms above to search the my project project."
+msgstr "Geben Sie oben Ihre Suchbegriffe ein, um das Projekt zu durchsuchen."
+
+msgid "You might also want to search"
+msgstr "Vielleicht möchten Sie auch suchen"
+
+msgid "Your recent searches in my project"
+msgstr "Ihre letzten Suchen im Projekt"
+
+msgid "Clear"
+msgstr "Klar"
+
+msgid "Do you wanna add a Comment by email to this task?"
+msgstr "Möchten Sie per E-Mail einen Kommentar hinzufügen ?"
+
+msgid "show only sums"
+msgstr "zeige nur Summen an"
+
+msgid "include closed projects"
+msgstr "schließe geschlossene Projekte ein"
+
+msgid "Please set your personal password first"
+msgstr "Bitte legen Sie als erstes Ihr Passwort für Thalamus fest"
+
+msgid "Show empty comment"
+msgstr "Zeige leere Kommentare"
+
+msgid "Please use this emailaddress to add another comment to this task:"
+msgstr "Nutzen Sie die folgende Mail-Adresse, um einen Kommentar perr Mail hinzuzufügen"
+
+msgid "This task does not exist"
+msgstr "Dieser Task existiert nicht"

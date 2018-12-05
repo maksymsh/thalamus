@@ -1,0 +1,107 @@
+{% extends "WWSCThalamusBundle:Content:layout.html.twig" %}
+{% block title %}
+    {% trans %}Dashboard{% endtrans %}
+{% endblock %}
+{% block content %}
+<div class="row dashboard-account">
+    <div class="panel panel-default col-md-9">
+        <div class="panel-heading">
+            {% trans %}Welcome to your Thalamus{% endtrans %}
+        </div>
+        <div class="panel-body">
+            <div class="row">
+                {% include 'WWSCThalamusBundle:Content:flash_notice.html.twig' %}
+                {% if oAccount.hasProjects == false %}
+                    {% if is_granted('ROLE_PROVIDER') %}
+                        <div class="panel-offer">
+                            <h1><a href="{{ path('wwsc_thalamus_project_add') }}">{% trans %}Create your first project{% endtrans %}</a></h1>
+                            {% trans %}It takes just a few seconds and you'll be up and running{% endtrans %}
+                        </div>
+                    {% endif %}
+                {% else %}
+                {% for aProject in oAccount.projectsForDashboard  %}
+                        <div class="dashboard-today" style="margin-top:20px">
+
+                          <a href="{{ path ('wwsc_thalamus_project_todos',{'project': aProject.slug })}}">
+                            <i class="fa fa-tasks" aria-hidden="true"></i>
+                            {{ aProject['name'] }}
+                            {% trans %}To-Dos{% endtrans %}
+                          </a>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table table-striped dashboard-log">
+                                <tbody>
+                                    {% for aLog in aProject['log'] %}
+                                        <tr>
+                                            <td class="type col-md-2" ><span class="{{ aLog['object_type'] | lower}}">{{ aLog['object_type'] }}</span></td>
+                                            <td class="item">
+                                                {% autoescape false %}
+                                                    {{ aLog['description'] }}
+                                                {% endautoescape %}</td>
+                                            <td class="action">{{ aLog['action'] }}</td>
+                                            <td class="author">{{ aLog['first_name'] }} {{ aLog['last_name'] }}</td>
+                                            <td class="author">{{ aLog['created'] | date("M j") }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                {% endfor %}
+            {% endif %}
+            </div>
+
+        </div>
+    </div>
+    <div class="col-md-3 sidebar sidebar-user">
+        <div class="col">
+            {% if( oAccount.primaryCompany.id != app.user.company.id and oAccount.primaryCompany.logo) %}
+                <div class="info-panel box-company-logo">
+                    <img src="{{ (asset('uploads/company/') ~ oAccount.primaryCompany.logo) | imagine_filter('my_thumb',{"thumbnail": {"size": [242, 242], "mode": "inset"}}) }}">
+                </div>
+            {% endif %}
+            {% if(app.user.company.logo) %}
+                <div class="info-panel box-company-logo">
+                    <img src="{{ (asset('uploads/company/') ~ app.user.company.logo) | imagine_filter('my_thumb',{"thumbnail": {"size": [242, 242], "mode": "inset"}}) }}">
+                </div>
+            {% endif %}
+            <div class="title-panel">Questions? Need help?</div>
+            <div class="info-panel">
+                No problem. Check the well-stocked help section, the screenshot and video tours.
+            </div>
+            {% if oAccount.hasProjects %}
+            <div class="title-panel col-md-12">
+                <div class="col-md-6"{% trans %}>Projects{% endtrans %}</div>
+                <div class="col-md-6">
+                    <select class="changing-order-list-project" name=sort-project">
+                        <option  {% if app.user.sortingProjectsList == 'alphabet'%} selected {% endif %} value = "{{ path ('wwsc_thalamus_account_order_project_list',{'order':  'company' }) }}">{% trans %}Alphabet{% endtrans %}</option>
+                        <option {% if app.user.sortingProjectsList == 'projectLead'%} selected {% endif %}  value = "{{ path ('wwsc_thalamus_account_order_project_list',{'order':  'projectLead' }) }}">{% trans %}Projectleader{% endtrans %}</option>
+                    </select>
+                </div>
+            </div>
+            <div class="info-panel sidebar-people-on-project">
+                <div class="list-open-project-right">
+                    {% if app.user.sortingProjectsList == 'projectLead'%}
+                        {% include 'WWSCThalamusBundle:Account:dashboard-menu-project-projectLead.html.twig' with {'aProjects': oAccount.projects('projectLead', false, false, 'open', false)} %}
+                    {% else %}
+                        {% include 'WWSCThalamusBundle:Account:dashboard-menu-project-alphabet.html.twig' with {'aProjects': oAccount.projects('company', false, false, 'open', false)} %}
+                    {% endif %}
+                </div>
+                {% if is_granted('ROLE_PROVIDER') and  oAccount.hasProjects('closed') %}
+                        <div class="item-compnay">closed projects</div>
+                        <div class="show-closed-projects">
+                            <a href="{{ path ('wwsc_thalamus_account_list_closed_projects') }}">{% trans %}view closed projects{% endtrans %}</a>
+                        </div>
+                {% endif %}
+            </div>
+            {% endif %}
+            {% if is_granted('ROLE_PROVIDER') %}
+            <div class="btn-add-new-project">
+                <a href="{{ path('wwsc_thalamus_project_add') }}" class="btn btn-default btn-md">
+                    <i class="glyphicon glyphicon-plus"></i>{% trans %}Create new project{% endtrans %}
+                </a>
+            </div>
+            {% endif %}
+        </div>
+    </div><!--/span-->
+</div>
+{% endblock %}

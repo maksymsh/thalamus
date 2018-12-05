@@ -1,0 +1,92 @@
+fos_oauth_server_token:
+    resource: "@FOSOAuthServerBundle/Resources/config/routing/token.xml"
+
+fos_oauth_server_authorize:
+    resource: "@FOSOAuthServerBundle/Resources/config/routing/authorize.xml"
+
+wwsc_thalamus_registration_account:
+    path:     /registration
+    defaults: {_controller: WWSCThalamusBundle:Account:registrationAccount}
+        
+wwsc_thalamus_account:
+    resource: "@WWSCThalamusBundle/Resources/config/routing.yml"
+    prefix:   /
+    
+wwsc_thalamus_login_account:
+    path:     /login
+    defaults: { _controller: WWSCThalamusBundle:Security:login}
+        
+wwsc_thalamus_create_account:
+    path:     /create
+    defaults: { _controller: WWSCThalamusBundle:Account:createAccount }
+    
+wwsc_thalamus_account_new:
+    path:     /account/new
+    defaults: { _controller: WWSCThalamusBundle:Account:newAccount }
+
+wwsc_thalamus_get_file:
+    path:     /uploads/files/{name}
+    defaults: { _controller: WWSCThalamusBundle:File:getFile}
+    
+fos_user_security:
+    resource: "@FOSUserBundle/Resources/config/routing/security.xml"
+
+fos_user_profile:
+    resource: "@FOSUserBundle/Resources/config/routing/profile.xml"
+    prefix: /account/user/myinfo
+    defaults: { _controller: WWSCThalamusBundle:User:myInfo }
+
+fos_user_register:
+    resource: "@FOSUserBundle/Resources/config/routing/registration.xml"
+    prefix: /register
+
+fos_user_resetting:
+    resource: "@FOSUserBundle/Resources/config/routing/resetting.xml"
+    prefix: /resetting
+
+fos_user_change_password:
+    resource: "@FOSUserBundle/Resources/config/routing/change_password.xml"
+    prefix: /profile
+
+hwi_oauth_security:
+    resource: "@HWIOAuthBundle/Resources/config/routing/login.xml"
+    prefix: /login
+
+hwi_oauth_connect:
+    resource: "@HWIOAuthBundle/Resources/config/routing/connect.xml"
+    prefix: /login
+
+hwi_oauth_redirect:
+    resource: "@HWIOAuthBundle/Resources/config/routing/redirect.xml"
+    prefix:   /login
+
+google_login:
+    pattern: /login/check-google
+    
+oneup_uploader:
+    resource: .
+    type: uploader
+    
+_liip_imagine:
+    resource: "@LiipImagineBundle/Resources/config/routing.xml"
+
+NelmioApiDocBundle:
+    resource: "@NelmioApiDocBundle/Resources/config/routing.yml"
+    prefix:   /api/doc
+
+nelmio_api_swagger:
+    resource: "@NelmioApiDocBundle/Resources/config/swagger_routing.yml"
+    prefix: /api-docs
+
+wwsc_thalamus_api_v1:
+    type: rest
+    resource: "@WWSCThalamusBundle/Controller/API/"
+    prefix:   /api/v1/
+
+wwsc_thalamus_api:
+    path:     /api
+    defaults: { _controller: WWSCThalamusBundle:API:index }
+
+wwsc_thalamus_api_read:
+    path:     /api/{model}/{id}
+    defaults: { _controller: WWSCThalamusBundle:API:read }

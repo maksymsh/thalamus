@@ -1,0 +1,125 @@
+{% extends "WWSCThalamusBundle:Content:layout.html.twig" %}
+{% block title %}
+    {{ oProject.name }} - {% trans %}Add people, remove people, and change permissions{% endtrans %}
+{% endblock %} 
+{% block content %}   
+    <div class="row">
+        <div class="panel panel-default col-xs-12">
+            <div class="panel-heading col-xs-12">
+                <div class="col-xs-12">
+                    <a href="{{ path ('wwsc_thalamus_project_project_people',{'project': oProject.slug })}}" class="go_back">← {% trans %}Go back{% endtrans %}&nbsp;</a> |
+                    {% trans %}Add people, remove people, and change permissions{% endtrans %}
+                </div> 
+            </div>
+            <div class="panel-body">
+                <div class="row add-people-to-project">
+                    {% include 'WWSCThalamusBundle:Content:flash_notice.html.twig' %}
+                    <div class="list-company col-md-12">
+                        <div class="col-xs-12">
+                            <div class="btn-add-project-company">
+                                <a href="#" class="btn btn-default btn-md">
+                                    <i class="glyphicon glyphicon-plus"></i> {% trans %}Add another company to this project{% endtrans %}
+                                </a>
+                            </div>
+                            <div class="info-panel forms-company-to-project without-padding col-md-12">
+                                <h4>{% trans %}Which company do you want to add to the project?{% endtrans %}</h4>
+                                <p>{% trans %}After you add a company you'll be able to specify which people from this company can access the project.{% endtrans %}</p>
+                                {% if oProject.companiesNotInProject|length > 0 %}
+                                <form class="form-select-company-to-project" method="POST" action="{{ path ('wwsc_thalamus_add_project_people',{'project': oProject.slug })}}">
+                                    <div class="col-md-4 without-padding">
+                                        <p> {% trans %}Choose a company{% endtrans %} {% trans %}(or create a <a class='link-add-new-company'href="#">new company{% endtrans %}</a>) </p>
+                                        <p>{{ form_widget(form.company) }}</p>
+                                    </div>
+                                    <div class="col-md-12 without-padding">
+                                    <p>{{ form_widget(form.access_to_all_people) }}
+                                    <span>{% trans %}Give everyone from this company access to this project now.{% endtrans %}</span></p>
+                                    </div>
+                                    {{ form_widget(form._token) }}
+                                    <div class="col-md-12  without-padding btn-action">
+                                        <button class="btn btn-sm btn-primary btn-save" type="submit">{% trans %}Add company to project{% endtrans %}</button>
+                                        {% trans %}or{% endtrans %} <a class="btn-cancel" href="#"> {% trans %}Cancel{% endtrans %} </a> 
+                                    </div>
+                                </form>
+                                {% endif %}
+                                 <form class="form-add-new-company-project {% if oProject.companiesNotInProject|length > 0 %} hide {% endif %}" method="POST" action="{{ path ('wwsc_thalamus_add_company')}}">
+                                    <div class="col-md-12 without-padding ">
+                                        <div class="col-md-12 without-padding">                                            
+                                            <label>
+                                                {% trans %}Enter a new company name{% endtrans %}({% trans %}or{% endtrans %} <a class='link-select-company' href="#">{% trans %}select an existing company{% endtrans %}</a>)
+                                            </label>
+                                        </div>
+                                        <div class="col-md-3 without-padding">
+                                            <input type="hidden" name="project" value="{{ oProject.id }}">
+                                            <p>{{ form_widget(fCompany.name) }}</p>
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-md-12 without-padding">
+                                        <div class="col-md-3 without-padding">
+                                            <label>{% trans %}Select the role of company{% endtrans %}</label>
+                                            <div>
+                                                {{ form_widget(fCompany.roles) }}
+                                            </div>
+                                        </div>
+                                    </div>    
+                                    {{ form_widget(fCompany._token) }}
+                                    <div class="col-md-12  without-padding btn-action">
+                                        <button class="btn btn-sm btn-primary btn-save" type="submit">{% trans %}Create and add company{% endtrans %}</button>
+                                        or <a class="btn-cancel" href="#">{% trans %}Cancel{% endtrans %} </a> 
+                                    </div>
+                                </form>    
+                            </div>    
+                        </div>
+                        {% set activeSubscribedpeople = oProject.users %}
+                        {% for oCompany in oProject.companies %}
+                            <div class="company col-xs-12">
+                                <div class="title-panel col-xs-12">
+                                        {% if oCompany.id == app.user.company.id %} 
+                                            {% trans %}Your company:{% endtrans %}
+                                        {% endif %}
+                                            {{ oCompany.name }} <small>( {{ oCompany.roleName }} )</small>
+                                        {% if oCompany.primaryCompany != 1  %}
+                                            <div class=" btn-right">
+                                                <small>
+                                                    <a class="remove" href="{{ path('wwsc_thalamus_remove_company_project', {'project': oProject.slug, 'id': oCompany.id })}}">{% trans %}Remove{% endtrans %}</a> 
+                                                     {% trans %}company from this project{% endtrans %} {{ oCompany.name }}
+                                                </small>
+                                            </div>
+                                       {% endif %}
+                                </div>
+                                <div class="col-md-12">
+                                    <small>{% trans %}Give access to:{% endtrans %} 
+                                        <a onclick="return confirm('Are you sure you want to give everyone from {{ oCompany.name }} access to this project?')" href="{{ path('wwsc_thalamus_change_status_all_users_project', {'project': oProject.slug, 'company': oCompany.id ,'action': 'add'} )}}">{% trans %}Everyone{% endtrans %}</a> | 
+                                        <a onclick="return confirm('Are you sure you want remove everyone in {{ oCompany.name }} from this project?')"  href="{{ path('wwsc_thalamus_change_status_all_users_project', {'project': oProject.slug, 'company': oCompany.id ,'action': 'remove'} )}}">{% trans %}No one{% endtrans %}</a>
+                                    </small>
+                                </div>
+                                <div class="col-md-12 users-project">
+                                    {% for oUser in oCompany.users %}   
+                                        <div class="item col-md-12">
+                                            {% if oCompany.primaryCompany == 1 and oUser.id == oCompany.userCreated.id %}
+                                                <input  checked  class="project-people account-owner" disabled type="checkbox"> 
+                                               {{ oUser.firstName }} {{ oUser.lastName }}
+                                                <small> {% trans %}(Account owner){% endtrans %} </small>
+                                            {% else %}
+                                                <input {% if oUser in activeSubscribedpeople %} checked {% endif %}  data-href="{{ path('wwsc_thalamus_status_user_project', {'project': oProject.slug, 'id': oUser.id})}}" class="project-people"   type="checkbox"> 
+                                                {{ oUser.firstName }} {{ oUser.lastName }} 
+                                            {% endif %}
+                                        </div>
+                                    {% endfor %}
+                                    <div class="col-md-12">
+                                        <small>      
+                                             {% trans %}Add a new person to{% endtrans %}
+                                            <a class="remove" href="{{ path('wwsc_thalamus_user_add', {'company': oCompany.id, 'project': oProject.slug }) }}">{{ oCompany.name }}</a> 
+                                        </small>
+                                    </div>    
+                                </div>     
+                            </div>    
+                        {% endfor %}                   
+                    </div>
+                </div><!--/span-->
+            </div>  
+        </div>
+    </div>
+{% endblock %}
+{% block javascripts %}
+    <script src="{{ asset('bundles/wwscthalamus/js/people_permissions.js') }}"></script>
+ {% endblock %}  

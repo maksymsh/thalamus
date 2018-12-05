@@ -1,0 +1,74 @@
+<div class="navbar navbar-fixed-top navbar-inverse" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">{% trans %}Toggle navigation{% endtrans %}</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="{{ path ('wwsc_thalamus_account_dashboard')}}">{{ app.session.get('account').name }}</a>
+        </div>
+        <div class="collapse navbar-collapse">
+            <div id="settings_signout_and_help">
+                <span class="account">
+                    <div class="btn-group">
+                        <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
+                            {% trans %}Account:{% endtrans %}<strong>{{ app.session.get('account').name }} </strong>
+                            <span class="caret"></span>
+                        </a>
+                        {% if app.user.companies|length > 1 %}
+                            <ul class="dropdown-menu">
+                                {% for oCompany in app.user.companies %}
+                                    <li  {% if app.session.get('account').slug == oCompany.account.slug  %}class="active" {% endif %} ><a href="{{ path ('wwsc_thalamus_account_change',{'account': oCompany.account.id })}}">{{ oCompany.account.name }}</a></li>
+                                    {% endfor %}
+                            </ul>
+                        {% endif %}
+                    </div>|
+                </span>
+                <span class="name">{{ app.user.firstName }} {{ app.user.lastName }}</span>
+                <span class="pipe">|</span>
+                {% if is_granted('ROLE_PROVIDER') %}
+                    {% if app.session.get('presentationMode') %}
+                        <a class="link-present" href="{{ path('wwsc_thalamus_presentation_mode')}}">Present</a>
+                    {% else %}
+                        <a class="link-internal" href="{{ path('wwsc_thalamus_presentation_mode')}}">Internal</a>
+                    {% endif %}   
+                    <span class="pipe">|</span>
+                    <a href="{{ path('wwsc_thalamus_personal_timetracking')}}"><div class="time-track-today"><span>{{ app.user.timeTrackToday }}</span></div></a>
+                    <span class="pipe">|</span>
+                {% endif %}
+                <a href="{{ path('wwsc_thalamus_user_myinfo') }}" title="Review and edit your account information">{% trans %}My info{% endtrans %}</a>
+                <span class="pipe">|</span>
+                <a href="{{ path('fos_user_security_logout')}}" title="Sign out and clear the cookie off your machine">{% trans %}Sign out{% endtrans %}</a>
+                {% include 'WWSCThalamusBundle:Task:search-task-form.html.twig' %}
+                <a href="#" class="help" target="_blank"><span>{% trans %}HELP{% endtrans %}</span></a>
+            </div>
+            <ul class="nav navbar-nav ">
+                <li {% if app.session.get('active_module') == 'dashboard' %} class="active" {% endif %} ><a href="{{ path ('wwsc_thalamus_account_dashboard')}}">{% trans %}Dashboard{% endtrans %}</a></li>
+                {#<li {% if app.session.get('active_module') == 'my-todos' %} class="active" {% endif %} ><a href="{{ path ('wwsc_thalamus_account_my_todos')}}">{% trans %}my To-DoS{% endtrans %}</a></li>#}
+                {% if is_granted('ROLE_PROVIDER') or is_granted('ROLE_FREELANCER') %}
+                 <li {% if app.session.get('active_module') == 'tasks' %} class="active" {% endif %}><a href="{{ path ('wwsc_thalamus_account_tasks')}}">{% trans %}Tasks{% endtrans %}</a></li>
+                {% endif %}
+                 {% if  app.session.get('presentationMode') == false and (is_granted('ROLE_PROVIDER') or is_granted('ROLE_FREELANCER'))   %}
+                    <li {% if app.session.get('active_module') == 'time-all-projects' %} class="active" {% endif %} ><a href="{{ path ('wwsc_thalamus_time_list')}}">{% trans %}Time{% endtrans %}</a></li>
+                    {% endif %}
+                    {% if is_granted('ROLE_PROVIDER') %}
+                    <li {% if app.session.get('active_module') == 'personal_timetracking' %} class="active" {% endif %} >
+                        <a href="{{ path('wwsc_thalamus_personal_timetracking')}}">{% trans %}Time-Tracking{% endtrans %}</a>
+                    </li>
+                {% endif %} 
+                {% if is_granted('ROLE_PROVIDER') and (app.user.role == 'ROLE_ACCOUNTING' or app.user.ResponsibleProjects('has-responsible-project')) and app.session.get('presentationMode') == false %}
+                    <li {% if app.session.get('active_module') == 'finance' %} class="active" {% endif %} >
+                        <a href="{{ path('wwsc_thalamus_finance')}}">{% trans %}Finance{% endtrans %}</a>
+                    </li>
+                {% endif %} 
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li {% if app.session.get('active_module') == 'all-people' %} class="active" {% endif %} ><a href="{{ path ('wwsc_thalamus_account_all_people') }}">{% trans %}All People{% endtrans %}</a></li>
+                <li {% if app.session.get('active_module') == 'search' %} class="active" {% endif %} ><a href="{{ path ('wwsc_thalamus_search')}}">{% trans %}Search{% endtrans %}</a></li>
+                <li class="print"><a href="javascript:window.print()"  title="print"><img height=18px src="{{ asset('bundles/wwscthalamus/images/print_icon.png') }}"></a></li>
+            </ul>
+        </div>
+    </div>
+</div>

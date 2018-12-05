@@ -1,0 +1,17 @@
+ <tr id='cost-id-{{ oFinance.id }}' {% if (  oFinance.getRecorderCost() == 1) %} class = " recorder-cost" {% endif %}>
+    <td> 
+        <div  class="actions-panel">
+            <a class="btn-delete-cost" href={{path('wwsc_thalamus_project_finance_delete',{'project':oFinance.project.slug, 'id':oFinance.id})}}><img src="{{ asset('bundles/wwscthalamus/images/remove_icon.png') }}"></a>
+            <a class="btn-edit-cost" href={{path('wwsc_thalamus_project_finance_edit',{'project':oFinance.project.slug, 'id':oFinance.id})}}>{% trans %}Edit{% endtrans %}</a>
+            <a class="btn-copy-cost" href={{path('wwsc_thalamus_project_finance_dublicate',{'project':oFinance.project.slug, 'id':oFinance.id})}}><img src="{{ asset('bundles/wwscthalamus/images/icon_copy.jpg') }}"></a>
+        </div>
+        {{ oFinance.invoiceDate }}
+    </td>
+    <td>{{ oFinance.dueDate }}</td>
+    <td class="show-currency price">{{ app.user.formatPrice(oFinance.amount) }}</td>
+    <td>{{ oFinance.vatRate('value') }}</td>
+    <td class="description">{{ oFinance.description }}</td>
+    <td>{{ oFinance.billable == 0 ? "no" : "yes"  }}</td> 
+    <td>{{ oFinance.status('value') }}</td>
+    
+</tr>

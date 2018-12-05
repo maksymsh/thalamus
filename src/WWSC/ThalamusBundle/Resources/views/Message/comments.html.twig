@@ -1,0 +1,57 @@
+{% extends "WWSCThalamusBundle:Content:layout.html.twig" %}
+{% block title %}
+    {{ oMessage.project.name }} - {% trans %}Comments{% endtrans %}
+{% endblock %} 
+{% block content %}
+    <div class="row">
+        <div class="panel panel-default col-md-9">
+            <div class="panel-heading col-xs-12">
+                <div class="col-xs-6">
+                   <a href="{{ path ('wwsc_thalamus_project_messages',{'project': oMessage.project.slug })}}">« {% trans %}All Messages{% endtrans %}</a>
+                </div>
+                <div class="page_header_links col-xs-6">
+                    <a  href="{{ path ('wwsc_thalamus_project_message_add',{'project': oMessage.project.slug })}}">{% trans %}New message{% endtrans %}</a>|
+                    <a  href="{{ path ('wwsc_thalamus_project_message_edit',{'project': oMessage.project.slug, 'id': oMessage.id })}}">{% trans %}Edit this message{% endtrans %}</a>|
+                    <a  href="{{ path ('wwsc_thalamus_project_message_delete',{'project': oMessage.project.slug, 'id': oMessage.id })}}">{% trans %}Delete{% endtrans %}</a>
+                </div>  
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                     {% include 'WWSCThalamusBundle:Message:message-info.html.twig' with {'oMessage': oMessage, 'activeSubscribed': oMessage.activeSubscribed} %}
+                     {% include 'WWSCThalamusBundle:Comment:list.html.twig' with {'slugProject': oMessage.project.slug, 'aComment': oMessage.comments, 'type':'Message' , 'parent': oMessage.id} %}
+                </div>
+            </div>
+        </div>            
+        <div class="col-md-3 sidebar">
+            <div class="col">
+                <div class="comments_notification-sidebar">
+                    {% include 'WWSCThalamusBundle:SubscribeEmail:comments_notification-sidebar.html.twig' with {'slugProject': oMessage.project.slug, 'oParent': oMessage, 'type':'Message'} %}
+                </div>
+                <div class="title-panel">{% trans %}Who’s talking about this message?{% endtrans %}</div>
+                <div class="info-panel info-about-created">
+                    <ul>
+                        <li><strong>{{ oMessage.userCreated.firstName }} {{ oMessage.userCreated.lastName }}</strong></li>
+                        <li>{{ oMessage.userCreated.profile.office }}</li>
+                        <li>{{ oMessage.userCreated.email }}</li>
+                    </ul>
+                </div>  
+            </div>
+        </div><!--/span-->        
+    </div>
+ {% include 'WWSCThalamusBundle:File:jQUploadTemplateAttachment.html.twig'%}            
+{% endblock %}
+{% block stylesheets %}
+    <link href="{{ asset('bundles/wwscthalamus/markdown/css/bootstrap-markdown.min.css') }}" type="text/css" rel="stylesheet" />
+    <link href="{{ asset('bundles/wwscthalamus/jQUpload/css/jquery.fileupload.css') }}" type="text/css" rel="stylesheet" />
+    <link href="{{ asset('bundles/wwscthalamus/jQUpload/css/jquery.fileupload-ui.css') }}" type="text/css" rel="stylesheet" />
+{% endblock %}
+{% block javascripts %}
+    <script src="{{ asset('bundles/wwscthalamus/markdown/js/to-markdown.js') }}"></script>
+    <script src="{{ asset('bundles/wwscthalamus/markdown/js/markdown.js') }}"></script>
+    <script src="{{ asset('bundles/wwscthalamus/markdown/js/bootstrap-markdown.js') }}"></script>
+    <script src="{{ asset('bundles/wwscthalamus/js/attachment.js') }}"></script>
+    <script src="{{ asset('bundles/wwscthalamus/js/comment.js') }}"></script>
+    {% include 'WWSCThalamusBundle:File:jQUploadAttachmentScript.html.twig'%}
+    <script src="https://apis.google.com/js/client.js?onload=handleGoogleClientLoad"></script>
+    <script src="{{ asset('bundles/wwscthalamus/js/jquery.autogrow-textarea.js') }}"></script>
+{% endblock %}

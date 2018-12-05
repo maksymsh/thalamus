@@ -1,0 +1,42 @@
+<div class="item-status">
+    {% if is_granted('ROLE_PROVIDER')  or (is_granted('ROLE_CLIENT'))%}
+        {% if(status == 1) %}
+            {# if  the tasks is  closed #}
+            <img class="task-item-status" data-url="{{ path('wwsc_thalamus_project_task_item_change_status',{'project':projectSlug, 'task':taskId, 'id':aItem["id"],'status':0 }) }}"  src="{{ asset('bundles/wwscthalamus/images/checkbox-closed.png') }}">
+        {% else %}
+            {# if  the tasks is  open #}
+            <input type="checkbox" class="task-item-status" data-url={{ path('wwsc_thalamus_project_task_item_change_status',{'project':projectSlug, 'task':taskId, 'id':aItem["id"] ,'status':1 }) }} name="task_item_status[{{aItem["id"]}}]">
+        {% endif %}
+    {% else %}
+        <input type="checkbox" checked disabled>
+    {% endif %}
+</div>
+<div class="description">
+    <a title="{{ aItem["fastTrack"]? '[FAST-TRACK]' : '' }}  {{ aItem["description"] }}"
+       class="{{ aItem["fastTrack"] ? 'fast-track' : '' }}"
+       href={{ path('wwsc_thalamus_project_task_item_comments',{'project':projectSlug, 'task':taskId ,'id':aItem["id"] }) }}>
+        {% if(status == 1) %}
+            {# if  the tasks is  closed #}
+            {{ aItem["fastTrack"]? '[FAST-TRACK]' : '' }}  {{ aItem["updated"]|date("d M") }} {% if is_granted('ROLE_PROVIDER') %} {{ aItem["percentOfMoneyLeft"]|raw }}{% endif %} &nbsp;
+        {% endif %}
+        <span class="task-name">#{{ aItem["id"] }} {{ aItem["fastTrack"] ? '[FAST-TRACK]' : '' }}  {{ aItem["description"]|raw }}</span></a> {% if is_granted('ROLE_PROVIDER') %} {{ aItem["percentOfMoneyLeft"]|raw }}{% endif %}
+        <span class="task-item-more-info">
+        {% if aItem["daysAfterLastFeedback"] %}
+            <span class="last-update-task">{{ aItem["daysAfterLastFeedback"] }} {% trans %}ago{% endtrans %}</span>
+        {% endif %}
+        {% if aItem["responsible"] %}
+            — {{ aItem["responsible"] }}
+        {% endif %}
+        {% if aItem["state"] is defined and aItem["state"] %}
+            — {{ aItem["state"] }}
+        {% endif %}
+    </span>
+    <a href="{{ path('wwsc_thalamus_project_task_item_comments',{'project':projectSlug, 'task':taskId ,'id':aItem["id"] }) }}">
+        {% if aItem["countComments"] > 0 %}
+            <i class="fa fa-commenting-o" style="color:{{ aItem["iconComments"] }}" aria-hidden="true"></i>
+            {{ aItem["countComments"] }}
+        {% else %}
+            <i class="fa fa-commenting-o" aria-hidden="true"></i>
+        {% endif %}
+    </a>
+</div>

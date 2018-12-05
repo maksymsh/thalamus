@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        {% if app.request.attributes.get('_route') == 'wwsc_thalamus_login_account' or app.request.attributes.get('_route') == 'wwsc_thalamus_user_activation' %}
+           <meta name="viewport" content="width=device-width, initial-scale=0.8, maximum-scale=0.8">
+        {% else %}
+            <meta name="viewport" content="width=device-width, initial-scale=1">
+        {% endif %}
+        <title>{% block title %}Thalamus{% endblock %}</title>
+        <link href="{{ asset('bundles/wwscthalamus/css/bootstrap.min.css?v=v3.3.1') }}" type="text/css" rel="stylesheet" />
+        <link href="{{ asset('bundles/wwscthalamus/css/app.css') }}" type="text/css" rel="stylesheet" />
+        <link href="{{ asset('bundles/wwscthalamus/css/fancyzoom.min.css?v=1.1') }}" type="text/css" rel="stylesheet" />
+        <link href="{{ asset('bundles/wwscthalamus/plugins/font-awesome-4.7.0/css/font-awesome.min.css?v=4.7.0') }}" type="text/css" rel="stylesheet" />
+        <link href="{{ asset('bundles/wwscthalamus/css/printCSS.min.css?v=1.1') }}" type="text/css" rel="stylesheet" media="print" />
+        {% block stylesheets %}
+        {% endblock %}
+        <!--[if lt IE 9]>
+            <script src="{{ asset('bundles/wwscthalamus/js/html5shiv.min.js') }}"></script>
+            <script src="{{ asset('bundles/wwscthalamus/js/respond.min.js') }}"></script>
+        <![endif]-->
+        <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
+        {% block oauth %}{% endblock %}
+    </head>
+    <body class="{{ app.request.locale }} current_language" cur-lang = {{ app.request.locale }} >
+        {% block body %}
+        {% endblock %}
+        <script src="{{ asset('bundles/wwscthalamus/js/jquery.min.js?v=1.11.1') }}"></script>
+        <script src="{{ asset('bundles/wwscthalamus/js/jquery-ui.min.js?v=1.11.1') }}"></script>
+        <script src="{{ asset('bundles/wwscthalamus/js/bootstrap.min.js?v=v3.2.0') }}"></script>
+        <script src="{{ asset('bundles/wwscthalamus/js/jquery.fancyzoom.min.js?v=1.0.1') }}"></script>
+        <script src="{{ asset('bundles/wwscthalamus/js/jquery.tablesorter.min.js') }}"></script>
+        <script src="{{ asset('bundles/wwscthalamus/js/jquery.tablesorter.staticrow.min.js') }}"></script>
+       <script>
+            (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+            })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+            ga('create', 'UA-57429160-1', 'auto');
+            ga('send', 'pageview');
+        </script>
+        {% block javascripts %}{% endblock %}
+        <script src="{{ asset('bundles/wwscthalamus/js/app.js') }}"></script>
+    </body>
+</html>

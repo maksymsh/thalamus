@@ -1,0 +1,9 @@
+{% extends "WWSCThalamusBundle::layout.html.twig" %}
+{% trans_default_domain 'FOSUserBundle' %}
+{% block fos_user_content %}
+    <div class="signin">
+        <div class="alert alert-success" role="alert">
+            {{ 'resetting.check_email'|trans({'%email%': email}) }}
+        </div>
+    </div>    
+{% endblock fos_user_content %}

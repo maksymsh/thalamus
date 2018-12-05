@@ -1,0 +1,141 @@
+<?php
+
+namespace WWSC\ThalamusBundle\Controller;
+
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Session;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use WWSC\ThalamusBundle\Entity\Files;
+use Symfony\Component\HttpFoundation\JsonResponse;
+
+/**
+ * File controler
+ *
+ * In this controller describes the functions of registration new account and display pages dashboard, To-Dos, Calendar, Settings, Templates for account.
+ */
+class FileController extends Controller {
+
+    /**
+     *  Method add
+     *
+     *  This method is responsible for show page multiupload files.
+     */
+    public function addAction(Request $request) {
+        $oProject = $this->getDoctrine()->getManager()->getRepository('WWSCThalamusBundle:Project')->findOneBy(array('slug' => $request->get('project')));
+        $aCategoryFile = $this->getDoctrine()->getManager()->getRepository('WWSCThalamusBundle:Category')->findBy(array(
+            'is_deleted' => 0,
+            'account' => $this->getUser()->getCompany()->getAccount(),
+            'type' => 'FILE'
+        ));
+        
+        if ($request->getMethod() == 'POST') {
+           if($request->get('aFiles') && $request->get('aSubspeople')){
+            $this->sendFileToEmail($request->get('aFiles'), $request->get('aSubspeople'), $request->get('project'));
+           }
+           return $this->redirect($this->generateUrl('wwsc_thalamus_project_file_list', array('project' => $request->get('project'))));
+        }
+        
+        return $this->render('WWSCThalamusBundle:File:add.html.twig', array('oProject' => $oProject, 'aCategoryFile' => $aCategoryFile));
+    }
+    /**
+     *  Method edit
+     *
+     *  This method is responsible for edit more information about file.
+     */
+    public function editAction(Request $request) {
+        $oFile = $this->getDoctrine()->getManager()->getRepository('WWSCThalamusBundle:Files')->find($request->get('id'));
+        $aCategoryFile = $this->getDoctrine()->getManager()->getRepository('WWSCThalamusBundle:Category')->findBy(array(
+            'is_deleted' => 0,
+            'account' => $this->getUser()->getCompany()->getAccount(),
+            'type' => 'FILE'
+        ));
+        $fFile = $this->createForm(new \WWSC\ThalamusBundle\Form\FilesForm($aCategoryFile), $oFile);
+        $formView = $fFile->createView();
+        $formView->children['category']->vars['choices'][] = new \Symfony\Component\Form\Extension\Core\View\ChoiceView (null, 'add!', '— add a new category —');
+        if ($request->getMethod() == 'POST') {
+            $fFile->bind($request);
+            if ($fFile->isValid()) {
+                $em = $this->getDoctrine()->getManager();
+                $fFile = $fFile->getData();
+                $em->persist($fFile);
+                $em->flush();
+                return new JsonResponse(array('htmlFile' => $this->renderView('WWSCThalamusBundle:File:show.html.twig', array('oFile' => $fFile))));
+            }
+            $errors = $fFile->getErrors();
+            $output = array();
+            $output['error'] = $errors[0]->getMessage();
+            return new \Symfony\Component\HttpFoundation\JsonResponse($output);
+        }
+        return new JsonResponse(array('htmlFormFile' => $this->renderView('WWSCThalamusBundle:File:edit.html.twig', array('oFile' => $oFile, 'aCategoryFile' => $aCategoryFile, 'form' => $formView))));
+
+    }
+    
+    /**
+     *  Method list
+     * 
+     *  This method is responsible for display list files  on  the page "Files"
+     */
+    public function listAction(Request $request) {
+        $request->getSession()->set('active_module', 'files');
+        $oProject = $this->getDoctrine()->getManager()->getRepository('WWSCThalamusBundle:Project')->findOneBy(array('slug' => $request->get('project')));
+        if (count($oProject->getFiles()) == 0) {
+            return $this->render('WWSCThalamusBundle:File:empty-files.html.twig', array('oProject' => $oProject));
+        }
+        $aCategory = $this->getDoctrine()->getManager()->getRepository('WWSCThalamusBundle:Category')->findBy(array(
+            'is_deleted' => 0,
+            'account' => $this->getUser()->getCompany()->getAccount(),
+            'type' => 'FILE'
+        ));
+        $aUsersUpload = $this->getDoctrine()->getManager()->getRepository('WWSCThalamusBundle:Files')->createQueryBuilder('a')->groupBy('a.user_created')->getQuery()->getResult();
+        return $this->render('WWSCThalamusBundle:File:list.html.twig', array(
+                    'oProject' => $oProject,
+                    'aCategory' => $aCategory,
+                    'aUsersUpload' => $aUsersUpload,
+                    'aFiles' => $oProject->getFiles($request->get('order', 'created'), $request->get('cat'), $request->get('user_uploaded'))
+        ));
+    }
+
+    /**
+     *  Method delete
+     * 
+     *  This method is responsible for delete file
+     */
+    public function deleteAction(Request $request) {
+        $em = $this->getDoctrine()->getManager();
+        $oFile = $this->getDoctrine()->getRepository('WWSCThalamusBundle:Files')->find($request->get('id'));
+        $oFile->setIsDeleted(1);
+        $em->flush();
+        return new Response(1);
+    }
+    
+    /**
+     *  Method send files to email
+     *
+     *  The method responsible for  sending  files  to users email
+     */
+     public function sendFileToEmail($aFiles, $aUsers, $projectSlug){
+        $em = $this->getDoctrine()->getManager();
+        $oProject = $em->getRepository('WWSCThalamusBundle:Project')->findOneBy(array('slug' => $projectSlug));
+        $critFiles = $em->getRepository('WWSCThalamusBundle:Files')->findBy(array('id' => $aFiles));
+        $critUsers = $em->getRepository('WWSCThalamusBundle:User')->findBy(array('id' => $aUsers));
+        $aUsers = array();
+        foreach($critUsers as $oUser){
+            $aUsers['name'][]= $oUser->getFirstName().' '.$oUser->getLastName();
+            $aUsers['email'][]= $oUser->getEmail();
+        }
+        $subject = '['.$oProject->getName().'] New files have been uploaded';
+        $message = \Swift_Message::newInstance()
+                        ->setSubject($subject)
+                        ->setFrom($this->container->getParameter('admin_email'))
+                        ->setContentType("text/html")
+                        ->setTo($aUsers['email'])
+                        ->setBody($this->renderView('WWSCThalamusBundle:Mail:subscribe_files.txt.twig', array(
+                            'aElements' => $critFiles,
+                            'oProject' => $oProject,
+                            'aUsers' => $aUsers['name']
+        )));
+        $this->get('mailer')->send($message);
+    }
+}
+

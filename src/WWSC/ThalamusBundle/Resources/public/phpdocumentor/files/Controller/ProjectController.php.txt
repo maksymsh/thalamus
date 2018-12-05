@@ -1,0 +1,229 @@
+<?php
+
+namespace WWSC\ThalamusBundle\Controller;
+
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Session;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use WWSC\ThalamusBundle\Entity\Project;
+use WWSC\ThalamusBundle\Form\ProjectForm;
+
+/**
+ * Project controler
+ *
+ * In this controller describes the functions of adding, editing, deleting and display project,
+ * and display pages Overview, Messages, To-Dos, Calendar, Writeboards, Files for project.
+ */
+class ProjectController extends Controller {
+
+    /**
+     *  Method header
+     * 
+     *  This method describes header template project
+     */
+    public function headerAction(Request $request) {
+        $em = $this->getDoctrine()->getManager();
+        $oProject = $em->getRepository('WWSCThalamusBundle:Project')->findOneBy(array('slug' => $request->get('project')));
+        return $this->render('WWSCThalamusBundle:Project:header.html.twig', array('oProject' => $oProject));
+    }
+
+    /**
+     *  Method project people
+     * 
+     *  This method is responsible for display companies and persons which take part in the development project
+     */
+    public function projectpeopleAction(Request $request) {
+        $this->getRequest()->getSession()->set('active_module', 'people_permissions');
+        $em = $this->getDoctrine()->getManager();
+        $oProject = $em->getRepository('WWSCThalamusBundle:Project')->findOneBy(array('slug' => $request->get('project')));
+        return $this->render('WWSCThalamusBundle:Project:project-people.html.twig', array('oProject' => $oProject));
+    }
+
+    /**
+     *  Method add people project
+     * 
+     *  This method is responsible for add companies or persons which will take part in the  project
+     */
+    public function addpeopleProjectAction(Request $request) {
+        $this->getRequest()->getSession()->set('active_module', 'people_permissions');
+        $em = $this->getDoctrine()->getManager();
+        $oProject = $em->getRepository('WWSCThalamusBundle:Project')->findOneBy(array('slug' => $request->get('project')));
+        $fCompanyProject = $this->createForm(new \WWSC\ThalamusBundle\Form\CompanyProjectForm($oProject->getCompaniesNotInProject()));
+        $fCompany = $this->createForm(new \WWSC\ThalamusBundle\Form\CompanyForm());
+        if ($request->getMethod() == 'POST') {
+            $fCompanyProject->bind($request);
+            if ($fCompanyProject->isValid()) {
+                $fCompanyProject = $fCompanyProject->getData();
+                $oProject->addCompany($fCompanyProject['company']);
+                if ($fCompanyProject['access_to_all_people']) {
+                    $this->statusProjectAllPeopleCompany($fCompanyProject['company'], $oProject, 'add');
+                };
+                $em->flush();
+                return $this->redirect($this->generateUrl('wwsc_thalamus_add_project_people', array('project' => $oProject->getSlug())));
+            }
+        }
+        return $this->render('WWSCThalamusBundle:Project:add-project-people.html.twig', array('form' => $fCompanyProject->createView(), 'fCompany' => $fCompany->createView(), 'oProject' => $oProject));
+    }
+
+    /**
+     *  Method change status project all people company
+     * 
+     *  This method is responsible for  change status  to project all people company
+     */
+    public function statusProjectAllPeopleCompany($oCompany, $oProject, $action) {
+        if ($action == 'remove') {
+            foreach ($oCompany->getUsers() as $oUser) {
+                if (($oCompany->getPrimaryCompany() != 1) || ($oCompany->getPrimaryCompany() == 1 && $oCompany->getuserCreated()->getId() != $oUser->getId())) {
+                    $oProject->removeUser($oUser);
+                }
+            }
+        }
+        if ($action == 'add') {
+            foreach ($oCompany->getUsers() as $oUser) {
+                $oProject->addUser($oUser);
+            }
+        }
+    }
+
+    /**
+     *  Method change status project all people
+     * 
+     *  This method is responsible for  change status  to project all people
+     */
+    public function changeStatusAllpeopleProjectAction(Request $request) {
+        $em = $this->getDoctrine()->getManager();
+        $oCompany = $em->getRepository('WWSCThalamusBundle:Company')->find($request->get('company'));
+        $oProject = $em->getRepository('WWSCThalamusBundle:Project')->findOneBy(array('slug' => $request->get('project')));
+        $this->statusProjectAllPeopleCompany($oCompany, $oProject, $request->get('action'));
+        $em->flush();
+        return $this->redirect($this->generateUrl('wwsc_thalamus_add_project_people', array('project' => $oProject->getSlug())));
+    }
+
+    /**
+     *  Method delete
+     * 
+     *  This method is responsible for deleted company, which takes part in the project
+     */
+    public function removeCompanyProjectAction(Request $request) {
+        if (!$this->container->get('security.context')->isGranted('ROLE_PROVIDER')) {
+            return $this->render('WWSCThalamusBundle:Content:not_permission.html.twig');
+        }
+        $this->getRequest()->getSession()->set('active_module', 'people_permissions');
+        $em = $this->getDoctrine()->getManager();
+        $oProject = $em->getRepository('WWSCThalamusBundle:Project')->findOneBy(array('slug' => $request->get('project')));
+        $oCompany = $em->getRepository('WWSCThalamusBundle:Company')->find($request->get('id'));
+        $oProject->removeCompany($oCompany);
+        $em->flush();
+        return $this->redirect($this->generateUrl('wwsc_thalamus_add_project_people', array('project' => $oProject->getSlug())));
+    }
+
+    /**
+     *  Method change status user
+     * 
+     *  This method is responsible for change status user, which takes part in the project
+     */
+    public function statusUserProjectAction(Request $request) {
+        $this->getRequest()->getSession()->set('active_module', 'people_permissions');
+        $em = $this->getDoctrine()->getManager();
+        $oProject = $em->getRepository('WWSCThalamusBundle:Project')->findOneBy(array('slug' => $request->get('project')));
+        $oUser = $em->getRepository('WWSCThalamusBundle:User')->find($request->get('id'));
+        if ($request->get('action') == 'remove') {
+            $oProject->removeUser($oUser);
+        }
+        if ($request->get('action') == 'add') {
+            $oProject->addUser($oUser);
+        }
+        $em->flush();
+        return new \Symfony\Component\HttpFoundation\Response(1);
+    }
+
+    /**
+     *  Method overview
+     *
+     *  This method is responsible for display  "overview project" page
+     */
+    public function overviewAction(Request $request) {
+        $em = $this->getDoctrine()->getManager();
+        $this->getRequest()->getSession()->set('active_module', 'overview');
+        $oProject = $em->getRepository('WWSCThalamusBundle:Project')->findOneBy(array('slug' => $request->get('project')));
+        if (count($aLog = $oProject->getLog()) == 0) {
+            return $this->render('WWSCThalamusBundle:Project:empty-project.html.twig', array('oProject' => $oProject));
+        }
+        return $this->render('WWSCThalamusBundle:Project:overview.html.twig', array('oProject' => $oProject, 'aLog' => $aLog));
+    }
+
+    /**
+     *  Method add
+     *
+     *  This method is responsible for create new project
+     */
+    public function addAction(Request $request) {
+        if (!$this->container->get('security.context')->isGranted('ROLE_PROVIDER')) {
+            return $this->render('WWSCThalamusBundle:Content:not_permission.html.twig');
+        }
+        $this->getRequest()->getSession()->set('active_module', 'todos');
+        $fProject = $this->createForm(new ProjectForm());
+        $fProject->remove('company');
+        if ($request->getMethod() == 'POST') {
+            $fProject->bind($request);
+            if ($fProject->isValid()) {
+                $em = $this->getDoctrine()->getManager();
+                $fProject = $fProject->getData();
+                $fProject->addCompany($this->getUser()->getCompany());
+                $fProject->addUser($this->getUser());
+                $fProject->setResponsibleCompany($this->getUser()->getCompany());
+                $em->persist($fProject);
+                $em->flush();
+                return $this->redirect($this->generateUrl('wwsc_thalamus_project_overview', array('project' => $fProject->getSlug())));
+            }
+        }
+        return $this->render('WWSCThalamusBundle:Project:add.html.twig', array('form' => $fProject->createView()));
+    }
+
+    /**
+     *  Method edit
+     * 
+     *  This method is responsible for edit project
+     */
+    public function editAction(Request $request) {
+        if (!$this->container->get('security.context')->isGranted('ROLE_PROVIDER')) {
+            return $this->render('WWSCThalamusBundle:Content:not_permission.html.twig');
+        }
+        $this->getRequest()->getSession()->set('active_module', 'todos');
+        $em = $this->getDoctrine()->getManager();
+        $oProject = $em->getRepository('WWSCThalamusBundle:Project')->findOneBy(array('slug' => $request->get('project')));
+        $fProject = $this->createForm(new ProjectForm($oProject->getAccount()->getCompany()), $oProject);
+        if ($request->getMethod() == 'POST') {
+            $fProject->bind($request);
+            if ($fProject->isValid()) {
+                $fProject = $fProject->getData();
+                $em->persist($fProject);
+                $em->flush();
+                $request->getSession()->getFlashBag()->add('notice', 'Project has  been updated sucessfully');
+                $request->getSession()->getFlashBag()->add('status', 'success');
+                return $this->redirect($this->generateUrl('wwsc_thalamus_project_edit', array('project' => $oProject->getSlug())));
+            }
+        }
+        return $this->render('WWSCThalamusBundle:Project:edit.html.twig', array('form' => $fProject->createView(), 'project' => $request->get('project')));
+    }
+
+    /**
+     *  Method delete
+     * 
+     *  This method is responsible for delete project
+     */
+    public function deleteAction(Request $request) {
+        if (!$this->container->get('security.context')->isGranted('ROLE_PROVIDER')) {
+            return $this->render('WWSCThalamusBundle:Content:not_permission.html.twig');
+        }
+        $em = $this->getDoctrine()->getManager();
+        $oProject = $em->getRepository('WWSCThalamusBundle:Project')->findOneBy(array('slug' => $request->get('project')));
+        $oProject->setIsDeleted(1);
+        $em->flush();
+        $request->getSession()->getFlashBag()->add('notice', 'Project has been delete sucessfully');
+        $request->getSession()->getFlashBag()->add('status', 'success');
+        return $this->redirect($this->generateUrl('wwsc_thalamus_account_dashboard'));
+    }
+
+}
+

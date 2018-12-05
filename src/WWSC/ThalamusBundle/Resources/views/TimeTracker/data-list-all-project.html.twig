@@ -1,0 +1,104 @@
+{% set projectSlug = false %}
+{% set groupParent = false %}
+{% for aTrack in aTimeTracker %}
+    {%if groupByTask or groupByPublicId %} 
+            {% set hoursTrack =  app.user.formatHours(aTrack['total']) %}
+            {% set dateTrack = aTrack['last_track'] %}
+            {% set compName = aTrack['count_comp'] == 1 ? aTrack['comp_name'] : '' %}
+            {% set personName = aTrack['count_person'] == 1 ? aTrack['person'] : '' %}
+            {% set description = aTrack['count_tt'] == 1 ? app.user.encodingString(aTrack['description']) : '' %}
+    {% else %}
+            {% set hoursTrack = app.user.formatHours(aTrack['time']) %}
+            {% set dateTrack = aTrack['date'] %}
+            {% set compName = aTrack['comp_name'] %}
+            {% set personName = aTrack['person'] %}
+            {% set description = app.user.encodingString(aTrack['description']) %}
+    {% endif %}
+    {% if aTrack['project_slug'] is defined and  projectSlug != aTrack['project_slug'] %}
+        {% if aReportGropedByCompanies[projectSlug] is defined %}
+            {% for aReportGropedByCompany in aReportGropedByCompanies[projectSlug]['company'] %}
+            <tr>
+                <td colspan="6"></td>
+                <td>
+                    <strong>
+                        {{ app.user.formatHours(aReportGropedByCompany['total']) }}
+                    </strong>
+                </td>
+                <td colspan="3"></td>
+                <td colspan="2"><strong>{{ aReportGropedByCompany['name'] }}</strong></td>
+                <td  colspan="3"></td>
+            </tr>
+            {% endfor %}
+        {% endif %}
+   {% endif %}
+        {% if aReportGropedByCompanies[projectSlug] is defined and projectSlug  and  projectSlug != aTrack['project_slug'] %}
+             <tr>
+                 <td colspan="6"></td>
+                 {% if projectSlug %}
+                     <td>{{ app.user.formatHours(aReportGropedByCompanies[projectSlug]['project_total']) }}</td>
+                     <td colspan="2"></td>
+                     <td colspan="2" ><a href="{{ url ('wwsc_thalamus_project_time_list',{'project':projectSlug}) }}">{{aReportGropedByCompanies[projectSlug]['project_name'] }}</a></td>
+                 {% else %}
+                     <td>{{ app.user.formatHours(aReportGropedByCompanies[aTrack['project_slug']]['project_total']) }}</td>
+                     <td colspan="2"></td>
+                     <td colspan="2" ><a href="{{ url ('wwsc_thalamus_project_time_list',{'project':aTrack['project_slug']}) }}">{{ aTrack['project_name'] }}</a></td>
+                 {% endif %}    
+                 <td  colspan="4"></td>
+            </tr>
+        {% endif %}
+    {% set projectSlug = aTrack['project_slug']  %} 
+    {% set parentTask = aTrack['parent'] ? aTrack['parent'] : aTrack['task_id'] %}
+    {% set trClass = '' %} 
+    {% if integrateChild %}
+        {% if (groupParent) and (groupParent != parentTask) %}
+             {% set trClass = 'class=sort-by-parent' %}
+             {% set groupParent = parentTask %}
+         {% endif %}
+         {% if groupParent == false %}
+             {% set groupParent = parentTask %}
+         {% endif %}    
+    {% endif %}
+    <tr {{trClass}} > 
+        {% set uTask = url ('wwsc_thalamus_project_task_item_comments',{'project':projectSlug, 'task':aTrack['list_id'] ,'id':aTrack['task_id'] }) %}
+        <td><a href="{{ aTrack['parent'] ? url ('wwsc_thalamus_project_task_item_comments',{'project':projectSlug, 'task':aTrack['list_id'] ,'id':aTrack['parent'] }) : uTask }}" target="_blank">{{ aTrack['parent']}}</a></td>
+        <td><a href="{{ uTask }}" target="_blank">{{ aTrack['task_id'] }}</a></td>
+        <td {{ aTrack['fast_track'] ? 'class="fast-track"' : '' }}>{{ aTrack['fast_track'] ? '[FAST-TRACK]' : '' }}{{ app.user.encodingString(aTrack['task_name']) }}  </td>
+        <td>{{ description  }}</td>
+        <td>{{ aTrack['fast_track'] ? 'Yes' : 'No' }}</td>
+        <td>{{ dateTrack|date("d M Y") }}</td>
+        <td>{{ hoursTrack }}</td>
+        <td>{{ aTrack['billable'] ? 'Yes' : 'No'  }}</td>
+        <td>{{ app.user.encodingString(aTrack['list_name']) }}</td>
+        <td>{{ aTrack['project_name'] }}</td>
+        <td>{{ compName }}</td>
+        <td>{{ personName }}</td>
+        <td>{% if aTrack['state'] %}
+                {{ aStates[aTrack['state']] }}
+             {% endif %}
+        </td>
+    </tr>  
+{% endfor %}                                           
+{% if projectSlug  %}
+    {% if aReportGropedByCompanies[projectSlug] is defined %}
+        {% for aReportGropedByCompany in aReportGropedByCompanies[projectSlug]['company'] %}
+         <tr>
+             <td colspan="6"></td>
+             <td>
+                 <strong>
+                     {{ app.user.formatHours(aReportGropedByCompany['total']) }}
+                 </strong>
+             </td>
+            <td colspan="3"></td>
+            <td colspan="2"><strong>{{ aReportGropedByCompany['name'] }}</strong></td>
+            <td  colspan="3"></td>
+         </tr>
+         {% endfor %}
+     <tr>
+         <td colspan="6"></td>
+         <td>{{ app.user.formatHours(aReportGropedByCompanies[projectSlug]['project_total']) }}</td>
+         <td colspan="2"></td>
+         <td colspan="2" ><a href="{{ url ('wwsc_thalamus_project_time_list',{'project':projectSlug}) }}">{{aReportGropedByCompanies[projectSlug]['project_name'] }}</a></td>
+         <td colspan="4"></td>
+     </tr>
+     {% endif %} 
+{% endif %}                          

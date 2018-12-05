@@ -1,0 +1,11 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="row">
+        <div class="dialog-error">
+            <div>
+                <h3>This page is not defined</h3>
+                <p>Go to the home page <a href="{{ app.request.scheme }}://{{ app.request.httpHost}}{{ app.request.basePath}}">{{ app.request.scheme }}://{{ app.request.httpHost}}{{ app.request.basePath}}</a></p>
+            </div>
+        </div>
+    </div>
+{% endblock %}

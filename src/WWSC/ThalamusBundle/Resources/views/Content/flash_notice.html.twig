@@ -1,0 +1,5 @@
+{% if (app.session.flashbag.peek('status') and  app.session.flashbag.peek('notice') ) %}
+    <div class="alert alert-{{ app.session.flashbag.get('status')[0] }}" role="alert">
+        {{ app.session.flashbag.get('notice')[0]}}
+    </div>
+{% endif %}

@@ -1,0 +1,86 @@
+WWSC\ThalamusBundle\Entity\User:
+    constraints:
+        - Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity: 
+            fields: email
+            message: User with this email already exists in your account
+        - Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity:
+            fields: emailCanonical
+            message: User with this email already exists in your account
+    properties:
+        email:
+            - Email: ~
+            - Length:
+                min: 5
+                minMessage: "Your email must have at least {{ limit }} characters."
+                max: 255
+                maxMessage: "Your email is too long."
+            - NotBlank:
+                message: "Please enter an email"
+        emailCanonical:
+            - Email:  ~
+
+WWSC\ThalamusBundle\Entity\Project:
+    constraints:
+        - Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity: 
+            fields: replyUIDTask
+            message: Mail with this reply uid  already exists in your account
+        - Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity:
+            fields: slug
+            message: Project with this number id already exists in your company
+
+WWSC\ThalamusBundle\Entity\Account:
+    constraints:
+        - Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity: 
+            fields: email
+            message: User with this email already exists in Thalamus account
+        - Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity:
+            fields: emailCanonical
+            message: User with this email already exists in Thalamus account    
+    properties:
+        name:
+            - Length:
+                min: 3
+                minMessage: "Your account name must have at least {{ limit }} characters."
+                max: 255
+                maxMessage: "Your account name is too long."
+            - NotBlank:
+                message: "Please enter a account name"
+                
+WWSC\ThalamusBundle\Entity\Company:
+    properties:
+        name:
+            - Length:
+                min: 3
+                minMessage: "Your company name must have at least {{ limit }} characters."
+                max: 255
+                maxMessage: "Your company name is too long."
+            - NotBlank:
+                message: "Please enter a company name"
+
+WWSC\ThalamusBundle\Form\RegistrationForm:
+    constraints:
+        - Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity: 
+            fields: email
+            message: this email already exists in our database
+    properties:
+        new:
+        plainPassword:
+            - Length:
+                min: 8
+                minMessage: "Your password must have at least {{ limit }} characters."
+                max: 255
+                maxMessage: "Your password is too long."
+            - NotBlank:
+                message: "Please enter a password"
+
+WWSC\ThalamusBundle\Form\ActivationUserForm:
+    properties:
+        new:
+        plainPassword:
+            - Length:
+                min: 8
+                minMessage: "Your password must have at least {{ limit }} characters."
+                max: 255
+                maxMessage: "Your password is too long."
+            - NotBlank:
+                message: "Please enter a password"   

@@ -1,0 +1,106 @@
+<?php
+
+namespace WWSC\ThalamusBundle\Entity;
+
+use Gedmo\Mapping\Annotation as Gedmo;
+use Doctrine\ORM\Mapping as ORM;
+use WWSC\ThalamusBundle\WWSCThalamusBundle;
+
+/**
+ * Company
+ *
+ * @ORM\Entity
+ * @ORM\Table(name="last_visit_to_task")
+ */
+class LastVisitToTask {
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="id", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
+     */
+    private $id;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="task_id", type="integer", nullable=true)
+     */
+    private $task;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="user_id", type="integer", nullable=true)
+     */
+    private $user;
+
+    /**
+     * @ORM\Column(name="date", type="datetime", nullable=true)
+     */
+    private $date;
+
+
+   
+
+    /**
+     * Get id
+     *
+     * @return integer 
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+
+    /**
+     * Set date
+     *
+     * @param \DateTime $date
+     * @return LastVisitToTask
+     */
+    public function setDate($date)
+    {
+        $this->date = $date;
+
+        return $this;
+    }
+
+    /**
+     * Get date
+     *
+     * @return \DateTime 
+     */
+    public function getDate()
+    {
+        return $this->date;
+    }
+
+    /**
+     * Set task
+     *
+     * @param integer $task
+     * @return LastVisitToTask
+     */
+    public function setTask($task)
+    {
+        $this->task = $task;
+
+        return $this;
+    }
+
+    /**
+     * Get task
+     *
+     * @return integer 
+     */
+    public function getTask()
+    {
+        return $this->task;
+    }
+
+  
+}

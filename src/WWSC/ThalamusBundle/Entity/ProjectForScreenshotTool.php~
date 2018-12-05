@@ -1,0 +1,125 @@
+<?php
+
+namespace WWSC\ThalamusBundle\Entity;
+
+use WWSC\ThalamusBundle\WWSCThalamusBundle;
+use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\Criteria;
+
+/**
+ * @ORM\Entity
+ * @ORM\Table(name="project_for_screenshot_tool", uniqueConstraints={@ORM\UniqueConstraint(columns={"user_id", "project_id", "account_id"})})
+ */
+class ProjectForScreenshotTool
+{
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="id", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
+     */
+    private $id;
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="user_id", type="integer")
+     */
+    protected $user_id;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="project_id", type="integer")
+     */
+    protected $project_id;
+
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="account_id", type="integer")
+     */
+    protected $account_id;
+
+
+    /**
+     * Set user
+     *
+     * @param integer $user
+     * @return ProjectForScreenshotTool
+     */
+    public function setUser($user)
+    {
+        $this->user = $user;
+
+        return $this;
+    }
+
+    /**
+     * Get user
+     *
+     * @return integer
+     */
+    public function getUser()
+    {
+        return $this->user;
+    }
+
+    /**
+     * Set project_id
+     *
+     * @param integer $projectId
+     * @return ProjectForScreenshotTool
+     */
+    public function setProjectId($projectId)
+    {
+        $this->project_id = $projectId;
+
+        return $this;
+    }
+
+    /**
+     * Get project_id
+     *
+     * @return integer
+     */
+    public function getProjectId()
+    {
+        return $this->project_id;
+    }
+
+    /**
+     * Set account_id
+     *
+     * @param integer $accountId
+     * @return ProjectForScreenshotTool
+     */
+    public function setAccountId($accountId)
+    {
+        $this->account_id = $accountId;
+
+        return $this;
+    }
+
+    /**
+     * Get account_id
+     *
+     * @return integer
+     */
+    public function getAccountId()
+    {
+        return $this->account_id;
+    }
+
+    /**
+     * Get id
+     *
+     * @return integer
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+}

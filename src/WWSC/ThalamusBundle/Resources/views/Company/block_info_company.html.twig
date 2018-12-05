@@ -1,0 +1,29 @@
+<div class="name">{{ company.name }}</div>
+<ul>
+    {% if company.address1 %}
+        <li>{{ company.address1 }}</li>
+        {% endif %}
+        {% if company.address2 %}
+        <li>{{ company.address2 }}</li>
+        {% endif %}
+    <li>
+        {% if company.city %}
+            {{ company.city }} ,
+        {% endif %}
+        {% if company.state %}
+            {{ company.state }}
+        {% endif %}
+        {% if company.zip %}
+            {{ company.zip }}
+        {% endif %}
+        {% if company.country %}
+            {{ company.country }}
+        {% endif %}
+    </li>
+    {% if company.office %}
+        <li>O: {{ company.office }}</li>
+        {% endif %}
+        {% if company.fax %}
+        <li>F: {{ company.fax }}</li>
+        {% endif %}
+</ul>

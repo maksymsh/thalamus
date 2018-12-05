@@ -1,0 +1,33 @@
+parameters:
+    database_driver:   pdo_mysql
+    database_host:     127.0.0.1
+    database_port:     ~
+    database_name:     symfony
+    database_user:     root
+    database_password: ~
+    # You should uncomment this if you want use pdo_sqlite
+    # database_path: "%kernel.root_dir%/data.db3"
+
+    mailer_transport: smtp
+    mailer_host: localhost
+    mailer_user: catch-all@thalamus.io
+    mailer_password: 0RhDvKcDy1PWnbZ
+
+    locale:            en
+    secret:            ThisTokenIsNotSoSecretChangeIt
+
+    debug_toolbar:          false
+    debug_redirects:        false
+    use_assetic_controller: true
+
+    admin_email : no-reply@thalamus.io
+    base_domain : thalamus.io
+    allowed_file_types: "jpeg, gif, png, doc, docs, zip, xl, xls, jpg, tif, gzip"
+    auto_reply_email_domain: "thalamus.io"
+    parse_imap_host: 'localhost:993/imap/ssl/novalidate-cert'
+    parse_imap_login: catch-all
+    parse_imap_password: 0RhDvKcDy1PWnbZ
+
+    google_api_key: AIzaSyBI8VrDkXJOnkq50OxwJOhf1eS8VVAQMG8
+    google_client_id: 937626635370-n4hom44245qcqo9flf2sflu34tboppqb.apps.googleusercontent.com
+    google_client_secret: pVUKHjsZXZcrZa4dJqhNEJ3Z

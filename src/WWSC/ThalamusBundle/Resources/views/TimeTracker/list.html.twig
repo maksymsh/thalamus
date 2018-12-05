@@ -1,0 +1,156 @@
+{% extends "WWSCThalamusBundle:Content:layout.html.twig" %}
+{% block title %}
+    {{ oProject.name }} - {% trans %}Time{% endtrans %}
+{% endblock %} 
+{% block content %}   
+    <div class="row">
+        <div class="panel panel-default col-md-12">
+            <div class="panel-heading">           
+                {% trans %}Time tracking{% endtrans %}            
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-sm-12 col-md-12">
+                        <div class="table-responsive time-traker-list">
+                            {% if is_granted('ROLE_PROVIDER') or is_granted('ROLE_FREELANCER')   %} 
+                                {% set country_companies = app.user.company.country  %}
+                                <div class="btn-export-to-csv">{% trans %}Export report to csv:{% endtrans %} 
+                                    <a  href="{{ path ('wwsc_thalamus_project_time_export_to_csv',{'project': oProject.slug })}}">
+                                        <img src="{{ asset('bundles/wwscthalamus/images/icon_csv.png') }}">
+                                    </a>
+                                </div>
+                                <div class="btn-export-to-csv">{% trans %}Export report to Google Spreadsheet:{% endtrans %}
+                                    <a  href="{{ path ('wwsc_thalamus_project_time_export_to_csv',{'project': oProject.slug })}}?ExportToGoogleSpreadSheet=1" target="_blank">
+                                        <img src="{{ asset('bundles/wwscthalamus/images/spreadsheet-icon.png') }}">
+                                    </a>
+                                </div>
+                            {% endif %}    
+                            <form id="filters-time-traker" method="GET" action="{{ path ('wwsc_thalamus_project_time_list',{'project': oProject.slug })}}"> 
+                                <div>
+                                    <span> {% trans %}Show only sums{% endtrans %} </span>  
+                                    <input type="checkbox"  name="show_only_sums" {{ app.request.query.get('show_only_sums') ? 'checked' : '' }}>
+                                </div>
+                                <div>
+                                    <span> {% trans %}Hide empty entries:{% endtrans %} </span>
+                                    {%if app.request.query.get('filter_time') %} 
+                                        {{ form_widget(fFilter.filter_hide_empty) }}
+                                    {% else %}
+                                        {{ form_widget(fFilter.filter_hide_empty, { 'attr': {'checked': 'checked'}}) }}
+                                    {% endif %}
+                                </div>
+                                <div>
+                                    <span> {% trans %}Sort tasks by Public-ID:{% endtrans %} </span>
+                                    {%if app.request.query.get('filter_time') %}
+                                        <input type="checkbox" name="integrate_child_records" {{ app.request.query.get('integrate_child_records') ? 'checked' : '' }}>
+                                    {% else %}
+                                        <input type="checkbox"  name="integrate_child_records">
+                                    {% endif %}
+                                </div>
+                                <div>
+                                    <span> {% trans %}Merge tasks of the same Task-ID:{% endtrans %} </span>  
+                                    <input type="checkbox" name="group_by_task" {{ app.request.query.get('group_by_task') ? 'checked' : '' }}>
+                                </div>
+                                <div>
+                                    <span> {% trans %}Merge tasks of the same Public-ID:{% endtrans %} </span>
+                                    {%if app.request.query.get('filter_time') %}
+                                        <input type="checkbox" name="group_by_public_id" {{ app.request.query.get('group_by_public_id') ? 'checked' : '' }}>
+                                    {% else %}
+                                        <input type="checkbox"  name="group_by_public_id" checked>
+                                    {% endif %}
+                                </div>
+
+                                {% if is_granted('ROLE_PROVIDER') %}
+                                    <div>
+                                        <span> {% trans %}Group trackings of Agency-Role users{% endtrans %} </span>  
+                                        <input type="checkbox"  name="sort_agency_users" {{ app.request.query.get('sort_agency_users') ? 'checked' : '' }}>
+                                    </div>
+                                {% endif %}
+
+
+                                <table class="table table-striped ">
+                                    <thead>
+                                        <tr>
+                                            <th>{% trans %}Public-ID{% endtrans %}</th>
+                                            <th>{% trans %}Task-ID{% endtrans %}</th>
+                                            <th>{% trans %}Public-ID-Title{% endtrans %}</th>
+                                            <th>{% trans %}Task-Title{% endtrans %}</th>                                           
+                                            <th>{% trans %}Description{% endtrans %}</th>
+                                            <th>{% trans %}Fast-track{% endtrans %}</th>
+                                            <th>{% trans %}Date{% endtrans %}</th>
+                                            <th>{% trans %}Hours{% endtrans %}</th>
+                                            <th>{% trans %}Billable{% endtrans %}</th>
+                                            <th>{% trans %}Task-List{% endtrans %}</th>
+                                            <th>{% trans %}Company{% endtrans %}</th>
+                                            <th>{% trans %}Person{% endtrans %}</th>
+                                            <th>{% trans %}Status{% endtrans %}</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+
+                                            <td>{{ form_widget(fFilter.filter_parent) }}</td>
+                                            <td>{{ form_widget(fFilter.filter_task) }}</td>
+                                            <td colspan="1"></td>
+                                            <td colspan="2"></td>
+                                            <td>{{ form_widget(fFilter.fast_track) }}</td>
+                                            <td colspan="2"><div style="white-space: nowrap">{% trans %}From{% endtrans %}{{ form_widget(fFilter.filter_date_from) }}{% trans %}To{% endtrans %}{{ form_widget(fFilter.filter_date_to) }}</div></td>
+                                            <td colspan="2"></td>
+                                            <td colspan="2">
+                                                {%if app.request.query.get('filter_time') and app.request.query.get('filter_time')['filter_person'] %} 
+                                                    {% set filter_responsible = app.request.query.get('filter_time')['filter_person'] %}
+                                                {% else %}
+                                                    {% set filter_responsible = '' %}
+                                                {% endif %}
+                                                {% include 'WWSCThalamusBundle:TimeTracker:filter-responsible.html.twig' with {
+                                              'aUsersForFilterTime': oProject.subspeople(is_granted('ROLE_FREELANCER') ? app.user.company.id : false),
+                                              'filter_responsible':filter_responsible,
+                                            } 
+                                                %}
+                                            </td>
+                                            <td colspan="2"></td>
+                                        </tr>
+                                        </form> 
+                                        {% if app.request.query.get('show_only_sums')== false %}
+                                            {% include 'WWSCThalamusBundle:TimeTracker:data-list-project.html.twig' with {
+                                              'aTimeTracker': aTimeTracker,
+                                              'projectSlug':oProject.slug,
+                                              'aStates':aStates,
+                                              'groupByTask':app.request.query.get('group_by_task'),
+                                              'integrateChild': aFilter['integrate_child_records'],
+                                              'groupByPublicId': aFilter['group_by_public_id']
+                                     } %}
+                                        {% endif %}
+                                        {% if aReportProjectGropedByCompanys is not empty  %}
+                                            {% for oReportProjectGropedByCompany in aReportProjectGropedByCompanys %}
+                                                <tr>
+                                                    <td colspan="7"></td>
+                                                    <td>
+                                                        <strong>
+                                                            {{ app.user.formatHours(oReportProjectGropedByCompany['total']) }}
+                                                        </strong>
+                                                    </td>
+                                                    <td colspan="2"></td>
+                                                    <td><strong>{{ oReportProjectGropedByCompany['name'] }}</strong></td>
+                                                    <td colspan="2"></td>
+                                                </tr>
+                                            {% endfor %} 
+                                        {% endif %}
+                                    </tbody>
+                                </table>
+
+                        </div>
+                    </div><!--/span-->
+                </div>  
+            </div>  
+        </div>     
+    </div>
+{% endblock %}       
+
+{% block stylesheets %}
+    <link href="{{ asset('bundles/wwscthalamus/css/bootstrap-datepicker.css') }}" type="text/css" rel="stylesheet" />    
+{% endblock %}
+{% block javascripts %}
+    <script src="{{ asset('bundles/wwscthalamus/js/time-tracker.js') }}"></script>
+    <script src="{{ asset('bundles/wwscthalamus/js/bootstrap-datepicker.js') }}"></script>
+    <script src="{{ asset('bundles/wwscthalamus/js/bootstrap-datepicker.de.js') }}"></script>
+{% endblock %}

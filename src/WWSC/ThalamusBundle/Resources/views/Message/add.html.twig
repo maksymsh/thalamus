@@ -1,0 +1,73 @@
+{% extends "WWSCThalamusBundle:Content:layout.html.twig" %}
+{% block title %}
+    {{ nameProject }} - {% trans %}Post a new message{% endtrans %}
+{% endblock %} 
+{% block content %}   
+<div class="row">
+    <div class="panel panel-default col-md-9">
+        <div class="panel-heading">
+            {% trans %}Post a new message{% endtrans %}
+        </div>
+        <div class="panel-body">
+            <div class="row">
+                {% include 'WWSCThalamusBundle:Content:flash_notice.html.twig' %}
+                {% if form_errors(form) %}
+                    <div class="alert alert-error error" role="alert">{{ form_errors(form) }}</div>
+                {% endif %}
+                <div class="panel-forms form-edit-project">
+                    <form class="form-add-message col-md-12" action="{{ path('wwsc_thalamus_project_message_add', {'project': slugProject} ) }}"  method="Post">
+                        <div class="col-md-12 form-group">
+                            <div class="title">{% trans %}Title:{% endtrans %}</div>
+                            <div class="col-md-12 form-group">
+                                {{ form_widget(form.title ) }}
+                            </div>    
+                        </div>
+                        <div class="col-md-12 form-group">
+                            <div class="col-md-1 without-padding">{% trans %}Category:{% endtrans %}</div>
+                            <div class="col-md-3" id="category-list" data-url="{{ path('wwsc_thalamus_category_save',{ project:slugProject }) }}" >
+                                 {{ form_widget(form.category ) }}
+                            </div>
+                        </div>            
+                        <div class="col-md-12 form-group">
+                            {{ form_widget(form.description ) }}  
+                        </div>
+                        <div class="col-md-12 form-group">
+                                {{ form_widget(form.private ) }}  
+                                {% trans %}Private: (Visible only to your company){% endtrans %}
+                        </div>    
+                        {{ form_widget(form._token) }}
+                         <div class="col-md-12  without-padding">    
+                            {% include 'WWSCThalamusBundle:File:attachment-form.html.twig'%}  
+                        </div>
+                        {% include 'WWSCThalamusBundle:SubscribeEmail:block-subscribed-people.html.twig'  with {'aSubsCompanies': aSubsCompanies, 'activeSubscribed':null, 'type': 'Message', 'oParent':null  } %} 
+                        <div class="col-md-12 btn-action without-padding">
+                            <button class="btn btn-sm btn-primary btn-save" type="submit">{% trans %}Post this message{% endtrans %}</button>
+                            <span>or</span> <a class="btn-cancel" href="{{ path ('wwsc_thalamus_project_messages', {'project': slugProject }) }}"> {% trans %}Cancel{% endtrans %} </a> 
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>  
+    </div>
+    <div class="col-md-3 sidebar sidebar-filter">
+        <div class='box_message_guid'><img src="{{ asset('bundles/wwscthalamus/images/icon_mail.png') }}"> <a href="{{ path('wwsc_thalamus_project_messages_guid',{project:slugProject})}}">{% trans %}Post messages via email{% endtrans %}</a> </div>       
+   </div>           
+</div>
+{% include 'WWSCThalamusBundle:File:jQUploadTemplateAttachment.html.twig'%}            
+{% endblock %}
+{% block stylesheets %}
+    <link href="{{ asset('bundles/wwscthalamus/markdown/css/bootstrap-markdown.min.css') }}" type="text/css" rel="stylesheet" />
+    <link href="{{ asset('bundles/wwscthalamus/jQUpload/css/jquery.fileupload.css') }}" type="text/css" rel="stylesheet" />
+    <link href="{{ asset('bundles/wwscthalamus/jQUpload/css/jquery.fileupload-ui.css') }}" type="text/css" rel="stylesheet" />
+{% endblock %}
+{% block javascripts %}
+    <script src="{{ asset('bundles/wwscthalamus/markdown/js/to-markdown.js') }}"></script>
+    <script src="{{ asset('bundles/wwscthalamus/markdown/js/markdown.js') }}"></script>
+    <script src="{{ asset('bundles/wwscthalamus/markdown/js/bootstrap-markdown.js') }}"></script>
+    <script src="{{ asset('bundles/wwscthalamus/js/category.js') }}"></script>
+    <script src="{{ asset('bundles/wwscthalamus/js/attachment.js') }}"></script>
+    <script src="{{ asset('bundles/wwscthalamus/js/message.js') }}"></script>
+    {% include 'WWSCThalamusBundle:File:jQUploadAttachmentScript.html.twig'%}
+    <script src="https://apis.google.com/js/client.js?onload=handleGoogleClientLoad"></script>
+    <script src="{{ asset('bundles/wwscthalamus/js/jquery.autogrow-textarea.js') }}"></script>
+{% endblock %}

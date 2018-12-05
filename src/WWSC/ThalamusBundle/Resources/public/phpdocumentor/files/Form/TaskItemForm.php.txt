@@ -1,0 +1,47 @@
+<?php
+
+namespace WWSC\ThalamusBundle\Form;
+
+use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+
+class TaskItemForm extends AbstractType {
+
+    private $responsible;
+
+    public function __construct($responsible) {
+        $this->responsible = $responsible;
+    }
+
+    /**
+     * @param FormBuilderInterface $builder
+     * @param array $options
+     */
+    public function buildForm(FormBuilderInterface $builder, array $options) {
+        $builder
+                ->add('due_date', 'date', array('widget' => 'single_text', 'format' => 'yyyy-MM-dd','label' => 'due date', 'required' => false, 'label_attr' => array("class" => 'control-label col-md-2'), 'attr' => array('class' => 'form-control', 'pattern' => '.{3,255}')))
+                ->add('status', 'checkbox', array('label' => 'Status', 'required' => false, 'label_attr' => array("class" => 'control-label'), 'attr' => array('class' => 'form-control')))
+                ->add('description', 'textarea', array('error_bubbling'=>true,  'attr' => array('class' => 'form-control', 'rows' => '5', 'pattern' => '.{4,255}')))
+                ->add('responsible', 'entity', array('error_bubbling'=>false, 'class' => 'WWSC\ThalamusBundle\Entity\User', 'empty_data'  => null,'empty_value' => "Anyone", 'label_attr' => array("class" => 'control-label col-xs-2'), 'choices' => $this->responsible, 'property' => 'firstName', 'attr' => array('class' => 'form-control')))
+                ;
+    }
+
+    /**
+     * @param OptionsResolverInterface $resolver
+     */
+    public function setDefaultOptions(OptionsResolverInterface $resolver) {
+        $resolver->setDefaults(array(
+            'data_class' => 'WWSC\ThalamusBundle\Entity\TaskItem'
+        ));
+    }
+
+    /**
+     * @return string
+     */
+    public function getName() {
+        return 'wwsc_thalamusbundle_task_item';
+    }
+
+}
+

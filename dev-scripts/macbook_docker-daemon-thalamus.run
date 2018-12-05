@@ -1,0 +1,10 @@
+IP=127.0.0.1
+
+NAME=www.thalamus.io
+LOCAL_MYSQL_FOLDER="/Users/reimark/PhpstormProjects/thalamus.io/mysql"
+LOCAL_CODE_FOLDER="/Users/reimark/PhpstormProjects/thalamus.io"
+IMAGE=thinkovi/ubuntu_thalamus.io
+
+PORTS="-p $IP:465:465 -p 25:25 -p $IP:80:80  -p $IP:443:443 -p $IP:3306:3306 -p $IP:8080:8080 -p $IP:6622:22 -p $IP:143:143  -p $IP:993:993"
+
+docker run  -ti -d $PORTS -v $LOCAL_MYSQL_FOLDER:/var/lib/mysql -v $LOCAL_CODE_FOLDER:/home/thalamus.io $IMAGE

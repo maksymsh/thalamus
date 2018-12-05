@@ -1,0 +1,12 @@
+{% extends "WWSCThalamusBundle:Content:layout.html.twig" %}
+{% block content %}
+    <div id="oauth-save-token"></div>
+    <style>
+        .navbar, .no-print-this-part {
+            display: none;
+        }
+    </style>
+{% endblock %}
+{% block javascripts %}
+    <script src="{{ asset('bundles/wwscthalamus/js/oauth.js') }}"></script>
+{% endblock %}

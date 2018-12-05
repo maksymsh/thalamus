@@ -1,0 +1,79 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : Oct 24, 2016, 5:11:08 PM
+    Author     : mykolat
+*/
+@media print {
+    .no-print-this-part{
+        visibility: hidden !important;      
+    }
+    .comment-item .title, .user-created, .comment-info .description .title{
+        font-weight: bold;
+    }
+    .comment-item .title .date-created{
+        color:#666;
+    }
+
+    .comment-item .title .btn-delete-comment{
+        float: right;
+    }
+
+    .comment-item .title .btn-link-comment{
+        float: right;
+        margin-right: 20px;
+    }
+    .comment-info .btn-link-comment{
+        display: none;
+    }
+
+    .comment-info .btn-delete-comment{
+        display: none;
+    }
+    .comment-item .avatar-user{
+        width: 78px;
+        text-align: center;
+        float: left;
+    }
+    .comment-item .comment-info{
+        margin-left: 78px;
+    }
+    .info-panel{
+        padding: 10px;
+        font-size: 12px;
+        margin-bottom: 30px;   
+        word-wrap: break-word;
+        font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    }
+    .info-panel h1{
+        margin:0;
+        padding:0;
+    }
+    .comment-info .description ul{
+        list-style-type: none;
+        padding-left: 10px;
+
+    }
+    .comment-info .description  ul{
+        padding-top: 0px;
+    }
+    .md-editor ul li:before,
+    .comment-info .description  ul li:before
+    {
+        content: "— ";
+        margin-left: -15px;
+    }
+    .comment-info .description  ul li
+    {
+        margin-left: 20px;
+    }
+
+    .comment-info .description img{
+        max-width: 500px;
+        max-height: 400px;
+    }
+}
+

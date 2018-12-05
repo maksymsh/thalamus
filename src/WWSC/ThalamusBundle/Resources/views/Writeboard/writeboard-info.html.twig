@@ -1,0 +1,16 @@
+<div class="description col-md-12">
+        {{ oWriteboard.description|markdown|purify  }}
+</div>
+<div class="col-md-12">
+    {% if oWriteboard.files %}
+        {% include 'WWSCThalamusBundle:File:attachments-list.html.twig' with {'aAttachments': oWriteboard,'slugProject': oWriteboard.project.slug} %}
+    {% endif %}
+</div> 
+<div class="col-md-12">
+    <div class="date">
+        <strong>{% trans %}Last Update:{% endtrans %}</strong> {% if oWriteboard.updated %} {{ oWriteboard.updated|date("d M Y") }} {% endif %}
+    </div>
+    <div class="btn-edit">
+       <a href="{{ path ('wwsc_thalamus_project_writeboard_edit',{'project': oWriteboard.project.slug, 'id': oWriteboard.id })}}">{% trans %}Edit Writeboard{% endtrans %}</a>
+    </div>
+</div>    

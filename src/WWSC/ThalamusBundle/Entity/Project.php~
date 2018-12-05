@@ -1,0 +1,1332 @@
+<?php
+
+namespace WWSC\ThalamusBundle\Entity;
+
+use WWSC\ThalamusBundle\WWSCThalamusBundle;
+use Doctrine\Common\Collections\ArrayCollection;
+use Gedmo\Mapping\Annotation as Gedmo;
+use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+use Doctrine\Common\Collections\Criteria;
+
+/**
+ * Company
+ *
+ * @ORM\Entity
+ * @ORM\HasLifecycleCallbacks
+ * @ORM\Table(name="project")
+ */
+class Project {
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="id", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
+     */
+    private $id;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="name", type="string", length=255)
+     * @Assert\NotBlank(message="Please enter your project name.")
+     * @Assert\Length(
+     *     min=3,
+     *     max="255",
+     *     minMessage="The project name is too short.",
+     *     maxMessage="The project name is too long.",
+     * )
+     */
+    private $name;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="reply_uid", type="string", length=255, nullable=true)
+     *
+     */
+    private $replyUID;
+    
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="reply_uid_task", type="string", length=255, nullable=true)
+     *
+    */
+    private $replyUIDTask;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="post_task_id_via_email", type="integer", nullable=true)
+     */
+    
+    private $post_task_via_email;
+    
+     /**
+     * @var integer
+     *
+     * @ORM\Column(name="type", type="integer", nullable=true)
+     */
+    
+    private $type;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="budget", type="float", nullable=true)
+     */
+    
+    private $budget = 0;
+    
+    /**
+     * @Gedmo\Slug(fields={"name"}, updatable=false)
+     * @ORM\Column(length=128, unique=true)
+     */
+    private $slug;
+
+    /**
+     * @var \DateTime $created
+     *
+     * @ORM\Column(type="datetime")
+     * @Gedmo\Timestampable(on="create")
+     */
+    private $created;
+
+    /**
+     * @var \DateTime $updated
+     * @Gedmo\Timestampable(on="update")
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $updated;
+
+    /**
+     * @var integer
+     * 
+     * @ORM\ManyToOne(targetEntity="WWSC\ThalamusBundle\Entity\User")
+     */
+    private $user_created;
+
+    /**
+     * @var integer
+     * 
+     * @ORM\ManyToOne(targetEntity="WWSC\ThalamusBundle\Entity\User")
+     */
+    private $user_updated;
+    
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="closed_project", type="boolean", nullable=true)
+    */   
+    private $closed_project = 0;
+    /**
+     * @ORM\Column(name="is_deleted", type="boolean", nullable=true)
+     */
+    private $is_deleted = 0;
+
+    /**
+     * @ORM\Column(name="is_public_description", type="boolean", nullable=true)
+     */
+    private $is_public_description = 0;
+
+    /**
+     * @ORM\Column(name="is_billable_hours", type="boolean", nullable=true)
+     */
+    private $is_billable_hours = 1;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="description", type="text", nullable=true)
+     */
+    private $description;
+
+    /**
+     *
+     * @ORM\ManyToMany(targetEntity="WWSC\ThalamusBundle\Entity\User", inversedBy="projects")
+     * @ORM\JoinTable(name="project_user")
+     */
+    private $users;
+
+    /**
+     *
+     * @ORM\ManyToMany(targetEntity="WWSC\ThalamusBundle\Entity\Company", inversedBy="projects")
+     * @ORM\JoinTable(name="company_project")
+     * @ORM\OrderBy({"name" = "ASC"})
+     */
+    private $companies;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="WWSC\ThalamusBundle\Entity\Account", inversedBy="account")
+     */
+    private $account;
+
+    /**
+     *
+     * @ORM\OneToMany(targetEntity="WWSC\ThalamusBundle\Entity\Message", mappedBy="project", cascade={"all"})
+     * @ORM\OrderBy({"id" = "DESC"})
+     */
+    private $messages;
+
+    /**
+     * @var integer
+     * 
+     * @ORM\ManyToOne(targetEntity="WWSC\ThalamusBundle\Entity\User")
+     */
+    private $projectleader;
+    
+    /**
+     * @var integer
+     * 
+     * @ORM\ManyToOne(targetEntity="WWSC\ThalamusBundle\Entity\Company")
+     */
+    private $responsible_company;
+
+    /**
+     *
+     * @ORM\OneToMany(targetEntity="WWSC\ThalamusBundle\Entity\Log", mappedBy="project", cascade={"all"})
+     * @ORM\OrderBy({"created" = "DESC"})
+     */
+    private $log;
+
+    /**
+     *
+     * @ORM\OneToMany(targetEntity="WWSC\ThalamusBundle\Entity\Task", mappedBy="project", cascade={"all"})
+     * @ORM\OrderBy({"id" = "DESC"})
+     */
+    private $tasks;
+
+    /**
+     *
+     * @ORM\OneToMany(targetEntity="WWSC\ThalamusBundle\Entity\Files", mappedBy="project", cascade={"all"})
+     * @ORM\OrderBy({"id" = "DESC"})
+     */
+    private $files;
+
+    /**
+     * Constructor
+     */
+    public function __construct() {
+        $this->users = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->tasks = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->companies = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->messages = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
+    /**
+     * Get id
+     *
+     * @return integer 
+     */
+    public function getId() {
+        return $this->id;
+    }
+
+    /**
+     * Set name
+     *
+     * @param string $name
+     * @return Account
+     */
+    public function setName($name) {
+        $this->name = $name;
+
+        return $this;
+    }
+
+    /**
+     * Get name
+     *
+     * @return string 
+     */
+    public function getName() {
+        return $this->name;
+    }
+
+    /**
+     * Add company
+     *
+     * @param \WWSC\ThalamusBundle\Entity\Company $company
+     * @return Account
+     */
+    public function addCompany(\WWSC\ThalamusBundle\Entity\Company $company) {
+        if (!$this->companies->contains($company)) {
+            $this->companies[] = $company;
+        }
+        return $this;
+    }
+
+    /**
+     * Remove company
+     *
+     * @param \WWSC\ThalamusBundle\Entity\Company $company
+     */
+    public function removeCompany(\WWSC\ThalamusBundle\Entity\Company $company) {
+        foreach ($company->getUsers() as $oUser) {
+            $this->removeUser($oUser);
+        }
+        $this->companies->removeElement($company);
+    }
+
+    /**
+     * Set slug
+     *
+     * @param string $slug
+     * @return Account
+     */
+    public function setSlug($slug) {
+        $this->slug = $slug;
+        return $this;
+    }
+
+    /**
+     * Get slug
+     *
+     * @return string 
+     */
+    public function getSlug() {
+        return $this->slug;
+    }
+
+    /**
+     * Set created
+     *
+     * @param \DateTime $created
+     * @return Project
+     */
+    public function setCreated($created) {
+        $this->created = $created;
+
+        return $this;
+    }
+
+    /**
+     * Get created
+     *
+     * @return \DateTime 
+     */
+    public function getCreated() {
+        return $this->created;
+    }
+
+    /**
+     * Set updated
+     *
+     * @param \DateTime $updated
+     * @return Project
+     */
+    public function setUpdated($updated) {
+        $this->updated = $updated;
+
+        return $this;
+    }
+
+    /**
+     * Get updated
+     *
+     * @return \DateTime 
+     */
+    public function getUpdated() {
+        return $this->updated;
+    }
+
+    /**
+     * Set user_created
+     * @ORM\PrePersist()
+     * @param \WWSC\ThalamusBundle\Entity\User $userCreated
+     * @return Company
+     */
+    public function setUserCreated($userCreated) {
+        $this->user_created = WWSCThalamusBundle::getContainer()->get('security.context')->getToken()->getUser();
+
+        return $this;
+    }
+
+    /**
+     * Get user_created
+     *
+     * @return \WWSC\ThalamusBundle\Entity\User 
+     */
+    public function getUserCreated() {
+        return $this->user_created;
+    }
+
+    /**
+     * @ORM\PrePersist()
+     * @ORM\PreUpdate
+     * Set user_updated
+     *
+     * @param \WWSC\ThalamusBundle\Entity\User $userUpdated
+     * @return Company
+     */
+    public function setUserUpdated($userUpdated) {
+        $this->user_updated = WWSCThalamusBundle::getContainer()->get('security.context')->getToken()->getUser();
+        return $this;
+    }
+
+    public function getCompaniesNotInProject() {
+        $aCompaniesProject = $this->getCompanies()->toArray();
+        return $this->getAccount()->getCompany()->filter(
+                        function($entry) use ($aCompaniesProject) {
+                    return (!in_array($entry, $aCompaniesProject));
+                }
+        );
+    }
+
+    /**
+     * Get user_updated
+     *
+     * @return \WWSC\ThalamusBundle\Entity\User 
+     */
+    public function getUserUpdated() {
+        return $this->user_updated;
+    }
+
+    /**
+     * Set is_deleted
+     *
+     * @param boolean $isDeleted
+     * @return Project
+     */
+    public function setIsDeleted($isDeleted) {
+        $this->is_deleted = $isDeleted;
+
+        if ($isDeleted == 1) {
+            if ($this->getMessages()) {
+                foreach ($this->getMessages() as $item) {
+                    $item->setIsDeleted(1);
+                }
+            }
+            if ($this->getTasks()) {
+                foreach ($this->getTasks() as $item) {
+                    $item->setIsDeleted(1);
+                }
+            }
+            if ($this->getFiles()) {
+                foreach ($this->getFiles() as $item) {
+                    $item->setIsDeleted(1);
+                }
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * Get is_deleted
+     *
+     * @return boolean 
+     */
+    public function getIsDeleted() {
+        return $this->is_deleted;
+    }
+
+    /**
+     * Set description
+     *
+     * @param string $description
+     * @return Project
+     */
+    public function setDescription($description) {
+        $this->description = $description;
+
+        return $this;
+    }
+
+    /**
+     * Get description
+     *
+     * @return string 
+     */
+    public function getDescription() {
+        return $this->description;
+    }
+    /**
+     * @return mixed
+     */
+    public function getIsBillableHours()
+    {
+        return $this->is_billable_hours;
+    }
+
+    /**
+     * @param mixed $is_billable_hours
+     */
+    public function setIsBillableHours($is_billable_hours)
+    {
+        $this->is_billable_hours = $is_billable_hours;
+    }
+
+    /**
+     * Set account
+     * @ORM\PrePersist()
+     * @param \WWSC\ThalamusBundle\Entity\Account $account
+     * @return Project
+     */
+    public function setAccount($account) {
+        $em = WWSCThalamusBundle::getContainer()->get('doctrine')->getManager();
+        $this->account = $em->getRepository('WWSCThalamusBundle:Account')->find(WWSCThalamusBundle::getContainer()->get('session')->get('account')->id);
+        return $this;
+    }
+
+    /**
+     * Get account
+     *
+     * @return \WWSC\ThalamusBundle\Entity\Account 
+     */
+    public function getAccount() {
+        return $this->account;
+    }
+
+    /**
+     * Add tasks
+     *
+     * @param \WWSC\ThalamusBundle\Entity\Task $tasks
+     * @return Project
+     */
+    public function addTask(\WWSC\ThalamusBundle\Entity\Task $tasks) {
+        $this->tasks[] = $tasks;
+
+        return $this;
+    }
+
+    /**
+     * Remove tasks
+     *
+     * @param \WWSC\ThalamusBundle\Entity\Task $tasks
+     */
+    public function removeTask(\WWSC\ThalamusBundle\Entity\Task $tasks) {
+        $this->tasks->removeElement($tasks);
+    }
+
+    /**
+     * Get tasks
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getTasks($aFilter = false) {
+        if ($aFilter && (isset($aFilter['filter_due']) && $aFilter['filter_due']) || (isset($aFilter['filter_responsible']) && $aFilter['filter_responsible'])) {
+            return $this->getFilterTask($aFilter);
+        }
+        $roleCompany = WWSCThalamusBundle::getContainer()->get('security.context')->getToken()->getUser()->getCompany()->getRoles();       
+        $criteria = Criteria::create()
+                ->where(Criteria::expr()->eq("is_deleted", 0))
+                ->orderBy(array("sort" => Criteria::ASC, "id" => Criteria::DESC));
+        if ($roleCompany == 'ROLE_CLIENT'){
+            $criteria->andWhere(Criteria::expr()->eq("visible_client", 1));
+        }
+        if ($roleCompany == 'ROLE_FREELANCER'){
+            $criteria->andWhere(Criteria::expr()->eq("visible_freelancer", 1));
+        }
+        if(WWSCThalamusBundle::getContainer()->get('session')->get('presentationMode')){
+            $criteria->andWhere(Criteria::expr()->eq("visible_freelancer", 0));
+        }
+        return $this->tasks->matching($criteria);
+    }
+
+    /**
+     * Add files
+     *
+     * @param \WWSC\ThalamusBundle\Entity\Files $files
+     * @return Project
+     */
+    public function addFile(\WWSC\ThalamusBundle\Entity\Files $files) {
+        $this->files[] = $files;
+
+        return $this;
+    }
+
+    /**
+     * Remove files
+     *
+     * @param \WWSC\ThalamusBundle\Entity\Files $files
+     */
+    public function removeFile(\WWSC\ThalamusBundle\Entity\Files $files) {
+        $this->files->removeElement($files);
+    }
+
+    /**
+     * Get files
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getFiles($sort = false, $cat = false, $user_created = false, $showFileSize = false) {      
+        $activeUserCompany = WWSCThalamusBundle::getContainer()->get('security.context')->getToken()->getUser()->getCompany();
+        $roleCompany = $activeUserCompany->getRoles();
+        $account = WWSCThalamusBundle::getContainer()->get('session')->get('account')->id;
+        $em = WWSCThalamusBundle::getContainer()->get('doctrine')->getManager();
+        $qb = $em->createQueryBuilder();
+        
+        $qb->from('WWSC\ThalamusBundle\Entity\Files', 'f')
+                ->where('f.project = '.$this->getId())
+                ->join('WWSC\ThalamusBundle\Entity\CompanyUser', 'cu', 'WITH', "(cu.user = f.user_created)")
+                ->join('WWSC\ThalamusBundle\Entity\Company', 'comp', 'WITH', "(cu.company = comp.id and comp.account = $account)")
+                ->andWhere('f.is_deleted = 0');
+        if ($cat) {
+             $qb->andWhere("f.category = ".$cat);
+        }
+        if ($user_created) {
+            $qb->andWhere("f.user_created = ".$user_created);
+        }
+        
+        if($activeUserCompany->getRoles() != 'ROLE_PROVIDER'){
+           $qb->leftJoin('WWSC\ThalamusBundle\Entity\Comment', 'c', 'WITH', "(c.id = f.parent AND f.type = 'Comment')")
+              ->leftJoin('WWSC\ThalamusBundle\Entity\TaskItem', 'ti', 'WITH', "(c.parent_id = ti.id and c.type = 'TaskItem')")
+              ->leftJoin('WWSC\ThalamusBundle\Entity\Task', 't', 'WITH', "(ti.task = t.id)");
+           
+            if ($roleCompany == 'ROLE_CLIENT'){
+                $qb->andWhere("(f.type != 'Comment' AND (cu.company =". $activeUserCompany->getId()." OR  f.private = 0 or f.private is NULL)) OR (c.type = 'TaskItem' and t.visible_client = 1)");
+            }
+            if ($roleCompany == 'ROLE_FREELANCER'){
+                $qb->andWhere("(f.type != 'Comment' AND (cu.company =". $activeUserCompany->getId()." OR  f.private = 0 or f.private is NULL)) OR (c.type = 'TaskItem' and t.visible_freelancer = 1)");
+            }
+        }else{
+            $qb->andWhere('cu.company ='. $activeUserCompany->getId().' OR  f.private = 0 OR f.private is NULL');
+        } 
+        $direction_sort = 'DESC';
+        if (!$sort) {
+            $sort = 'created';
+        }
+        if ($sort == 'name') {
+            $direction_sort = 'ASC';
+        }
+        $qb->orderBy('f.'.$sort, $direction_sort);
+        
+        $aData = array();
+        if($showFileSize){
+            if(!$totalFileSize = $qb->select('SUM (f.file_size) as totalFileSize')->getQuery()->getResult()){
+                $aData['totalFileSize']  = 0;
+            }else{
+                $aData['totalFileSize']  = round($totalFileSize[0]['totalFileSize']/1048576, 2);
+            }
+        }
+        $aData['aFiles'] = $qb->select('f')->getQuery()->getResult();
+        return $aData;  
+    }
+    public function getTotalAmount($aFinanceFilter = false){
+        $session = WWSCThalamusBundle::getContainer()->get('session');
+        $projectSlug = $this->getSlug();
+        $qb = WWSCThalamusBundle::getContainer()->get('doctrine')->getManager()->createQueryBuilder();
+        $qb->select('Sum(f.amount) as amount')
+                ->from('WWSC\ThalamusBundle\Entity\Finance', 'f')
+                ->where('f.is_deleted = 0')
+                ->andWhere('f.project = ' . $this->getId());
+                if($aFinanceFilter){
+                    if($aFinanceFilter['velues'] == 1){
+                        $qb->andWhere('f.amount > 0');
+                    }else if($aFinanceFilter['velues'] == -1){
+                        $qb->andWhere('f.amount < 0');      
+                    }
+                    if(isset($aFinanceFilter['hide-all-paid']) && $aFinanceFilter['hide-all-paid']){
+                        $qb->andWhere('f.status <> 3');  
+                    }
+                }
+                
+                if(isset($session->get('aDateRangeFilter')[$projectSlug])){
+                    $aDateRangeFilter = $session->get('aDateRangeFilter')[$projectSlug];
+                    if(isset($aDateRangeFilter['date_from']) && $aDateRangeFilter['date_from']){
+                        $qb->andWhere('f.invoice_date >= :from_date');
+                        $qb->setParameter(':from_date', new \DateTime($aDateRangeFilter['date_from']));
+                    }
+                    if(isset($aDateRangeFilter['date_to']) && $aDateRangeFilter['date_to']){
+                        $qb->andWhere('f.invoice_date <= :to_date');
+                        $qb->setParameter(':to_date', new \DateTime($aDateRangeFilter['date_to']));
+                    }
+                  }  
+        $aSumAmount = $qb->getQuery()->getResult();
+        if(isset($aSumAmount[0]['amount'])) {
+            return $aSumAmount[0]['amount'];
+        }else{
+            return '0.00';
+        }         
+    }
+    public function getFilterTask($aFilter) {
+        $qb = WWSCThalamusBundle::getContainer()->get('doctrine')->getManager()->createQueryBuilder();
+        $roleCompany = WWSCThalamusBundle::getContainer()->get('security.context')->getToken()->getUser()->getCompany()->getRoles();
+        $qb->select('t')
+                ->from('WWSC\ThalamusBundle\Entity\TaskItem', 'ti')
+                ->join('WWSC\ThalamusBundle\Entity\Task', 't', 'WITH', "(ti.task = t.id)")
+                ->where('ti.is_deleted = 0')
+                ->andWhere('t.is_deleted = 0')
+                ->andWhere('t.project = ' . $this->getId());
+        if (isset($aFilter['filter_due']) && $aFilter['filter_due'] && $aFilter['filter_due'] !='' ) {
+            switch ($aFilter['filter_due']) {
+                case 'today':
+                    $qb->andWhere('ti.due_date >= :min_date')
+                            ->andWhere('ti.due_date <= :max_date')
+                            ->setParameter(':min_date', new \DateTime("today"))
+                            ->setParameter(':max_date', new \DateTime("now"));
+                    break;
+                case 'tomorrow':
+                    $qb->andWhere('ti.due_date >= :min_date')
+                            ->andWhere('ti.due_date <= :max_date')
+                            ->setParameter(':min_date', new \DateTime("now"))
+                            ->setParameter(':max_date', new \DateTime("tomorrow"));
+                    break;
+                case 'this_week':
+                    $qb->andWhere('ti.due_date >= :min_date')
+                            ->andWhere('ti.due_date <= :max_date')
+                            ->setParameter(':min_date', new \DateTime("monday this week"))
+                            ->setParameter(':max_date', new \DateTime("sunday this week"));
+                    break;
+                case 'next_week':
+                    $qb->andWhere('ti.due_date >= :min_date')
+                            ->andWhere('ti.due_date <= :max_date')
+                            ->setParameter(':min_date', new \DateTime("monday next week"))
+                            ->setParameter(':max_date', new \DateTime("sunday next week"));
+                    break;
+                case 'later':
+                    $qb->andWhere('ti.due_date >= :min_date')
+                            ->setParameter(':min_date', new \DateTime("now"));
+                    break;
+            }
+        }
+        if (isset($aFilter['filter_responsible']) && $aFilter['filter_responsible']) {
+           $aFilterResponsible = explode('_', $aFilter['filter_responsible']);
+           if($aFilterResponsible[0] == 'c'){
+            $qb->join('WWSC\ThalamusBundle\Entity\CompanyUser', 'cu', 'WITH', "(ti.responsible = cu.user)");
+            $qb->andWhere('cu.company = ' . $aFilterResponsible[1]);
+           }
+           if($aFilterResponsible[0] == 'u'){
+            $qb->andWhere('ti.responsible = ' . $aFilterResponsible[1]);
+           }
+        }
+        if ($roleCompany == 'ROLE_CLIENT'){
+            $qb->andWhere("t.visible_client = 1");
+        }
+        if ($roleCompany == 'ROLE_FREELANCER'){
+            $qb->andWhere("t.visible_freelancer = 1");
+        }
+        if(WWSCThalamusBundle::getContainer()->get('session')->get('presentationMode')){
+            $qb->andWhere("t.visible_freelancer = 0");
+        }
+        $qb->orderBy('t.sort', 'DESC');
+        $qb->orderBy('t.id', 'DESC');
+        return $qb->getQuery()->getResult();
+    }
+    /**
+     * Add messages
+     *
+     * @param \WWSC\ThalamusBundle\Entity\Message $messages
+     * @return Project
+     */
+    public function addMessage(\WWSC\ThalamusBundle\Entity\Message $messages) {
+        $this->messages[] = $messages;
+
+        return $this;
+    }
+
+    /**
+     * Remove messages
+     *
+     * @param \WWSC\ThalamusBundle\Entity\Message $messages
+     */
+    public function removeMessage(\WWSC\ThalamusBundle\Entity\Message $messages) {
+        $this->messages->removeElement($messages);
+    }
+
+    /**
+     * Get messages
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getMessages($cat = null) {
+        
+        $activeUserCompany = WWSCThalamusBundle::getContainer()->get('security.context')->getToken()->getUser()->getCompany();
+        $em = WWSCThalamusBundle::getContainer()->get('doctrine')->getManager();
+        $qb = $em->createQueryBuilder();
+        $qb->select('m')
+                ->from('WWSC\ThalamusBundle\Entity\Message', 'm')
+                ->join('WWSC\ThalamusBundle\Entity\CompanyUser', 'cu', 'WITH', "(cu.user = m.user_created)")
+                ->where('m.project = '.$this->getId())
+                ->andWhere('m.is_deleted = 0')
+                ->andWhere('(m.private = 1 and cu.company ='. $activeUserCompany->getId().') or  m.private = 0')
+                ->orderBy('m.id ', 'DESC');       
+        if ($cat) {
+             $qb->andWhere("m.category = ".$cat);
+        }
+        if($activeUserCompany->getRoles() != 'ROLE_PROVIDER'){
+             $qb->join('WWSC\ThalamusBundle\Entity\SubscribeEmail', 'se', 'WITH', "(se.type = 'Message' and se.parent = m.id )");
+             $qb->join('WWSC\ThalamusBundle\Entity\CompanyUser', 'sub_com', 'WITH', "(se.user = sub_com.user )");
+             $qb->andWhere( 'sub_com.company = '.$activeUserCompany->getId());
+        }
+        return $qb->getQuery()->getResult();   
+    }
+    
+    public function getWriteboards() {
+        $activeUser = WWSCThalamusBundle::getContainer()->get('security.context')->getToken()->getUser();
+        $em = WWSCThalamusBundle::getContainer()->get('doctrine')->getManager();
+        $qb = $em->createQueryBuilder();
+        $qb->select('w')
+                ->from('WWSC\ThalamusBundle\Entity\Writeboard', 'w')
+                ->where('w.project = '.$this->getId())
+                ->andWhere('w.is_deleted = 0')
+                ->andWhere('w.active = 1')
+                ->orderBy('w.id ', 'DESC');
+        
+        if($activeUser->getCompany()->getRoles() != 'ROLE_PROVIDER'){
+             $qb->join('WWSC\ThalamusBundle\Entity\SubscribeEmail', 'se', 'WITH', "(se.type = 'Writeboard' and se.parent = w.number and se.user = ".$activeUser->getId().")");
+        }
+        $qb->groupBy('w.number');
+        return $qb->getQuery()->getResult();   
+    }
+    
+    public function hasLog(){
+        $em = WWSCThalamusBundle::getContainer()->get('doctrine')->getManager();
+        if($em->getRepository('WWSCThalamusBundle:Log')->findOneBy(array('project'=> $this->id))){
+            return true;
+        }else{
+            return false;
+        };
+    }
+    /**
+     * Get log pagination
+     *
+     * @param int $page
+     * @param int $countPerPage
+     *
+     * @return \Knp\Component\Pager\Paginator
+     */
+    
+    
+    public function getLogPagination($countPage = false, $limit = 5, $page = 1) {
+        $offset = $limit * ($page - 1);
+        $projectId = $this->getId();
+        $user = WWSCThalamusBundle::getContainer()->get('security.context')->getToken()->getUser();
+        $userId = $user->getId();
+        $companyId = $user->getCompany()->getId();
+        $roles = $user->getCompany()->getRoles(); 
+        if ($roles != 'ROLE_PROVIDER') {            
+            $roles == 'ROLE_CLIENT'?$whereTask = "and t.visible_client = 1": $whereTask = "and t.visible_freelancer = 1";
+            $joinMessage ="join subscribe_email as se on (se.type = 'Message' and se.parent = m.id  and m.project_id = {$projectId} )
+                            join company_user as com_user ON (se.user_id = com_user.user_id and com_user.company_id = $companyId)";
+            
+            $joinWriteboard ="join subscribe_email as se on (se.type = 'Writeboard' and se.parent = w.number and se.user_id = {$userId}  and w.project_id = {$projectId} )";
+                        
+            $selectTaskItemLog = "(select l.object_type,  l.project_id,  l.description, l.action, l.created, l.user_id  from log as l join taskitem as ti on(l.object_type = 'TaskItem' and l.object_id = ti.id  and l.project_id = {$projectId} )
+                                join task as t on(ti.task_id = t.id {$whereTask} and t.project_id = {$projectId}))union";
+                                
+            $selectTaskLog = "(select l.object_type,  l.project_id,  l.description, l.action, l.created, l.user_id  from log as l join task as t on(l.object_type = 'Task' and l.object_id = t.id  {$whereTask} and t.project_id  = {$projectId} ))union";     
+        
+            $selectCommentTask =  "union ( select c.type, c.private, c.parent_id, c.id   from task as t join taskitem as ti on(ti.task_id = t.id and t.project_id = {$projectId}  {$whereTask}) 
+                                        join comment as c  on (c.type = 'TaskItem' and c.parent_id = ti.id and c.private <> 1))";                                 
+        }else{
+            $selectTaskLog = "";
+            $joinMessage = "";
+            $joinWriteboard = "";
+            $whereTask = "";
+            $commentWhereProvider = "";
+            
+            if(WWSCThalamusBundle::getContainer()->get('session')->get('presentationMode')){
+                $commentWhereProvider = 'AND c.private = 0';
+                $whereTask  = 'AND t.visible_freelancer = 0';
+                $selectTaskLog = "(select l.object_type,  l.project_id,  l.description, l.action, l.created, l.user_id  from log as l join task as t on(l.object_type = 'Task' and l.object_id = t.id  {$whereTask} and t.project_id  = {$projectId} ))union";     
+                $selectTaskItemLog = "(select l.object_type,  l.project_id,  l.description, l.action, l.created, l.user_id  from log as l join taskitem as ti on(l.object_type = 'TaskItem' and l.object_id = ti.id  and l.project_id = {$projectId} )
+                                join task as t on(ti.task_id = t.id {$whereTask} and t.project_id = {$projectId}))union";
+            }else{
+                $selectTaskItemLog = "(select l.object_type, l.project_id,  l.description, l.action, l.created, l.user_id  from log as l WHERE l.object_type IN('TaskItem','Task') and l.project_id  = {$projectId} )union";  
+            }
+
+            $selectCommentTask =  "union ( select c.type, c.private, c.parent_id, c.id  from task as t join taskitem as ti on(ti.task_id = t.id and t.project_id = {$projectId}  {$whereTask}) 
+                                        join comment as c  on (c.type = 'TaskItem' and c.parent_id = ti.id {$commentWhereProvider}))";
+        }
+        
+        $selectCommentMessage =  "(select c.type, c.private, c.parent_id, c.id from message as m join company_user as cu on (m.user_created_id = cu.user_id  and m.project_id = {$projectId} and ( (cu.company_id = $companyId  AND m.private = 1) OR m.private = 0))
+                                  {$joinMessage} join comment as c on (c.type = 'Message' and c.parent_id = m.id))";
+                                  
+        $selectCommentLog = "(select l.object_type,  l.project_id,  l.description, l.action, l.created, l.user_id  from log as l
+            join (
+               {$selectCommentMessage}
+               {$selectCommentTask}
+            ) as gc
+            on(l.object_type = 'Comment' and l.object_id = gc.id  and l.project_id  = {$projectId} ))union";
+        
+        $selectWriteboardLog = "(select l.object_type,  l.project_id,  l.description, l.action, l.created, l.user_id  from log as l 
+           join (
+                (select w.user_created_id, w.id, w.project_id from writeboard as w
+                {$joinWriteboard}
+                ))
+            as gm on(l.object_type = 'Writeboard' and l.object_id = gm.id and l.project_id  = {$projectId} ))union";
+        $selectMessageLog = "(select l.object_type,  l.project_id,  l.description, l.action, l.created, l.user_id  from log as l 
+           join (
+                (select m.user_created_id, m.id, m.project_id, m.private  from message as m  join company_user as cu on (m.user_created_id = cu.user_id and m.project_id  = {$projectId}  AND (cu.company_id = $companyId AND m.private = 1) OR m.private = 0)
+                {$joinMessage}
+                ))
+            as gm on(l.object_type = 'Message' and l.object_id = gm.id and l.project_id  = {$projectId} ))union"; 
+            
+            
+        $selectFileLog = "(
+            select l.object_type,  l.project_id,  l.description, l.action, l.created, l.user_id from log as l
+            join (
+              (select f.type, f.project_id, f.parent, f.id, f.private, f.user_created_id  from files as f
+                join (
+                    {$selectCommentMessage}
+                    {$selectCommentTask}
+                ) as gc
+                on(f.type = 'Comment' and f.parent = gc.id and f.project_id = {$projectId} )
+              )
+              union
+              (select f.type, f.project_id, f.parent, f.id, f.private, f.user_created_id from files as f  join  message as m on (f.type = 'Message' and f.parent = m.id and m.project_id = {$projectId} )
+               join company_user as cu on (m.user_created_id = cu.user_id AND (cu.company_id = $companyId AND m.private = 1) OR m.private = 0){$joinMessage})  
+               union
+               (select f.type, f.project_id, f.parent, f.id, f.private, f.user_created_id from files as f  join  writeboard as w on (f.type = 'Writeboard' and f.parent = w.id and w.project_id = {$projectId} )
+               {$joinWriteboard})  
+               union
+              (select f.type, f.project_id, f.parent, f.id, f.private, f.user_created_id from files as f join company_user as cu on (f.user_created_id = cu.user_id and ((cu.company_id = $companyId and  f.private = 1 and f.project_id = 1) or f.private = 0))  where f.type = 'Project' and f.project_id = {$projectId}  )
+            ) as gf on (l.object_type = 'Files' and l.object_id = gf.id and l.project_id  = {$projectId} )) 
+        ";
+        if ($countPage) {
+            $sql = "
+                select COUNT(*) as count from(
+                  ({$selectTaskItemLog}
+                  {$selectCommentLog}
+                  {$selectTaskLog}
+                  {$selectMessageLog}
+                  {$selectWriteboardLog}
+                  {$selectFileLog})
+                as gl)
+                where gl.project_id = '{$projectId}'
+            ";
+            return round(WWSCThalamusBundle::getContainer()->get('database_connection')->query($sql)->fetch()['count'] / $limit);
+        } else {
+            $sql = "
+                select gl.object_type, gl.description, gl.action, gl.created, gl.user_id, u.last_name, u.first_name from(
+                  ({$selectTaskItemLog}
+                  {$selectCommentLog}
+                  {$selectTaskLog}
+                  {$selectMessageLog}
+                  {$selectWriteboardLog}
+                  {$selectFileLog})
+                as gl)
+                join fos_user as u
+                  on (gl.user_id = u.id)
+                where gl.project_id = '{$projectId}'
+                order by gl.created DESC LIMIT $offset, $limit
+            "; 
+                
+            return WWSCThalamusBundle::getContainer()->get('database_connection')->query($sql)->fetchAll();
+        }
+    }
+    public function getSubspeople($company_id = false, $account = false) {
+        $aSubsCompanies = array();
+        $activeUser = WWSCThalamusBundle::getContainer()->get('security.context')->getToken()->getUser();
+        if($company_id){
+            $oCompany = WWSCThalamusBundle::getContainer()->get('doctrine')->getManager()->getRepository('WWSCThalamusBundle:Company')->find($company_id);
+            $aSubsCompany = array();
+            $aSubsCompany['id'] = $oCompany->getId();
+            $aSubsCompany['name'] = $oCompany->getName();
+            $aSubsCompany['role'] = $oCompany->getRoles();
+            foreach ($oCompany->getUsers() as $oUser) {
+                    if($oUser->getHasRoleProject($this->getSlug() , false)){
+                        $aSubsCompany["people"][$oUser->getId()] = $oUser->getFirstName() . ' ' . $oUser->getLastName();
+                    }
+                }
+            array_push($aSubsCompanies, $aSubsCompany);
+            return $aSubsCompanies;
+        }else{
+            if($account){
+                $roleReplyEmail = true;
+            }else{
+                $roleReplyEmail = false;
+            }
+            foreach ($this->getCompanies() as $oCompany) {
+                if (($activeUser->getCompany($account)->getRoles() == 'ROLE_PROVIDER') || ($oCompany->getRoles() == 'ROLE_PROVIDER') || ($oCompany->getId() == $activeUser->getCompany($account)->getId()) || ($activeUser->getCompany($account)->getRoles() == 'ROLE_CLIENT' && $oCompany->getRoles() == 'ROLE_CLIENT')) {
+                    $aSubsCompany = array();
+                    $aSubsCompany['id'] = $oCompany->getId();
+                    $aSubsCompany['name'] = $oCompany->getName();
+                    $aSubsCompany['role'] = $oCompany->getRoles();
+                    foreach ($oCompany->getUsers() as $oUser) {
+                        if($oUser->getHasRoleProject($this->getSlug(), $roleReplyEmail)){
+                            $aSubsCompany["people"][$oUser->getId()] = $oUser->getFirstName() . ' ' . $oUser->getLastName();
+                        }
+                    }
+                    array_push($aSubsCompanies, $aSubsCompany);
+                }
+            }
+            return $aSubsCompanies;
+        }
+    }
+  
+    
+    /**
+     * Set is_public_description
+     *
+     * @param boolean $isPublicDescription
+     * @return Project
+     */
+    public function setIsPublicDescription($isPublicDescription) {
+        $this->is_public_description = $isPublicDescription;
+
+        return $this;
+    }
+
+    /**
+     * Get is_public_description
+     *
+     * @return boolean 
+     */
+    public function getIsPublicDescription() {
+        return $this->is_public_description;
+    }
+    
+    public function getChildTasks($taskId = false) {
+        $qb = WWSCThalamusBundle::getContainer()->get('doctrine')->getManager()->createQueryBuilder();
+        $roleCompany = WWSCThalamusBundle::getContainer()->get('security.context')->getToken()->getUser()->getCompany()->getRoles();
+        $sql = ' SELECT t.id as t_id, t.name as t_name, ti.id as ti_id, ti.description as ti_name, ti.status as ti_status';
+        $sql .=' FROM task AS t Left JOIN taskitem AS ti on(ti.task_id = t.id and t.project_id='.$this->getId().' AND isChild('.$taskId.', ti.id ) = 0  AND  ti.is_deleted = 0 AND (ti.parent is NULL or ti.parent = 0))';
+        $sql .=' WHERE t.is_deleted = 0  AND t.project_id = '. $this->getId();
+        $sql .=' ORDER BY t.sort DESC, ti.status ASC,  ti.sort ASC';
+        $aTasks = WWSCThalamusBundle::getContainer()->get('database_connection')->query($sql)->fetchAll();       
+        $aChildTasks = array();
+        foreach($aTasks as $oTask){
+            $statusTask = $oTask['ti_status'] == 0?'open':'closed';
+            $aChildTasks[$oTask['t_id']]['name'] = $oTask['t_name'];
+            $aChildTasks[$oTask['t_id']]['tasks'][$statusTask][$oTask['ti_id']] = $oTask['ti_name'];
+        }
+        return $aChildTasks;
+    }
+
+    /**
+     * Add log
+     *
+     * @param \WWSC\ThalamusBundle\Entity\Log $log
+     * @return Project
+     */
+    public function addLog(\WWSC\ThalamusBundle\Entity\Log $log) {
+        $this->log[] = $log;
+        return $this;
+    }
+
+    /**
+     * Remove log
+     *
+     * @param \WWSC\ThalamusBundle\Entity\Log $log
+     */
+    public function removeLog(\WWSC\ThalamusBundle\Entity\Log $log) {
+        $this->log->removeElement($log);
+    }
+
+    /**
+     * Add users
+     *
+     * @param \WWSC\ThalamusBundle\Entity\User $users
+     * @return Project
+     */
+    public function addUser(\WWSC\ThalamusBundle\Entity\User $users) {
+        if (!$this->users->contains($users)) {
+            $this->users[] = $users;
+        }
+
+        return $this;
+    }
+
+    /**
+     * Remove users
+     *
+     * @param \WWSC\ThalamusBundle\Entity\User $users
+     */
+    public function removeUser(\WWSC\ThalamusBundle\Entity\User $users) {
+        $this->users->removeElement($users);
+    }
+            
+
+    /**
+     * Get users
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getUsers($company = false, $role = false) {
+        if($role){
+           return $this->users->filter(
+                       function($entry) use ($role) {
+                            foreach ($entry->getCompanies(false) as $oCompany) {
+                                return ($oCompany->getRoles() == $role);
+                            }
+                    }
+            );
+        }
+        if ($company) {
+            $qb = WWSCThalamusBundle::getContainer()->get('doctrine')->getManager()->createQueryBuilder();
+            $qb->select('u')
+               ->from('WWSC\ThalamusBundle\Entity\User', 'u')
+               ->join('u.project', 'p')
+               ->join('WWSC\ThalamusBundle\Entity\CompanyUser', 'cu', 'WITH', "(cu.user = u.id and cu.enabled = 1)")
+               ->where('p.id = ' . $this->getId())     
+               ->andWhere('cu.company = '.$company);
+            return $qb->getQuery()->getResult();
+        }
+        return $this->users;
+    }
+    
+     public  function getUserByFirstPartEmail($firstPartEmail, $aRoles = false) {
+
+        $qb = WWSCThalamusBundle::getContainer()->get('doctrine')->getManager()->createQueryBuilder();
+            $qb->select('u')
+               ->from('WWSC\ThalamusBundle\Entity\User', 'u')
+               ->join('u.project', 'p')
+               ->where('p.id = ' . $this->getId())
+               ->andWhere('u.email LIKE :firstPartEmail')
+               ->setParameter('firstPartEmail', $firstPartEmail.'%');
+               if($aRoles){
+                    $qb->join('WWSC\ThalamusBundle\Entity\CompanyUser', 'cu', 'WITH', "(cu.user = u.id and cu.enabled = 1)")
+                        ->join('WWSC\ThalamusBundle\Entity\Company', 'c', 'WITH', "(cu.company = c.id and c.account = p.account)")
+                        ->andWhere('c.roles IN(:aRoles)')
+                        ->setParameter(':aRoles', array_values($aRoles));
+               }     
+               $qb->setMaxResults(1);
+        if($aUser = $qb->getQuery()->getResult()){
+            return $aUser[0];
+        } 
+        return false;
+    }
+    
+    
+    
+    /**
+     * Get companies
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getCompanies() {
+        $session = WWSCThalamusBundle::getContainer()->get('session');
+        $activeUser = WWSCThalamusBundle::getContainer()->get('security.context')->getToken()->getUser();
+        if($session->get('presentationMode') && $activeUser->getCompany()->getRoles() == 'ROLE_PROVIDER'){
+            return $this->companies->filter(
+                        function($entry) {
+                            return ($entry->getRoles() !='ROLE_FREELANCER');
+                        });
+        }
+        return $this->companies;
+    }
+
+    /**
+     * Set responsibleCompany
+     *
+     * @param \WWSC\ThalamusBundle\Entity\Company $responsibleCompany
+     *
+     * @return Project
+     */
+    public function setResponsibleCompany(\WWSC\ThalamusBundle\Entity\Company $responsibleCompany = null) {
+        $this->responsible_company = $responsibleCompany;
+
+        return $this;
+    }
+
+    /**
+     * Get responsibleCompany
+     *
+     * @return \WWSC\ThalamusBundle\Entity\Company
+     */
+    public function getResponsibleCompany() {
+        return $this->responsible_company;
+    }
+
+    /**
+     * Set replyUID
+     *
+     * @ORM\PostPersist()
+     * @param string $replyUID
+     * @return Project
+     */
+    public function setReplyUID($replyUID) {
+        $this->replyUID = $this->getId(). md5(uniqid(rand(), true));
+        WWSCThalamusBundle::getContainer()->get('doctrine')->getManager()->flush();
+
+        return $this;
+    }
+
+    /**
+     * Get replyUID
+     *
+     * @return string 
+     */
+    public function getReplyUID() {
+        return $this->replyUID;
+    }
+
+
+    /**
+     * Set postTaskViaEmail
+     *
+     * @param integer $postTaskViaEmail
+     *
+     * @return Project
+     */
+    public function setPostTaskViaEmail($postTaskViaEmail)
+    {
+        $this->post_task_via_email = $postTaskViaEmail;
+    
+        return $this;
+    }
+
+    /**
+     * Get postTaskViaEmail
+     *
+     * @return integer
+     */
+    public function getPostTaskViaEmail()
+    {
+        return $this->post_task_via_email;
+    }
+
+    /**
+     * Get log
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getLog()
+    {
+        return $this->log;
+    }
+
+    /**
+     * Set replyUIDTask
+     *
+     * @param string $replyUIDTask
+     *
+     * @return Project
+     */
+    public function setReplyUIDTask($replyUIDTask)
+    {
+        $this->replyUIDTask = $replyUIDTask;
+
+        return $this;
+    }
+
+    /**
+     * Get replyUIDTask
+     *
+     * @return string
+     */
+    public function getReplyUIDTask()
+    {
+        return $this->replyUIDTask;
+    }
+
+    /**
+     * Set closedProject
+     *
+     * @param boolean $closedProject
+     *
+     * @return Project
+     */
+    public function setClosedProject($closedProject)
+    {
+        $this->closed_project = $closedProject;
+
+        return $this;
+    }
+
+    /**
+     * Get closedProject
+     *
+     * @return boolean
+     */
+    public function getClosedProject()
+    {
+        return $this->closed_project;
+    }
+
+    /**
+     * Set type
+     *
+     * @param integer $type
+     *
+     * @return Project
+     */
+    public function setType($type)
+    {
+        $this->type = $type;
+
+        return $this;
+    }
+
+    /**
+     * Get type
+     *
+     * @return integer
+     */
+    public function getType()
+    {
+        return $this->type;
+    }
+
+    /**
+     * Set budget
+     *
+     * @param integer $budget
+     *
+     * @return Project
+     */
+    public function setBudget($budget)
+    {
+        $this->budget = $budget;
+
+        return $this;
+    }
+
+    /**
+     * Get budget
+     *
+     * @return integer
+     */
+    public function getBudget()
+    {
+        return $this->budget;
+    }
+    
+
+    /**
+     * Set projectleader
+     *
+     * @param \WWSC\ThalamusBundle\Entity\User $projectleader
+     *
+     * @return Project
+     */
+    public function setProjectleader(\WWSC\ThalamusBundle\Entity\User $projectleader = null)
+    {
+        $this->projectleader = $projectleader;
+
+        return $this;
+    }
+
+    /**
+     * Get projectleader
+     *
+     * @return \WWSC\ThalamusBundle\Entity\User
+     */
+    public function getProjectleader($type = 'object')
+    {
+        if($type == 'id'){
+            if($this->projectleader){
+                return $this->projectleader->getId();
+            }    
+            return false;
+        }
+        return $this->projectleader;
+    }
+    
+    public function getTasksProjectForSelect(){
+        $qb = WWSCThalamusBundle::getContainer()->get('doctrine')->getManager()->createQueryBuilder();
+        $roleCompany = WWSCThalamusBundle::getContainer()->get('security.context')->getToken()->getUser()->getCompany()->getRoles();
+        $whereCompany = '';
+        if($roleCompany == "ROLE_FREELANCER"){
+            $whereCompany = " AND t.visible_freelancer = 1";
+        }
+        $sql = ' SELECT t.id as t_id, t.name as t_name, ti.id as ti_id, ti.description as ti_name, ti.status as ti_status';
+        $sql .=' FROM task AS t Left JOIN taskitem AS ti on(ti.task_id = t.id and t.project_id='.$this->getId().' AND  ti.is_deleted = 0)';
+        $sql .=' WHERE t.is_deleted = 0 '.$whereCompany.' AND t.is_time_tracker = 1 AND t.project_id = '. $this->getId();
+        $sql .=' ORDER BY t.sort DESC, ti.status ASC,  ti.sort ASC';
+        $aTasksCrit = WWSCThalamusBundle::getContainer()->get('database_connection')->query($sql)->fetchAll();       
+        $aTasks = array();
+        foreach($aTasksCrit as $oTask){
+            $statusTask = $oTask['ti_status'] == 0?'open':'closed';
+            $aTasks[$oTask['t_id']]['name'] = $oTask['t_name'];
+            $aTasks[$oTask['t_id']]['tasks'][$statusTask][$oTask['ti_id']] = $oTask['ti_name'];
+        }
+        return $aTasks;
+    }
+}

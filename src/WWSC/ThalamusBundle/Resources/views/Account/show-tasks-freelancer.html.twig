@@ -1,0 +1,76 @@
+{% extends "WWSCThalamusBundle:Content:layout.html.twig" %}
+
+{% block title %}
+    {% trans %}Tasks{% endtrans %}
+{% endblock %}
+{% block content %}
+    <div class="row">
+        <div class="panel panel-default col-md-12">
+            <div class="panel-heading ">
+                {% trans %}Tasks{% endtrans %}
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-sm-12 col-md-12">
+                        <div class="table-responsive time-traker-list">
+                            <form id="filters-task-table" method="GET" action="{{ path ('wwsc_thalamus_account_tasks')}}">
+                                <table class="table table-striped tablesorter-table-tasks ">
+                                    <thead>
+                                    <tr class="tasks-table-filters ">
+                                        <td colspan="3"></td>
+                                        <td colspan="1">
+                                            {%if app.request.query.get('filter_status') %}
+                                                {% set filter_status = app.request.query.get('filter_status') %}
+                                            {% else %}
+                                                {% set filter_status = '' %}
+                                            {% endif %}
+                                            <select name="filter_status" id="filter_status" class="form-control">
+                                                <option value="">Any status</option>
+                                                {% for key, state in aStates %}
+                                                    <option {% if key == filter_status %}selected{% endif %} value="{{ key }}">{{ state }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </td>
+                                        <td colspan="1">
+                                            {%if app.request.query.get('filter_project_title') %}
+                                                {% set filter_project_title = app.request.query.get('filter_project_title') %}
+                                            {% else %}
+                                                {% set filter_project_title = '' %}
+                                            {% endif %}
+                                            <select name="filter_project_title" id="filter_project_title" class="form-control">
+                                                <option value="">Any title</option>
+                                                {% for project in aProjects %}
+                                                    <option {% if project.p_id == filter_project_title %}selected{% endif %} value="{{ project.p_id }}">{{ project.p_name }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>{% trans %}Last comment{% endtrans %}</th>
+                                        <th>{% trans %}Task-ID{% endtrans %}</th>
+                                        <th>{% trans %}Task title{% endtrans %}</th>
+                                        <th>{% trans %}Status{% endtrans %}</th>
+                                        <th>{% trans %}Project-Title{% endtrans %}</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                            </form>
+                            {% for oTaskItem in aTasks %}
+                                {% set uTask = url ('wwsc_thalamus_project_task_item_comments',{'project':oTaskItem['p_slug'], 'task':oTaskItem['t_id'] ,'id':oTaskItem['ti_id'] }) %}
+                                <tr class="{{ oTaskItem["ti_fast_track"] ? 'fast-track' : '' }}">
+                                    <td>{{date(("now"|date("Y-m-d"))).diff(date(oTaskItem['last_comment'])).format("%a")}}</td>
+                                    <td><a target="_blank" href="{{ uTask }}">{{ oTaskItem['ti_id'] }}</a></td>
+                                    <td>{{oTaskItem["ti_fast_track"]? '[FAST-TRACK]' : '' }}  {{app.user.encodingString(oTaskItem['ti_name'])}}</td>
+                                    <td>{% if aStates[oTaskItem['ti_status']] is defined %} {{ aStates[oTaskItem['ti_status']] }}{% endif %}</td>
+                                    <td>{{oTaskItem['p_name']}}</td>
+                                </tr>
+                            {%endfor%}
+                            </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

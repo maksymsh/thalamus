@@ -1,0 +1,483 @@
+<?php
+
+namespace WWSC\ThalamusBundle\Entity;
+
+use WWSC\ThalamusBundle\WWSCThalamusBundle;
+use Doctrine\Common\Collections\ArrayCollection;
+use Gedmo\Mapping\Annotation as Gedmo;
+use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+use Doctrine\Common\Collections\Criteria;
+use Doctrine\ORM\Event\LifecycleEventArgs;
+
+/**
+ * Comment
+ *
+ * @ORM\Entity
+ * @ORM\HasLifecycleCallbacks
+ * @ORM\Table(name="message")
+ */
+class Message extends Base{
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="id", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
+     */
+    private $id;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="reply_uid", type="string", length=255, nullable=true)
+     *
+     */
+    private $replyUID;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="title", type="string", length=255)
+     *
+     */
+    private $title;
+    
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="description", type="text", nullable=true)
+     */
+    private $description;
+
+     /**
+     * @var integer
+     * 
+     * @ORM\ManyToOne(targetEntity="WWSC\ThalamusBundle\Entity\Category")
+    */
+    private $category;
+    
+     /**
+     * @var boolean
+     *
+     * @ORM\Column(name="private", type="boolean", nullable=true)
+     */
+    private $private  = 0;
+    
+     /**
+     * @var integer
+     *
+     * @ORM\Column(name="save_to_log", type="boolean", nullable=true)
+    */   
+    private $save_to_log = 1;
+    
+    /**
+     * @var \DateTime $created
+     *
+     * @ORM\Column(type="datetime")
+     * @Gedmo\Timestampable(on="create")
+     */
+    private $created;
+
+    /**
+     * @var \DateTime $updated
+     * @Gedmo\Timestampable(on="update")
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $updated;
+
+    /**
+     * @var integer
+     * 
+     * @ORM\ManyToOne(targetEntity="WWSC\ThalamusBundle\Entity\User")
+     */
+    private $user_created;
+
+    /**
+     * @var integer
+     * 
+     * @ORM\ManyToOne(targetEntity="WWSC\ThalamusBundle\Entity\User")
+     */
+    private $user_updated;
+
+    /**
+     * @ORM\Column(name="is_deleted", type="boolean", nullable=true)
+     */
+    private $is_deleted = 0;
+  
+    /**
+     * @ORM\ManyToOne(targetEntity="WWSC\ThalamusBundle\Entity\Project", inversedBy="project")
+     */
+    private $project;
+    
+    private $comments;
+
+    /**
+     * Get id
+     *
+     * @return integer 
+     */
+    public function getId() {
+        return $this->id;
+    }
+
+
+    /**
+     * Set description
+     *
+     * @param string $description
+     * @return Task
+     */
+    public function setDescription($description) {
+        $this->description = $description;
+
+        return $this;
+    }
+
+    /**
+     * Get description
+     *
+     * @return string 
+     */
+    public function getDescription() {
+        return $this->description;
+    }
+
+
+    /**
+     * Set created
+     *
+     * @param \DateTime $created
+     * @return Task
+     */
+    public function setCreated($created) {
+        $this->created = $created;
+
+        return $this;
+    }
+
+    /**
+     * Get created
+     *
+     * @return \DateTime 
+     */
+    public function getCreated() {
+        return $this->created;
+    }
+
+    /**
+     * Set updated
+     *
+     * @param \DateTime $updated
+     * @return Task
+     */
+    public function setUpdated($updated) {
+        $this->updated = $updated;
+
+        return $this;
+    }
+
+    /**
+     * Get updated
+     *
+     * @return \DateTime 
+     */
+    public function getUpdated() {
+        return $this->updated;
+    }
+
+     /**
+     * Set user_created
+     * @ORM\PrePersist()
+     * @param \WWSC\ThalamusBundle\Entity\User $userCreated
+     * @return Company
+     */
+    public function setUserCreated($userCreated) {
+        $this->user_created = WWSCThalamusBundle::getContainer()->get('security.context')->getToken()->getUser();
+        return $this;
+    }
+
+    /**
+     * Get user_created
+     *
+     * @return \WWSC\ThalamusBundle\Entity\User 
+     */
+    public function getUserCreated() {
+        return $this->user_created;
+    }
+    
+    
+    /**
+     * @ORM\PrePersist()
+     * @ORM\PreUpdate
+     * Set user_updated
+     *
+     * @param \WWSC\ThalamusBundle\Entity\User $userUpdated
+     * @return Company
+     */
+    public function setUserUpdated($userUpdated) {
+        $this->user_updated = WWSCThalamusBundle::getContainer()->get('security.context')->getToken()->getUser();
+        return $this;
+    }
+
+    /**
+     * Get user_updated
+     *
+     * @return \WWSC\ThalamusBundle\Entity\User 
+     */
+    public function getUserUpdated() {
+        return $this->user_updated;
+    }
+
+    /**
+     * Set is_deleted
+     *
+     * @param boolean $isDeleted
+     * @return Task
+     */
+    public function setIsDeleted($isDeleted) {
+        $this->is_deleted = $isDeleted;
+
+        if($isDeleted == 1){
+            if($this->getComments()){
+                foreach($this->getComments() as $item){
+                    $item->setIsDeleted(1);
+                }
+            }
+            if($this->getFiles()){
+                foreach($this->getFiles() as $item){
+                    $item->setIsDeleted(1);
+                }
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * Get is_deleted
+     *
+     * @return boolean 
+     */
+    public function getIsDeleted() {
+        return $this->is_deleted;
+    }
+
+    public function getComments() {
+        $entityManager = WWSCThalamusBundle::getContainer()->get('doctrine')->getManager();
+        return $entityManager->getRepository('WWSCThalamusBundle:Comment')->findBy(array(
+                    'is_deleted' => 0, 'parent_id' => $this->id, 'type' => 'Message'
+        ));
+    }
+    
+  
+    public function getFiles($formatFile = false)
+    {  
+        $entityManager = WWSCThalamusBundle::getContainer()->get('doctrine')->getManager();
+        $critFile = array(
+            'is_deleted' => 0,
+            'parent' => $this->id, 
+            'type' => 'Message', 
+        );
+        if($formatFile){
+            $critFile['format_file'] = $formatFile;
+        }
+        return $entityManager->getRepository('WWSCThalamusBundle:Files')->findBy($critFile);
+    }
+
+    
+
+    /**
+     * Set title
+     *
+     * @param string $title
+     * @return Message
+     */
+    public function setTitle($title)
+    {
+        $this->title = $title;
+
+        return $this;
+    }
+
+    /**
+     * Get title
+     *
+     * @return string 
+     */
+    public function getTitle()
+    {
+        return $this->title;
+    }
+
+    /**
+     * Set category
+     *
+     * @param \WWSC\ThalamusBundle\Entity\Category $category
+     * @return Message
+     */
+    public function setCategory(\WWSC\ThalamusBundle\Entity\Category $category = null)
+    {
+        $this->category = $category;
+
+        return $this;
+    }
+
+    /**
+     * Get category
+     *
+     * @return \WWSC\ThalamusBundle\Entity\Category 
+     */
+    public function getCategory()
+    {
+        return $this->category;
+    }
+
+    /**
+     * Set project
+     *
+     * @param \WWSC\ThalamusBundle\Entity\Project $project
+     * @return Message
+     */
+    public function setProject(\WWSC\ThalamusBundle\Entity\Project $project = null)
+    {
+        $this->project = $project;
+
+        return $this;
+    }
+
+    /**
+     * Get project
+     *
+     * @return \WWSC\ThalamusBundle\Entity\Project 
+     */
+    public function getProject()
+    {
+        return $this->project;
+    }
+
+    /**
+     * Set private
+     *
+     * @param boolean $private
+     * @return Message
+     */
+    public function setPrivate($private)
+    {
+        $this->private = $private;
+
+        return $this;
+    }
+    
+  
+    private function getLogInfoByMessage($entity){
+        $aRes = array();
+        $aRes['object_id'] = $entity->getId();
+        $oProject = $entity->getProject();
+        $url =  '/project/'.$oProject->getSlug().'/message/'.$entity->getId().'/comments';
+        $aRes['description'] =  "<a href='" . $url . "'>" . $this->truncation($entity->getTitle(), 100) . "</a>";
+        $aRes['project'] = $entity->getProject();
+        return $aRes;
+    } 
+    
+    
+    /**
+     * @ORM\PreUpdate
+     */
+    public function preUpdate(LifecycleEventArgs $args)
+    {
+        if(!$args->hasChangedField('is_deleted')){   
+            $aParams = $this->getLogInfoByMessage($args->getEntity());
+            $aParams['action'] = 'Updated by';
+            $this->things[] = $aParams;
+        }
+    }
+
+    public function hasAccessToMessage (){
+        $activeUser = WWSCThalamusBundle::getContainer()->get('security.context')->getToken()->getUser();
+        if($this->getPrivate() == 1 && $this->getUserCreated()->getCompany()->getId() != $activeUser->getCompany()->getId()){
+            return false;
+        }
+        if($activeUser->getCompany()->getRoles() != "ROLE_PROVIDER"){
+            $sql = 'SELECT id FROM subscribe_email as se join company_user as cu ON se.user_id = cu.user_id
+                 WHERE se.type = "Message" and se.parent = '.$this->id.' and cu.company_id = '.$activeUser->getCompany()->getId().' LIMIT 1 ';
+            if(count(WWSCThalamusBundle::getContainer()->get('database_connection')->query($sql)->fetchAll()) == 0){
+                return false;
+            }
+        }
+        return true;
+    }
+    /**
+     * @ORM\PostPersist
+     */
+    public function postPersist(LifecycleEventArgs $args)
+    {
+        $aParams = $this->getLogInfoByMessage($args->getEntity());
+        $aParams['action'] = 'Posted by';
+        $this->saveLog($aParams);
+    }
+        
+   public  function  getActiveSubscribed($typeShow = 'id'){
+     $em = WWSCThalamusBundle::getContainer()->get('doctrine')->getManager();
+     $critSubspeople = $em->getRepository('WWSCThalamusBundle:SubscribeEmail')->findBy(array('type' => 'Message', 'parent' => $this->id));
+     $aSubspeople = array();
+     if($typeShow == 'id'){
+         foreach($critSubspeople as $oSubsPeople){
+            $aSubspeople[$oSubsPeople->getUser()->getId()] = $oSubsPeople->getUser()->getId();
+         } 
+     }
+     if($typeShow == 'info'){      
+         foreach($critSubspeople as $oSubsPeople){
+            $aSubspeople['email'][$oSubsPeople->getUser()->getId()] = $oSubsPeople->getUser()->getEmail();
+            $aSubspeople['name'][$oSubsPeople->getUser()->getId()] = $oSubsPeople->getUser()->getFirstName().' '.$oSubsPeople->getUser()->getLastName();
+         }
+     }
+     if($typeShow == 'company-info'){      
+        foreach($critSubspeople as $oSubsPeople){
+             if($oSubsPeople->getUser()->getCompany()){
+                $aSubspeople[$oSubsPeople->getUser()->getCompany()->getName()][$oSubsPeople->getUser()->getId()] = $oSubsPeople->getUser()->getFirstName().' '.$oSubsPeople->getUser()->getLastName();
+             }
+        }
+     }
+     return $aSubspeople;
+    }
+    
+    /**
+     * Get private
+     *
+     * @return boolean 
+     */
+    public function getPrivate()
+    {
+        return $this->private;
+    }
+    
+    
+    /**
+     * @ORM\PrePersist()
+     * Set replyUID
+     *
+     * @param string $replyUID
+     * @return $replyUID
+     */
+    public function setReplyUID($replyUID)
+    {
+        $this->replyUID = 'm_'
+            . $this->getId()
+            . md5(uniqid(rand(), true)) ;
+        WWSCThalamusBundle::getContainer()->get('doctrine')->getManager()->flush();
+
+        return $this;
+    }
+
+    /**
+     * Get replyUID
+     *
+     * @return string 
+     */
+    public function getReplyUID()
+    {
+        return $this->replyUID;
+    }
+}

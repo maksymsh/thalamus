@@ -1,0 +1,139 @@
+{% extends "WWSCThalamusBundle:Content:layout.html.twig" %}
+{% block title %}
+    {% trans %} Finance {% endtrans %}
+{% endblock %} 
+{% block content %}   
+<div class="row">
+    <div class="panel panel-default col-md-12">
+        <div class="panel-heading  col-xs-12">
+            <div class="col-xs-6">
+                {% trans %} Finance {% endtrans %}
+            </div>
+        </div>
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-sm-12 col-md-12 table-responsive">
+                    {% if app.user.role == 'ROLE_ACCOUNTING' %}  
+                        <br>
+                        <div class="btn-export-to-csv finance-export">
+                            {% trans %}Export all cost line:{% endtrans %} 
+                            <a  href="{{ path ('wwsc_thalamus_finance_export_to_csv')}}?hide-payd-costs=true"><img src="{{ asset('bundles/wwscthalamus/images/icon_csv.png') }}"></a>
+                            <a class="clip_button" data-url="{{ url ('wwsc_thalamus_finance_export_to_csv') }}?hide-payd-costs=true&auth=true&token={{ app.user.salt }}"><img src ="/bundles/wwscthalamus/images/icon_link.png"></a>
+                            <br><br>
+                            {% trans %}Export all total of tracked hours: {% endtrans %}
+                            <a  href="{{ path ('wwsc_thalamus_finance_export_time_to_csv')}}?hide-payd-costs=true"><img src="{{ asset('bundles/wwscthalamus/images/icon_csv.png') }}"></a>
+                            <a class="clip_button" data-url="{{ url ('wwsc_thalamus_finance_export_time_to_csv') }}?hide-payd-costs=true&auth=true&token={{ app.user.salt }}"><img src ="/bundles/wwscthalamus/images/icon_link.png"></a>
+                            <br><br>
+                            {% trans %} Remove all 'paid' costs {% endtrans %}
+                            <input type="checkbox" id="remove-all-paid-costs" checked="checked">
+                            <br><br>
+                            {% trans %} Show also closed projects {% endtrans %}
+                            <input type="checkbox" {% if app.request.query.get('show-closed-projects') %} checked="checked" {% endif %}  id="finance-show-closed-projects">
+                       </div>
+                    {% endif %}
+                    {% include 'WWSCThalamusBundle:Finance:date-range-filter.html.twig' with {'projectSlug':'all' } %}
+                   <table class="table table-striped finance-table-all-project tablesorter">
+                        <thead>
+                            <tr>
+                                <th>{% trans %}Company name{% endtrans %}</th>
+                                <th>{% trans %}Project name{% endtrans %}</th>
+                                <th>{% trans %}Projectleader{% endtrans %}</th>
+                                <th>{% trans %}Project-type{% endtrans %}</th>
+                                <th class="price">{% trans %}Project budget{% endtrans %}</th>
+                                <th class="price">{% trans %}Billable costs sum{% endtrans %}</th>
+                                <th class="price">{% trans %}Non billable costs sum{% endtrans %}</th>
+                                <th class="price">{% trans %}Sum of all costs{% endtrans %}</th>                              
+                                <th class="price">{% trans %}Gross profit{% endtrans %}</th>
+                                <th class="price">{% trans %}Still open project value{% endtrans %}</th>
+                                <th class="price">{% trans %}wwsc Ratio{% endtrans %}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% if aFinances is not empty %}
+                                {% set i = 1 %}
+                                {% for aFinance in aFinances %}
+                                    <tr>
+                                        <td>
+                                            {% if (company == false or company == 'all') or (company and company != 'all' and i == 1) %}
+                                                <a href="{{ path ('wwsc_thalamus_finance',{'company': aFinance['company_id'] })}}">{{ aFinance['company_name'] }}</a>
+                                            {% endif %}
+                                            {% if company and company != 'all' and i == 2%}
+                                                <a class="show-all" href="{{ path ('wwsc_thalamus_finance')}}">{% trans %}show all{% endtrans %}</a>
+                                            {% endif %}   
+                                        </td>
+                                        <td><a target="_blank" href="{{ path ('wwsc_thalamus_project_overview',{'project': aFinance['project_slug'] })}}">{{ aFinance['project_name'] }}</a></td>
+                                        <td>{{ aFinance['projectleader'] }}</td>
+                                        <td>{% if aProjectType[aFinance['project_type']] is defined  %}
+                                                {{ aProjectType[aFinance['project_type']] }}
+                                            {% endif %}
+                                        </td>
+                                        <td  class="show-currency price">{{ app.user.formatPrice(aFinance['project_budget']) }}</td>
+                                        <td  class="show-currency price">
+                                            {{ app.user.formatPrice(aFinance['billable_costs_sum']) }}
+                                        </td>
+                                        <td  class="show-currency">
+                                             {{ app.user.formatPrice(aFinance['non_billable_costs_sum']) }}
+                                        </td>
+                                        <td  class="show-currency">
+                                           {{ app.user.formatPrice(aFinance['non_billable_costs_sum'] + aFinance['billable_costs_sum']) }}
+                                        </td>                                       <td  class="show-currency price">
+                                            {{ app.user.formatPrice(aFinance['project_budget'] + aFinance['non_billable_costs_sum'] + aFinance['billable_costs_sum']) }}
+                                        </td>
+                                        <td  class="show-currency price">
+                                            {{ app.user.formatPrice(aFinance['still_open_project_value']) }}
+                                        </td>
+                                        <td  class="show-tracked-hours">
+                                            {% if aFinance['time_of_project'] != 0%}                                               
+                                                {{ ((aFinance['time_of_wwsc']*100)/aFinance['time_of_project'])|round(2)|number_format(2) }}
+                                                {%else%} 0    
+                                            {% endif %}
+                                        </td>
+                                    <tr>
+                                    {% set i = i+1 %}
+                                {%endfor%}
+                                    {% if company and company != 'all' and i == 2%}
+                                        <tr>
+                                            <td>
+                                                <a class="show-all" href="{{ path ('wwsc_thalamus_finance')}}">{% trans %}show all{% endtrans %}</a>
+                                            </td>
+                                            <td colspan="8"></td>
+                                        <tr>    
+                                    {% endif %}   
+                                    <tr class="total-all-project static">
+                                        <td>{%trans%} Total {% endtrans %}</td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td class="show-currency price">{{ app.user.formatPrice(aFinancesTotal['project_budget']) }}</td>
+                                        <td class="show-currency">{% if aFinancesTotal['billable_costs_sum'] > 0 %} -{% endif %}{{ app.user.formatPrice(aFinancesTotal['billable_costs_sum']) }}</td>
+                                        <td class="show-currency">{% if aFinancesTotal['non_billable_costs_sum'] > 0 %} -{% endif %}{{  app.user.formatPrice(aFinancesTotal['non_billable_costs_sum']) }}</td>
+                                        <td class="show-currency">{{ app.user.formatPrice(aFinancesTotal['non_billable_costs_sum'] + aFinancesTotal['billable_costs_sum']) }}</td>                                       
+                                        <td class="show-currency price">{{ app.user.formatPrice(aFinancesTotal['project_budget'] + aFinancesTotal['non_billable_costs_sum'] + aFinancesTotal['billable_costs_sum']) }}</td>
+                                        <td class="show-currency price">{{ app.user.formatPrice(aFinancesTotal['still_open_project_value']) }}</td>
+                                        <td class="show-tracked-hours">
+                                            {% if aFinancesTotal['time_of_project'] != 0%}
+                                                {{ ((aFinancesTotal['time_of_wwsc']*100)/aFinancesTotal['time_of_project'])|round(2) }}
+                                                {%else%} 0    
+                                            {% endif %}
+                                        </td>
+                                    <tr>
+                               {% endif %}     
+                        </tbody>
+                    </table>
+                  
+                </div><!--/span-->
+            </div>  
+        </div>  
+    </div>     
+</div>
+{% endblock %}       
+
+{% block stylesheets %}
+    <link href="{{ asset('bundles/wwscthalamus/css/bootstrap-datepicker.css') }}" type="text/css" rel="stylesheet" />    
+{% endblock %}
+{% block javascripts %}
+    <script src="{{ asset('bundles/wwscthalamus/clipboard/clipboard.min.js') }}"></script>
+    <script src="{{ asset('bundles/wwscthalamus/js/finance.js') }}"></script>
+    <script src="{{ asset('bundles/wwscthalamus/js/bootstrap-datepicker.js') }}"></script>
+    <script src="{{ asset('bundles/wwscthalamus/js/bootstrap-datepicker.de.js') }}"></script>
+{% endblock %}

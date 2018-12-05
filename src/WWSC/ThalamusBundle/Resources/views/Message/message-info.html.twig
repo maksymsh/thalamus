@@ -1,0 +1,38 @@
+<div class='col-md-12'>
+<div class='col-md-11 message-blok'>
+    <div class="message-info">
+        <div class="col-md-11 without-padding">
+            <div class="title">
+                {{ oMessage.title  }}
+            </div>
+            <ul class="more">
+                <li>
+                    <span>{% trans %}From:{% endtrans %} </span> {{ oMessage.userCreated.firstName }}  {{ oMessage.userCreated.lastName }}
+                </li>
+                <li>
+                    <span>{% trans %}Date:{% endtrans %} </span> {{ oMessage.updated|date('D, d M Y  H:i a') }}
+                </li>
+                {% if oMessage.category %}
+                    <li>
+                        <span>Category: </span> <a href="{{ path ('wwsc_thalamus_project_messages',{'project': oMessage.project.slug, 'cat': oMessage.category.id })}}">{{ oMessage.category.name }}</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </div>    
+        <div class="avatar-user col-md-1">
+            {% if oMessage.userCreated.avatar %}
+                {% set icon = (asset('uploads/user/')~ oMessage.userCreated.avatar) %}
+            {% else %}
+                {% set icon = asset('bundles/wwscthalamus/images/user_icon.png') %}
+            {% endif %}
+            <img src="{{ icon | imagine_filter('my_thumb',{"thumbnail": {"size": [48, 48] }}) }}">
+        </div>
+    </div>
+    <div class="description col-md-12 without-padding">
+            {{ oMessage.description|markdown|purify  }}
+            {% if oMessage.files %}
+                {% include 'WWSCThalamusBundle:File:attachments-list.html.twig' with {'aAttachments': oMessage,'slugProject': oMessage.project.slug} %}
+            {% endif %}      
+    </div>
+</div>
+    </div>

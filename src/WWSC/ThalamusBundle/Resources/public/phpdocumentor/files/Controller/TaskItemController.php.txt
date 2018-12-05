@@ -1,0 +1,135 @@
+<?php
+
+namespace WWSC\ThalamusBundle\Controller;
+
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Session;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use WWSC\ThalamusBundle\Form\TaskForm;
+use WWSC\ThalamusBundle\Form\TaskItemForm;
+
+/**
+ * Task Item controler
+ *
+ * In this controller describes the functions of describes the functions of adding, editing, deleting and display item for task.
+ */
+class TaskItemController extends Controller {
+
+    /**
+     *  Method add
+     *
+     *  This method is responsible for create new item  for task.
+     */
+    public function addAction(Request $request) {
+        if(!$this->container->get('security.context')->isGranted('ROLE_PROVIDER') &&  !$this->container->get('security.context')->isGranted('ROLE_CLIENT') ){
+            return $this->render('WWSCThalamusBundle:Content:not_permission.html.twig');
+        }
+        $oTask = $this->getDoctrine()->getRepository('WWSCThalamusBundle:Task')->find($request->get('task'));
+        $fTaskItem = $this->createForm(new TaskItemForm($oTask->getProject()->getUsers()));
+        if ($request->getMethod() == 'POST') {
+            $fTaskItem->bind($request);
+            if ($fTaskItem->isValid()) {
+                $em = $this->getDoctrine()->getManager();
+                $fTaskItem = $fTaskItem->getData();
+                $fTaskItem = $fTaskItem->setTask($oTask);
+                $em->persist($fTaskItem);
+                $em->flush();
+                return new JsonResponse(array('htmlItem' => $this->renderView('WWSCThalamusBundle:TaskItem:open-item-show.html.twig', array('oItem' => $fTaskItem))));
+            } else {
+                return new JsonResponse(array('error' => 'incorrect data'));
+            }
+        }
+        return new JsonResponse(array('htmlItemForm' => $this->renderView('WWSCThalamusBundle:TaskItem:add.html.twig', array('form' => $fTaskItem->createView(), 'oTask' => $oTask))));
+    }
+
+    /**
+     *  Method edit
+     *
+     *  This method is responsible for edit item  for task.
+     */
+    public function editAction(Request $request) {
+        $oItem = $this->getDoctrine()->getRepository('WWSCThalamusBundle:TaskItem')->find($request->get('id'));
+        $fTaskItem = $this->createForm(new TaskItemForm($oItem->getTask()->getProject()->getUsers()), $oItem);
+        if ($request->getMethod() == 'POST') {
+            $fTaskItem->bind($request);
+            if ($fTaskItem->isValid()) {
+                $fTaskItem = $fTaskItem->getData();
+                $em = $this->getDoctrine()->getManager();
+                $em->persist($fTaskItem);
+                $em->flush();
+                return new JsonResponse(array('htmlItem' => $this->renderView('WWSCThalamusBundle:TaskItem:task-item-info.html.twig', array('oItem' => $fTaskItem))));
+            }
+            $errors = $fTaskItem->getErrors();
+            $output = array();
+            $output['error'] = $errors[0]->getMessage();
+            return new JsonResponse($output);
+        }
+        return new JsonResponse(array('htmlItemForm' => $this->renderView('WWSCThalamusBundle:TaskItem:edit.html.twig', array('form' => $fTaskItem->createView(), 'oItem' => $oItem))));
+    }
+
+    /**
+     *  Method change status 
+     *
+     *  This method is responsible for change status for item task.
+     */
+    public function changeStatusAction(Request $request) {
+        if(!$this->container->get('security.context')->isGranted('ROLE_PROVIDER')){
+            return $this->render('WWSCThalamusBundle:Content:not_permission.html.twig');
+        }
+        $em = $this->getDoctrine()->getManager();
+        $oTaskItem = $this->getDoctrine()->getRepository('WWSCThalamusBundle:TaskItem')->find($request->get('id'));
+        $oTaskItem->setStatus($request->get('status'));
+        if ($request->get('status') == 1) {
+            $oTaskItem->setSort(0);
+            $em->flush();
+            $template = 'close-item-show.html.twig';
+        } else {
+            $oTaskItem->setSortNewElem();
+            $em->flush();
+            $template = 'open-item-show.html.twig';
+        }
+        return $this->render('WWSCThalamusBundle:TaskItem:' . $template, array('oItem' => $oTaskItem));
+    }
+
+    /**
+     *  Method comments for task item 
+     *
+     *  This method is responsible for display comments for item task.
+     */
+    public function commentsAction(Request $request) {
+        $this->getRequest()->getSession()->set('active_module', 'todos');
+        $oItem = $this->getDoctrine()->getRepository('WWSCThalamusBundle:TaskItem')->find($request->get('id'));
+        return $this->render('WWSCThalamusBundle:TaskItem:comments.html.twig', array('oItem' => $oItem));
+    }
+
+    /**
+     *  Method Reported Hours for task item
+     * 
+     *  This method is responsible for display sum reported hours task item 
+     */
+    
+    public function getReportedHoursAction(Request $request) {
+        $oTaskItem = $this->getDoctrine()->getRepository('WWSCThalamusBundle:TaskItem')->find($request->get('id'));
+        return new Response($oTaskItem->getSumHoursTimeTracker());
+    }
+
+    /**
+     *  Method delete
+     * 
+     *  This method is responsible for delete item task
+     */
+    public function deleteAction(Request $request) {
+        if(!$this->container->get('security.context')->isGranted('ROLE_PROVIDER')){
+            return $this->render('WWSCThalamusBundle:Content:not_permission.html.twig');
+        }
+        $em = $this->getDoctrine()->getManager();
+        $oTaskItem = $this->getDoctrine()->getRepository('WWSCThalamusBundle:TaskItem')->find($request->get('id'));
+        $oTaskItem->setIsDeleted(1);
+        $em->flush();
+        return new Response(1);
+    }
+
+}
+

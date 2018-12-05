@@ -1,0 +1,8 @@
+{% macro currentProjectTasks(aTask, oProject) %}
+    <div data-id="{{ aTask["info"]["id"] }}" class="task col-md-12">
+        <div class="show-task">
+            {# tasks of current task list #}
+            {% include 'WWSCThalamusBundle:Task:task-block.html.twig' with {'aTask': aTask, 'projectSlug': oProject.slug,  lCompletedItems: 3} %}
+        </div>
+    </div>
+{% endmacro %}

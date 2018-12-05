@@ -1,0 +1,13 @@
+<select name="personal-timetracking[task]" class="select-tasks-personal-timetracking  form-control selectpicker"  data-live-search="true">
+    {% for aTask in aTasks %}
+        <optgroup label="{{ aTask['name'] }}">
+            {% if aTask['tasks'] is defined %}
+                {% if aTask['tasks']['open'] is defined %}
+                    {% for key,val in aTask['tasks']['open'] %}
+                          <option value="{{ key }}">#{{ key }} - {{ val }}</option>
+                    {%endfor%}
+                {% endif %}
+            {% endif %}  
+        </optgroup>
+    {% endfor %}
+</select>

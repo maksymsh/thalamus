@@ -1,0 +1,5 @@
+WWSCThalamusBundle\Entity\User:
+    exclusion_policy: ALL
+    properties:
+        balance:
+            expose: true

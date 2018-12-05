@@ -1,0 +1,22 @@
+<div class="name">
+    {{ user.firstName }} {{ user.lastName }}
+</div><br>
+<ul>
+    <li>{{ user.firstName }}</li>
+    <li>{{ user.email }}</li>
+        {% if user.profile.imName %}
+        <li>{{ user.profile.serviceIm }} : {{ user.profile.imName }}</li>
+        {% endif %}
+        {% if user.profile.office %}
+        <li>O: {{ user.profile.office }}</li>
+        {% endif %}
+        {% if user.profile.mobile %}
+        <li>M: {{ user.profile.mobile }}</li>
+        {% endif %}
+        {% if user.profile.fax %}
+        <li>H: {{ user.profile.fax }}</li>
+        {% endif %}
+        {% if user.profile.home %}
+        <li>F: {{ user.profile.home }}</li>
+        {% endif %}
+</ul>

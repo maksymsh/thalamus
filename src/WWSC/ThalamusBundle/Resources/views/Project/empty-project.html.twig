@@ -1,0 +1,24 @@
+{% extends "WWSCThalamusBundle:Content:layout.html.twig" %}
+{% block title %}
+    {{ oProject.name }}- {% trans %}Welcome to your new project{% endtrans %} 
+{% endblock %}    
+{% block content %}
+    <div class="row blank-slate">
+        <div class="modal-dialog">
+            <div class="col-md-4">
+                <img src="{{ asset('bundles/wwscthalamus/images/blankslate-icon-overview.png') }}">
+            </div>
+            <div class="col-md-8">
+                <h1>{% trans %}Welcome to your new project{% endtrans %}</h1>
+                <p>{% trans %}This Overview screen will show you the latest activity in your project. But before we can show you activity, you'll need to get the project started.{% endtrans %}</p>
+                <ul>
+                    <li>→ <a href="{{ path('wwsc_thalamus_project_message_add',{project:oProject.slug})}}">{% trans %}Post the first message{% endtrans %}</a></li>
+                    {% if is_granted('ROLE_PROVIDER') %}  
+                        <li>→ <a href="{{ path('wwsc_thalamus_project_task_add',{project:oProject.slug})}}">{% trans %}Create the first to-do list{% endtrans %}</a></li>
+                    {% endif %}
+                    <li>→ <a href="{{ path('wwsc_thalamus_project_file_add',{project:oProject.slug})}}">{% trans %}Upload the first file{% endtrans %}</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>         
+{% endblock %}

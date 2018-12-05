@@ -1,0 +1,55 @@
+{%if aAttachments.type is defined %}
+    {% set entityName = 'Comment' %}
+{% else %}
+    {% set entityName = 'Message' %}
+{% endif %}
+{% set imageWithAnotations  = false %}
+<div class="attachments-list no-print-this-part">
+    {% if aAttachments.files("IMG") %}
+        <div class="attachment-img col-md-12">
+            {% for oFile in aAttachments.files("IMG")  %}
+                <a href="{{ oFile.fileSrc }}" class="fancy"><img src="{{ oFile.fileIcon| imagine_filter('my_thumb',{"thumbnail": {"size": [100, 100] }}) }}"></a>
+                {% if oFile.annotations %}
+                    {% set imageWithAnotations  = oFile %}
+                {% endif %}
+            {% endfor  %}
+        </div>
+        {% if imageWithAnotations %}
+            <div class="col-md-12 without-padding margin-top-1x">
+                <a target="_blank" href="{{ path('wwsc_thalamus_show_image_with_annotations',{'project': slugProject, 'id': imageWithAnotations.id}) }}">
+                    {% trans %}Show image with annotations{% endtrans %}
+                </a>
+            </div>
+        {% endif %}
+        {% if aAttachments.files("IMG") | length > 1 %}
+            <div class="col-md-12 without-padding">
+                <a target="_blank" href="{{ path('wwsc_thalamus_project_view_all_images',{'project': slugProject, 'type': entityName , 'id': aAttachments.id}) }}">
+                    {% trans %}View all of these images at once{% endtrans %}
+                </a>
+            </div>
+        {% endif %}
+    {% endif %}
+    <div class="attachment-files col-md-12">
+        {% if aAttachments.files("FILE") %}
+            {% for oFile in aAttachments.files("FILE")  %}
+                  <div>
+                    <a  href="{{oFile.fileSrc }}">
+                    <i class="fa fa-file" aria-hidden="true"></i>
+                    {{oFile.name }}
+                  </a>
+                  </div>
+
+            {% endfor  %}
+        {% endif %}
+        {% if aAttachments.files("GOOGLE_DRIVE") %}
+            {% for oFile in aAttachments.files("GOOGLE_DRIVE")  %}
+              <div>
+                <a  target="_blank" href="{{ oFile.fileSrc }}">
+                  <i class="fa fa-google" aria-hidden="true"></i>
+                    {{oFile.name }}
+                </a>
+              </div>
+            {% endfor  %}
+        {% endif %}
+    </div>
+</div>

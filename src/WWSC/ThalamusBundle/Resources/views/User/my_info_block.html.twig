@@ -1,0 +1,27 @@
+<div class=" panel panel-default col-md-4 my-info-block">
+    <div class="panel-heading col-xs-12">
+        {% trans %}Your Tgalamus Id{% endtrans %}
+    </div>
+    <div class="panel-body">
+        <div class="item col-xs-12">
+            <div class="avatar">
+                {% if oUser.avatar %}
+                    {% set icon = (asset('uploads/user/') ~ oUser.avatar) %}
+                {% else %}
+                    {% set icon = asset('bundles/wwscthalamus/images/user_icon.png') %}
+                {% endif %}
+                <img src="{{ icon | imagine_filter('my_thumb',{"thumbnail": {"size": [64, 64] }}) }}">
+            </div>
+            <div class="desc">
+                <div class="name">
+                    {{ oUser.firstName }} {{ oUser.lastName }}
+                </div>
+                <ul>
+                    <li>{{ oUser.email }}</li>
+                    <li>{% trans %}Username:{% endtrans %} {{ oUser.username }}</li>
+                    <li>{% trans %}Password:{% endtrans %} •••••• </li>
+                </ul>                               
+            </div>
+        </div>
+    </div>
+</div>

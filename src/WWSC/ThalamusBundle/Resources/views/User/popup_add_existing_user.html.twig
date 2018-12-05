@@ -1,0 +1,18 @@
+<div class="modal add-existing-user container">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">{{ oUser['firstName']}} {{oUser['lastName']}} {% trans %}already exists on Thalamus account{% endtrans %}</h4>
+      </div>
+      <div class="modal-body">
+        <p>{{ oUser['firstName']}} {{oUser['lastName']}}'s {% trans %}email address{% endtrans %} ({{oExistentUser['email']}}) {% trans %}already matches someone else on Thalamus account named{% endtrans %} {{oExistentUser['firstName']}} {{oExistentUser['lastName']}}.</p>
+        <p>{% trans %}Are you sure you want to add this user to your account?{% endtrans %}</p>
+        <p><div class="form-group without-padding  btn-action">
+            <a class="btn btn-sm btn-primary btn-save" href="{{ path('wwsc_thalamus_add-existent-user-to-company',{'company': oUser['company'], 'user': oExistentUser.id, 'project': oUser['project']})}}">{% trans %}Add user to account{% endtrans %}</a>
+            or <a class="btn-cancel" href="#"> {% trans %}Cancel{% endtrans %} </a> 
+        </div><p>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div>

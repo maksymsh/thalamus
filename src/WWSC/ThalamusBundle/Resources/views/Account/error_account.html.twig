@@ -1,0 +1,11 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+    <div class="row">
+        <div class="dialog-error">
+            <div>
+                <h3>{% trans %}The account you were looking for doesn't exist.{% endtrans %}</h3>
+                <p>{% trans %}Go to the registration page{% endtrans %} <a href="https://thalamus.io/">thalamus.io</a></p>
+            </div>
+        </div>
+    </div>
+{% endblock %}       

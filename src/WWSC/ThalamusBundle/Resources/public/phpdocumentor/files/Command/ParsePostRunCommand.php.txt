@@ -1,0 +1,170 @@
+<?php
+namespace WWSC\ThalamusBundle\Command;
+
+use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Input\StringInput;
+use WWSC\ThalamusBundle\Entity\Comment;
+use WWSC\ThalamusBundle\Entity\Files;
+use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
+use WWSC\ThalamusBundle\Entity\Message;
+
+class ParsePostRunCommand extends ContainerAwareCommand
+{
+    protected function configure()
+    {
+        $this
+            ->setName('post:parse')
+            ->setDescription('IMAP parse (cron)');
+    }
+
+    protected function execute(InputInterface $input, OutputInterface $output)
+    {
+        $flag = "thalamus_parser101";
+        $output->writeln('IMAP parse (cron)');
+        $mbox = imap_open("{" . $this->getContainer()->getParameter('parse_imap_host') . "}INBOX", $this->getContainer()->getParameter('parse_imap_login'), $this->getContainer()->getParameter('parse_imap_password'));
+        if ($messages = imap_search($mbox, 'UNKEYWORD "' . $flag . '"', 0)) {
+            $em = $this->getContainer()->get('doctrine.orm.entity_manager');
+            foreach ($messages as $messageId) {
+                $messageInfo = imap_headerinfo($mbox, $messageId);
+                if (count($messageInfo->from) > 0) {
+                    foreach ($messageInfo->to as $messageTo) {
+                        $componentsMailBox = explode('_', $messageTo->mailbox);
+                        if (count($componentsMailBox) == 2) {
+                            $output->writeln(implode('_', $componentsMailBox));
+                            switch ($componentsMailBox[0]) {
+                                case 'm':
+                                    if ($oObj = $em->getRepository('WWSCThalamusBundle:Message')->findOneBy(array('replyUID' => implode('_', $componentsMailBox)))) {
+                                        $project = $oObj->getProject();
+                                        $oUser = $project->getAccount()->getAccountOwner();
+                                        $this->addComment($oUser, $oObj, $mbox, $messageId, $project, 'Comment', $em);
+                                    }
+                                    break;
+                                case 'ti':
+                                    if ($oObj = $em->getRepository('WWSCThalamusBundle:TaskItem')->findOneBy(array('replyUID' => implode('_', $componentsMailBox)))) {
+                                        $project = $oObj->getTask()->getProject();
+                                        $oUser = $project->getAccount()->getAccountOwner();
+                                        $this->addComment($oUser, $oObj, $mbox, $messageId, $project, 'Comment', $em);
+                                    }
+                                    break;
+                                case 'p':
+                                    if ($oObj = $em->getRepository('WWSCThalamusBundle:Project')->findOneBy(array('replyUID' => implode('_', $componentsMailBox)))) {
+                                        $project = $oObj;
+                                        $oUser = $oObj->getAccount()->getAccountOwner();
+                                        $this->addMessage($oUser, $oObj, $mbox, $messageId, $project, 'Message', $em, $messageTo->mailbox);
+                                    }
+                                    break;
+                            }
+                        }
+                    }
+                }
+                imap_setflag_full($mbox, $messageId, $flag);
+            }
+        }
+        $output->writeln('IMAP parse (cron). Finish !');
+    }
+
+    private function addComment($oUser, $oObj, $mbox, $messageId, $project, $typePhoto, $em){
+        if (isset($oUser)) {
+            $token = new UsernamePasswordToken($oUser, null, 'main', $oUser->getRoles());
+            $this->getContainer()->get('security.context')->setToken($token);
+            if ($oObj) {
+                $oComment = new Comment();
+                $messageBody = imap_fetchbody($mbox, $messageId, "1");
+                $oComment->setDescription($messageBody);
+                $oComment->setUserCreated($oUser);
+                $oComment->setParentId($oObj->getId());
+                $rc = new \ReflectionClass(get_class($oObj));
+                $oComment->setType($rc->getShortName());
+                $em->persist($oComment);
+                $em->flush();
+                $this->downloadAttachments($mbox, $messageId, $project, $typePhoto, $oComment->getId());
+            }
+        }
+    }
+
+    private function addMessage($oUser, $oObj, $mbox, $messageId, $project, $typePhoto, $em, $messageTo){
+        if (isset($oUser)) {
+            $token = new UsernamePasswordToken($oUser, null, 'main', $oUser->getRoles());
+            $this->getContainer()->get('security.context')->setToken($token);
+            if ($oObj) {
+                $oMessage = new Message();
+                $messageBody = imap_fetchbody($mbox, $messageId, "1");
+                $oMessage->setDescription($messageBody);
+                $oMessage->setUserCreated($oUser);
+                $oMessage->setProject($oObj);
+                $oMessage->setTitle($messageTo);
+                $em->persist($oMessage);
+                $em->flush();
+                $this->downloadAttachments($mbox, $messageId, $project, $typePhoto, $oMessage->getId());
+            }
+        }
+    }
+
+    private function downloadAttachments($mbox, $messageId, $oProject, $type, $parentId){
+        $structure = imap_fetchstructure($mbox, $messageId);
+
+        $attachments = array();
+
+        if (isset($structure->parts) && count($structure->parts)) {
+            for ($i = 0; $i < count($structure->parts); $i++) {
+                $attachments[$i] = array(
+                    'is_attachment' => false,
+                    'filename' => '',
+                    'name' => '',
+                    'attachment' => ''
+                );
+
+                if ($structure->parts[$i]->ifdparameters) {
+                    foreach ($structure->parts[$i]->dparameters as $object) {
+                        if (strtolower($object->attribute) == 'filename') {
+                            $attachments[$i]['is_attachment'] = true;
+                            $attachments[$i]['filename'] = $object->value;
+                        }
+                    }
+                }
+
+                if ($structure->parts[$i]->ifparameters) {
+                    foreach ($structure->parts[$i]->parameters as $object) {
+                        if (strtolower($object->attribute) == 'name') {
+                            $attachments[$i]['is_attachment'] = true;
+                            $attachments[$i]['name'] = $object->value;
+                        }
+                    }
+                }
+
+                if ($attachments[$i]['is_attachment']) {
+                    $attachments[$i]['attachment'] = imap_fetchbody($mbox, $messageId, $i + 1);
+
+                    if ($structure->parts[$i]->encoding == 3) {
+                        $attachments[$i]['attachment'] = base64_decode($attachments[$i]['attachment']);
+                    } elseif ($structure->parts[$i]->encoding == 4) {
+                        $attachments[$i]['attachment'] = quoted_printable_decode($attachments[$i]['attachment']);
+                    }
+                }
+            }
+        }
+
+        foreach ($attachments as $attachment) {
+            if ($attachment['is_attachment'] == 1) {
+                $filename = substr(md5(uniqid(rand(), true)), 0, 15) . '_' . $attachment['name'];
+                $fileSrc = __DIR__ . "/../../../../web/uploads/files/" . $filename;
+                $file = fopen($fileSrc, "w+");
+                fwrite($file, $attachment['attachment']);
+                $newFile = new Files();
+                $newFile->setName($filename);
+                $newFile->setFileSrc($filename);
+                $newFile->setFileSize(filesize($fileSrc));
+                $newFile->setProject($oProject);
+                $newFile->setParent($parentId);
+                $newFile->setType($type);
+                $em = $this->getContainer()->get('doctrine.orm.entity_manager');
+                $em->persist($newFile);
+                $em->flush();
+                fclose($file);
+            }
+
+        }
+    }
+}

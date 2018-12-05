@@ -1,0 +1,213 @@
+<?php
+
+namespace WWSC\ThalamusBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * @ORM\Entity
+ * @ORM\Table(name="company_user")
+ */
+class CompanyUser {
+    /**
+     * @ORM\Column(name="enabled", type="boolean", nullable=true)
+     */
+    private $enabled = 0;
+
+    /** 
+     * @ORM\Id()
+     * @ORM\ManyToOne(targetEntity="WWSC\ThalamusBundle\Entity\User", inversedBy="companyUser") 
+     * @ORM\JoinColumn(name="user_id", referencedColumnName="id", nullable=false) 
+     */
+    protected $user;
+
+    /** 
+     * @ORM\Id()
+     * @ORM\ManyToOne(targetEntity="WWSC\ThalamusBundle\Entity\Company", inversedBy="companyUser") 
+     * @ORM\JoinColumn(name="company_id", referencedColumnName="id", nullable=false) 
+     */
+    protected $company;
+
+    /** 
+     * @ORM\ManyToOne(targetEntity="WWSC\ThalamusBundle\Entity\RoleUser", inversedBy="companyUser") 
+     * @ORM\JoinColumn(name="role_user_id", referencedColumnName="id", nullable=true) 
+     */
+    protected $role_user = null;
+
+    /**
+     * Set enabled.
+     *
+     * @param bool $enabled
+     *
+     * @return UserCompany
+     */
+    public function setEnabled($enabled)
+    {
+        $this->enabled = $enabled;
+
+        return $this;
+    }
+
+    /**
+     * Get enabled.
+     *
+     * @return bool
+     */
+    public function getEnabled()
+    {
+        return $this->enabled;
+    }
+
+    /**
+     * Set user.
+     *
+     * @param \WWSC\ThalamusBundle\Entity\User $user
+     *
+     * @return UserCompany
+     */
+    public function setUser(\WWSC\ThalamusBundle\Entity\User $user)
+    {
+        $this->user = $user;
+
+        return $this;
+    }
+
+    /**
+     * Get user.
+     *
+     * @return \WWSC\ThalamusBundle\Entity\User
+     */
+    public function getUser()
+    {
+        return $this->user;
+    }
+
+    /**
+     * Set company.
+     *
+     * @param \WWSC\ThalamusBundle\Entity\Company $company
+     *
+     * @return UserCompany
+     */
+    public function setCompany(\WWSC\ThalamusBundle\Entity\Company $company)
+    {
+        $this->company = $company;
+
+        return $this;
+    }
+
+    /**
+     * Get company.
+     *
+     * @return \WWSC\ThalamusBundle\Entity\Company
+     */
+    public function getCompany()
+    {
+        return $this->company;
+    }
+
+    /**
+     * Constructor.
+     */
+    public function __construct()
+    {
+        $this->user = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->company = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
+    /**
+     * Add user.
+     *
+     * @param \WWSC\ThalamusBundle\Entity\User $user
+     *
+     * @return CompanyUser
+     */
+    public function addUser(\WWSC\ThalamusBundle\Entity\User $user)
+    {
+        $this->user[] = $user;
+
+        return $this;
+    }
+
+    /**
+     * Remove user.
+     *
+     * @param \WWSC\ThalamusBundle\Entity\User $user
+     */
+    public function removeUser(\WWSC\ThalamusBundle\Entity\User $user)
+    {
+        $this->user->removeElement($user);
+    }
+
+    /**
+     * Add company.
+     *
+     * @param \WWSC\ThalamusBundle\Entity\Company $company
+     *
+     * @return CompanyUser
+     */
+    public function addCompany(\WWSC\ThalamusBundle\Entity\Company $company)
+    {
+        $this->company[] = $company;
+
+        return $this;
+    }
+
+    /**
+     * Remove company.
+     *
+     * @param \WWSC\ThalamusBundle\Entity\Company $company
+     */
+    public function removeCompany(\WWSC\ThalamusBundle\Entity\Company $company)
+    {
+        $this->company->removeElement($company);
+    }
+
+    /**
+     * Set role.
+     *
+     * @param \WWSC\ThalamusBundle\Entity\RoleUser $role
+     *
+     * @return CompanyUser
+     */
+    public function setRole(\WWSC\ThalamusBundle\Entity\RoleUser $role)
+    {
+        $this->role = $role;
+
+        return $this;
+    }
+
+    /**
+     * Get role.
+     *
+     * @return \WWSC\ThalamusBundle\Entity\RoleUser
+     */
+    public function getRole()
+    {
+        return $this->role;
+    }
+
+    /**
+     * Set roleUser.
+     *
+     * @param \WWSC\ThalamusBundle\Entity\RoleUser $roleUser
+     *
+     * @return CompanyUser
+     */
+    public function setRoleUser($roleUser)
+    {
+        $this->role_user = $roleUser;
+
+        return $this;
+    }
+
+    /**
+     * Get roleUser.
+     *
+     * @return \WWSC\ThalamusBundle\Entity\RoleUser
+     */
+    public function getRoleUser()
+    {
+        return $this->role_user;
+    }
+}

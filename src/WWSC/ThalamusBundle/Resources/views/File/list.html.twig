@@ -1,0 +1,112 @@
+{% extends "WWSCThalamusBundle:Content:layout.html.twig" %}
+{% block title %}
+    {{ oProject.name }} - {% trans %}Files{% endtrans %}
+{% endblock %} 
+{% block content %}
+    <div class="row">
+        <div class="panel panel-default col-md-9">
+            <div class="panel-heading col-md-12">
+                <div class="col-md-6">
+                    {% trans %}Files for this project{% endtrans %}
+                </div>
+                <div class="col-md-6 total-files-size">
+                    Total files size <span id="file-sizes">{{ totalFileSize }}</span> MB / <span id="files-count">{{ aFiles|length }}</span> files
+                </div>
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="list-files">
+                        <div data-current-page="{{ currentPage }}" id="infiniteScrollBody"
+                             data-url="{{ path('wwsc_thalamus_project_file_list',{project:oProject.slug}) }}"
+                             data-method="GET">
+                            {% for oFile in aFiles %}
+
+                                {% include 'WWSCThalamusBundle:File:show.html.twig' with {'oFile': oFile} %}
+
+                            {% endfor %}
+                        </div>
+                        <p id="loader"><img class="ajaxLoading" src="/bundles/wwscthalamus/images/ajax-loader.gif" style="display: none;"></p>
+                    </div><!--/span-->
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 sidebar sidebar-filter">
+            <div class="col">
+                <div class="btn-add-new-files">
+                    <a href="{{ path('wwsc_thalamus_project_file_add',{ project:oProject.slug }) }}"
+                       class="btn btn-default btn-md">
+                        <i class="glyphicon glyphicon-plus"></i> {% trans %}Upload a file{% endtrans %}
+                    </a>
+                </div>
+                <div><a href="{{ path('wwsc_thalamus_project_file_create_archive',{ project:oProject.slug }) }}"
+                        id="create-archive-files" class="btn btn-default btn-md">
+                        <i class="glyphicon glyphicon-plus"></i> {% trans %}Download ZIP All Files{% endtrans %}
+                    </a></div>
+                <br>
+                <div class="title-panel">{% trans %}Sort by{% endtrans %}</div>
+                <div class="info-panel">
+                    <ul>
+                        <li>
+                            <input {% if (app.request.get('order') == '' or app.request.get('order') == 'created') %} checked{% endif %}
+                                    onclick="window.location.href = '?order=created&cat={{ app.request.get('cat') }}&user_uploaded={{ app.request.get('user_uploaded') }}'"
+                                    type="radio">{% trans %}Date and time{% endtrans %}</label></li>
+                        <li><input {% if (app.request.get('order') == 'name' ) %} checked {% endif %}
+                                    onclick="window.location.href = '?order=name&cat={{ app.request.get('cat') }}&user_uploaded={{ app.request.get('user_uploaded') }}'"
+                                    type="radio"> A-Z</label></li>
+                        <li><input {% if (app.request.get('order') == 'file_size' ) %} checked {% endif %}
+                                    onclick="window.location.href = '?order=file_size&cat={{ app.request.get('cat') }}&user_uploaded={{ app.request.get('user_uploaded') }}'"
+                                    type="radio">{% trans %}File size{% endtrans %}</label></li>
+                    </ul>
+                </div>
+                <div class="title-panel">{% trans %}Categories{% endtrans %}<a class="edit-cat-block"
+                                                                               data-cat-block="category-list"
+                                                                               href="#">{% trans %}Edit{% endtrans %}</a>
+                </div>
+                <div class="info-panel">
+                    <ul id="category-list"
+                        data-url="{{ path('wwsc_thalamus_category_save',{ project:oProject.slug }) }}" data-type="FILE">
+                        <li><a {% if (app.request.get('cat') == '') %} class="active" {% endif %}
+                                    href="?order={{ app.request.get('order') }}&user_uploaded={{ app.request.get('user_uploaded') }}">{% trans %}All files{% endtrans %}</a>
+                        </li>
+                        {% for oCategory in aCategory %}
+                            <li>
+                                <a {% if (app.request.get('cat') == oCategory.id ) %} class="active" {% endif %}
+                                        data-cat-id="{{ oCategory.id }}"
+                                        href="?order={{ app.request.get('order') }}&cat={{ oCategory.id }}&user_uploaded={{ app.request.get('user_uploaded') }}">
+                                    {{ oCategory.name }}
+                                </a>
+                                <span class="actions-panel">
+                                                <a class="btn-rename-category" data-name="{{ oCategory.name }}"
+                                                   data-id="{{ oCategory.id }}">{% trans %}Rename{% endtrans %}</a>
+                                                <a class="btn-delete-category" data-id="{{ oCategory.id }}"><img
+                                                            src="/bundles/wwscthalamus/images/remove_icon.png"></a>
+                                            </span>
+                            </li>
+                        {% endfor %}
+                        <li class="btn-add-new-categoty"><a href="#">{% trans %}Add new category{% endtrans %}</a></li>
+                    </ul>
+                </div>
+                <div class="title-panel">{% trans %}Uploaded by{% endtrans %}</div>
+                <div class="info-panel">
+                    <ul>
+                        <li><a {% if (app.request.get('user_uploaded') == '') %} class="active" {% endif %}
+                                    href="?order={{ app.request.get('order') }}&cat={{ app.request.get('cat') }}">{% trans %}Anyone{% endtrans %}</a>
+                        </li>
+                        {% for oUserUpload in aUsersUpload %}
+                            <li>
+                                <a {% if (app.request.get('user_uploaded') ==  oUserUpload.userCreated.id  ) %} class="active" {% endif %}
+                                        href="?order={{ app.request.get('order') }}&cat={{ app.request.get('cat') }}&user_uploaded={{ oUserUpload.userCreated.id }}">{{ oUserUpload.userCreated.firstName }} {{ oUserUpload.userCreated.lastName }}</a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div><!--/span-->
+    </div>
+{% endblock %}
+                    {% block javascripts %}
+                        <script src="{{ asset('bundles/wwscthalamus/js/category.js') }}"></script>
+                        <script src="{{ asset('bundles/wwscthalamus/js/file.js') }}"></script>
+                        <script src="{{ asset('bundles/wwscthalamus/js/infiniteScrollLoad.js') }}"></script>
+                    {% endblock %}  
+

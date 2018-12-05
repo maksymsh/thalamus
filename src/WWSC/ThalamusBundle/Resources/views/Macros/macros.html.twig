@@ -1,0 +1,4 @@
+{# define macro with search resluts include #}
+{% macro includeResults(aSearchResults, projectSlug) %}
+    {% include 'WWSCThalamusBundle:Search:data-search-project.html.twig' with {'aSearchResults': aSearchResults, 'projectSlug': projectSlug } %}
+{% endmacro %}

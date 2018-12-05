@@ -1,0 +1,26 @@
+<script src="{{ asset('bundles/wwscthalamus/jQUpload/js/load-image.all.min.js') }}"></script>
+<script src="{{ asset('bundles/wwscthalamus/jQUpload/js/tmpl.min.js') }}"></script>
+<script src="{{ asset('bundles/wwscthalamus/jQUpload/js/jquery.fileupload.js') }}"></script>
+<script src="{{ asset('bundles/wwscthalamus/jQUpload/js/jquery.fileupload-process.js') }}"></script>
+<script src="{{ asset('bundles/wwscthalamus/jQUpload/js/jquery.fileupload-image.js') }}"></script>
+<script src="{{ asset('bundles/wwscthalamus/jQUpload/js/jquery.fileupload-ui.js') }}"></script>
+<script type="text/javascript">
+    $('.attachment-files').fileupload({
+        url: "{{ oneup_uploader_endpoint('files') }}",
+        dataType: 'json',
+        downloadTemplateId: null,
+        type: 'POST'
+    }).bind('fileuploadadd', function (e, data) {
+        var fileType = data.files[0].name.split('.').pop().toLowerCase(), allowdTypes = '{{ allowed_file_types }}';
+        if (allowdTypes.indexOf(fileType) < 0) {
+            alert('Type of file <"' + data.files[0].name + '"> is not allowed');
+            return false;
+        }
+        var fileSize = data.files[0].size;
+        if (fileSize > 349000000) {
+            alert('Size of file <"' + data.files[0].name + '"> exceeded the limit of 349MB');
+            return false;
+        }
+    });
+</script>
+

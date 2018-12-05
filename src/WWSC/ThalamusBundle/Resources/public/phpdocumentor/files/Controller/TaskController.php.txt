@@ -1,0 +1,126 @@
+<?php
+
+namespace WWSC\ThalamusBundle\Controller;
+
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Session;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use WWSC\ThalamusBundle\Form\TaskForm;
+
+/**
+ * Task controler
+ *
+ * In this controller describes the functions of describes the functions of adding, editing, deleting and display task.
+ */
+class TaskController extends Controller {
+
+    /**
+     *  Method list
+     * 
+     *  This method is responsible for display tasks and persons on  the page "To-dos"
+     */
+    public function listAction(Request $request) {
+
+        $oProject = $this->getDoctrine()->getRepository('WWSCThalamusBundle:Project')->findOneBy(array('slug' => $request->get('project')));
+        $this->getRequest()->getSession()->set('active_module', 'todos');
+        if (count($oProject->getTasks()) == 0) {
+            return $this->render('WWSCThalamusBundle:Task:empty-todos.html.twig', array('oProject' => $oProject));
+        }
+        if ($this->getRequest()->get('action') == 'reorder') {
+            $template = 'reorder-list.html.twig';
+            return $this->render('WWSCThalamusBundle:Task:reorder-list.html.twig', array('aTasks' => $oProject->getTasks(), 'oProject' => $oProject));
+        }
+        $fFilterTask = $this->createForm(new \WWSC\ThalamusBundle\Form\FilterTaskForm());
+        $fFilterTask->bind($request);
+        $aFilter = $fFilterTask->getData();
+        return $this->render('WWSCThalamusBundle:Task:list.html.twig', array('fFilterTask' => $fFilterTask->createView(), 'aFilter' => $request->get('filter_tasks'), 'oProject' => $oProject));
+    }
+
+    /**
+     *  Method show
+     * 
+     *  This method is responsible for display current task.
+     */
+    public function showAction(Request $request) {
+        $oProject = $this->getDoctrine()->getRepository('WWSCThalamusBundle:Project')->findOneBy(array('slug' => $request->get('project')));
+        $oTask = $this->getDoctrine()->getRepository('WWSCThalamusBundle:Task')->find($request->get('id'));
+        $this->getRequest()->getSession()->set('active_module', 'todos');
+        $fFilterTask = $this->createForm(new \WWSC\ThalamusBundle\Form\FilterTaskForm($oProject->getUsers()));
+        $fFilterTask->bind($request);
+        $aFilter = $fFilterTask->getData();
+        return $this->render('WWSCThalamusBundle:Task:show.html.twig', array('oTask' => $oTask, 'aTasks' => $oProject->getTasks(), 'aFilter' => $aFilter, 'fFilterTask' => $fFilterTask->createView()));
+    }
+
+    /**
+     *  Method add
+     *
+     *  This method is responsible for create new task
+     */
+    public function addAction(Request $request) {
+        if (!$this->container->get('security.context')->isGranted('ROLE_PROVIDER')) {
+            return $this->render('WWSCThalamusBundle:Content:not_permission.html.twig');
+        }
+        $this->getRequest()->getSession()->set('active_module', 'todos');
+        $oProject = $this->getDoctrine()->getRepository('WWSCThalamusBundle:Project')->findOneBy(array('slug' => $request->get('project')));
+        $fTask = $this->createForm(new TaskForm());
+        if ($request->getMethod() == 'POST') {
+            $fTask->bind($request);
+            if ($fTask->isValid()) {
+                $em = $this->getDoctrine()->getManager();
+                $fTask = $fTask->getData();
+                $fTask->setProject($oProject);
+                $em->persist($fTask);
+                $em->flush();
+                return $this->redirect($this->generateUrl('wwsc_thalamus_project_todos', array('project' => $request->get('project'))));
+            }
+        }
+        return $this->render('WWSCThalamusBundle:Task:add.html.twig', array('form' => $fTask->createView(), 'slugProject' => $request->get('project')));
+    }
+
+    /**
+     *  Method edit
+     *
+     *  This method is responsible  for edit task
+     */
+    public function editAction(Request $request) {
+        if (!$this->container->get('security.context')->isGranted('ROLE_PROVIDER')) {
+            return $this->render('WWSCThalamusBundle:Content:not_permission.html.twig');
+        }
+        $oTask = $this->getDoctrine()->getRepository('WWSCThalamusBundle:Task')->find($request->get('id'));
+        $fTask = $this->createForm(new TaskForm(), $oTask);
+        if ($request->getMethod() == 'POST') {
+            $fTask->bind($request);
+            if ($fTask->isValid()) {
+                $em = $this->getDoctrine()->getManager();
+                $fTask = $fTask->getData();
+                $em->persist($fTask);
+                $em->flush();
+                return new JsonResponse(array('htmlTask' => $this->renderView('WWSCThalamusBundle:Task:task-info.html.twig', array('oTask' => $fTask))));
+            }
+        }
+        return new JsonResponse(array('htmlTaskForm' => $this->renderView('WWSCThalamusBundle:Task:edit.html.twig', array('form' => $fTask->createView(), 'oTask' => $oTask))));
+    }
+
+    /**
+     *  Method delete
+     * 
+     *  This method is responsible for delete task
+     */
+    public function deleteAction(Request $request) {
+        if (!$this->container->get('security.context')->isGranted('ROLE_PROVIDER')) {
+            return $this->render('WWSCThalamusBundle:Content:not_permission.html.twig');
+        }
+        $em = $this->getDoctrine()->getManager();
+        $oTask = $this->getDoctrine()->getRepository('WWSCThalamusBundle:Task')->find($request->get('id'));
+        $oTask->setIsDeleted(1);
+        $em->flush();
+        if ($request->getMethod() == 'GET') {
+            return $this->redirect($this->generateUrl('wwsc_thalamus_project_todos', array('project' => $request->get('project'))));
+        }
+        return new Response(1);
+    }
+
+}
+

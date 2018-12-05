@@ -1,0 +1,49 @@
+<?php
+
+namespace WWSC\ThalamusBundle\Form;
+
+use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+
+class FilesForm extends AbstractType
+{
+    private $category;
+
+    public function __construct($category) {
+        $this->category = $category;
+    }
+    
+    /**
+     * @param FormBuilderInterface $builder
+     * @param array $options
+     */
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
+        $builder
+            ->add('private', 'checkbox', array('label' => 'Private', 'required' => false))
+            ->add('description', 'text', array('required' => false, 'attr' => array('class' => 'form-control')))
+            ->add('name', 'text', array('required' => false, 'attr' => array('class' => 'form-control')))
+            ->add('category', 'entity', array('class' => 'WWSC\ThalamusBundle\Entity\Category','required' => false, 'label_attr' => array("class" => 'control-label col-xs-2'),'empty_data'  => null,'empty_value' => "No category", 'choices' => $this->category, 'property' => 'name', 'attr' => array('data-type' => 'FILE','class' => 'form-control select-category')))
+        ;
+    }
+    
+    /**
+     * @param OptionsResolverInterface $resolver
+     */
+    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    {
+        $resolver->setDefaults(array(
+            'data_class' => 'WWSC\ThalamusBundle\Entity\Files'
+        ));
+    }
+
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        return 'wwsc_thalamusbundle_files';
+    }
+}
+

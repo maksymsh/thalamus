@@ -1,0 +1,87 @@
+{% raw %} 
+<script id="template-upload" type="text/x-tmpl">
+{% for (var i=0, file; file=o.files[i]; i++) { %}
+    <div class="template-upload fade info-panel preview-upload col-md-12 ">
+        <div class="col-md-2">
+            <span class="preview"></span>
+        </div>
+        <div class="col-md-9">
+            <div class="col-md-12">
+                <h4>{%=file.name%}</h4>
+                <strong class="error text-danger"></strong>
+            </div>
+            <div class="col-md-12">
+                <div class="col-md-5 without-padding">
+                    <div class="form-group col-md-12 without-padding">
+                        <div class="col-md-3 without-padding">
+                            <span>Category: </span>
+                        </div>
+                        <div class="col-md-9">
+                        {% endraw %}
+                            <select name="category-file" data-type="FILE" class="select-category">
+                                <option>No category</option>
+                                {% for oCategory in aCategoryFile %}
+                                    <option value="{{ oCategory.id }}">{{ oCategory.name }}</option>
+                                {% endfor %}
+                                <option value="add!">— add a new category —</option>
+                           </select>
+                         {% raw %}      
+                        </div>
+                    </div>    
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="col-md-5 without-padding">
+                    <span>Optional description:</span>
+                    <div class="form-group">
+                        <input name="description" class="form-control">
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12">
+               <input type="checkbox" name="private"> <span>  Make file private</span>
+            </div>
+        </div>
+        <div class="col-md-1">
+            {% if (!i) { %}
+                    <img class="cancel" src="/bundles/wwscthalamus/images/remove_icon.png">
+            {% } %}
+            {% if (!i && !o.options.autoUpload) { %}
+                <button class="btn btn-primary start" style="display:none">
+                    <i class="glyphicon glyphicon-upload"></i>
+                    <span>Start</span>
+                </button>
+            {% } %}
+        </div>
+    </div>
+{% } %}
+</script>
+<!-- The template to display files available for download -->
+<script id="template-download" type="text/x-tmpl">
+{% for (var i=0, file; file=o.files[i]; i++) { %}    
+      <div class="template-download fade info-panel preview-upload col-md-12 ">
+        <div class="col-md-2">
+             <span class="preview">
+                {% if (file.thumbnailUrl) { %}
+                    <a href="{%=file.url%}" title="{%=file.name%}" download="{%=file.name%}" data-gallery><img width="64px" src="{%=file.thumbnailUrl%}"></a>
+                {% } %}
+            </span>
+        </div>
+        <div class="col-md-9">
+            <div class="col-md-12">
+                <p class="name">
+                    {% if (file.url) { %}
+                        <a href="{%=file.url%}" title="{%=file.name%}" download="{%=file.name%}" {%=file.thumbnailUrl?'data-gallery':''%}>{%=file.name%}</a>
+                    {% } else { %}
+                        <span>{%=file.name%}</span>
+                    {% } %}
+                </p>
+                {% if (file.error) { %}
+                    <div><span class="label label-danger">Error</span> {%=file.error%}</div>
+                {% } %}
+            </div>
+        </div>  
+    </div>
+{% } %}
+</script>
+{% endraw %}

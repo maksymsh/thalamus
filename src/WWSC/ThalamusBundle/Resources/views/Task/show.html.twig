@@ -1,0 +1,62 @@
+{% extends "WWSCThalamusBundle:Content:layout.html.twig" %}
+{% block title %}
+    {{ projectName }} - {% trans %}To-do list{% endtrans %}
+{% endblock %} 
+{% block content %} 
+<div class="row">
+    <div class="panel panel-default col-md-9">
+        <div class="panel-heading col-xs-12">
+            <div class="col-xs-6">
+                <a href="{{ path ('wwsc_thalamus_project_todos',{'project': projectSlug })}}">{% trans %}See all to-do lists{% endtrans %}</a>
+            </div>
+            <div class="page_header_links col-xs-6">
+                <a href="{{ path('wwsc_thalamus_project_todos',{project:projectSlug})}}?filter_tasks[filter_responsible]=u_{{ app.user.id }}&filter_tasks[filter_due]=#">{% trans %}my To-DoS{% endtrans %}</a>
+                {% if is_granted('ROLE_PROVIDER') %}
+                    |<a class="remove"  onclick="return confirm('Are you sure you want to delete this to-do list?')" href="{{ path ('wwsc_thalamus_project_task_delete',{'project': projectSlug, 'id': aTask["info"]["id"] })}}">{% trans %}Delete this list{% endtrans %}</a>
+                {% endif %}
+            </div>
+        </div>
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-md-12 list-task">
+                        <div class="task col-md-12">
+                            <div class="show-task">
+                                {# tasks of current task list #}
+                                {% include 'WWSCThalamusBundle:Task:task-block.html.twig' with {'aTask': aTask, 'aFilter':aFilter, lCompletedItems: false} %}
+                            </div>
+                        </div>         
+                </div><!--/span-->
+            </div>
+        </div>
+    </div>            
+    <div class="col-md-3 sidebar sidebar-filter">
+        <div class="col">
+            {% if is_granted('ROLE_PROVIDER') %} 
+            <div class="btn-add-new-task">
+                <a href="{{ path('wwsc_thalamus_project_task_add',{'project': projectSlug})}}" class="btn btn-default btn-md">
+                    <i class="glyphicon glyphicon-plus"></i> {% trans %}Create new to-do list{% endtrans %}
+                </a>
+            </div>
+            {% endif %}         
+            {% include 'WWSCThalamusBundle:Task:filter.html.twig' with {'slugProject': projectSlug, 'aResponsiblepeople': subspeople } %}
+            <h4>{% trans %}Current to-do lists{% endtrans %}</h4>    
+            <ul class="filter-task">
+              {% for idTaskList, aTaskList in aTaskListSelect %}
+                     <li data-id="{{ aTaskList["id"] }}" ><a href="{{ path('wwsc_thalamus_project_task_show',{'project':projectSlug,'id':aTaskList["id"]}) }}">{{ aTaskList["name"] }}</a></li>
+              {% endfor %}
+            </ul>
+        </div>
+    </div><!--/span-->          
+</div>
+{% endblock %}
+{% block stylesheets %}
+    <link href="{{ asset('bundles/wwscthalamus/markdown/css/bootstrap-markdown.min.css') }}" type="text/css" rel="stylesheet" />
+    <link href="{{ asset('bundles/wwscthalamus/css/bootstrap-datepicker.css') }}" type="text/css" rel="stylesheet" />    
+{% endblock %}
+{% block javascripts %}
+    <script src="{{ asset('bundles/wwscthalamus/markdown/js/to-markdown.js') }}"></script>
+    <script src="{{ asset('bundles/wwscthalamus/markdown/js/markdown.js') }}"></script>
+    <script src="{{ asset('bundles/wwscthalamus/markdown/js/bootstrap-markdown.js') }}"></script>
+    <script src="{{ asset('bundles/wwscthalamus/js/todos.js') }}"></script>
+    <script src="{{ asset('bundles/wwscthalamus/js/bootstrap-datepicker.js') }}"></script>
+{% endblock %}

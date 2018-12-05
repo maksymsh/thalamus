@@ -1,0 +1,45 @@
+<div class="attachment-files">
+    <p class="links-attachment">
+      <i class="fa fa-files-o" aria-hidden="true"></i>
+       {% trans %}Attach files to this comment{% endtrans %}
+       <br>
+        <span class="fileinput-button">
+        <i class="fa fa-hdd-o" aria-hidden="true"></i>
+        {% trans %}select from your computer{% endtrans %}
+            <input  type="file"  name="files" multiple />
+        </span>
+        <br>
+        <a class="fileinput-button-gd" href="#">
+          <i class="fa fa-google" aria-hidden="true"></i>
+          {% trans %}upload from Google Drive{% endtrans %}
+        </a>
+    </p>
+    {% if aFiles is defined %}
+        {% for oFile in aFiles %}
+            <div class="template-upload computer-files col-md-12 ">
+                {% if oFile.formatFile == 'GOOGLE_DRIVE' %}
+                    <img src="/bundles/wwscthalamus/images/gd-icon-min.png">
+                {% else %}
+                    <img src="/bundles/wwscthalamus/images/attachment_icon.png">
+                {% endif %}
+                <span> {{ oFile.name }} </span>
+                <a class="btn-delete-file-attachment" href={{path('wwsc_thalamus_project_file_delete',{'project': project, 'id':oFile.id})}}><img class="cancel" src="{{ asset('bundles/wwscthalamus/images/remove_icon.png') }}"></a>
+            </div>
+        {% endfor  %}
+    {% endif %}
+    <div class="files attachment-preview"></div>
+    <div class="col-md-12">
+        <div class="row fileupload-buttonbar">
+            <span class="fileupload-process"></span>
+            <div class="col-lg-12 fileupload-progress fade">
+                <div class="progress progress-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100">
+                    <div class="progress-bar progress-bar-success" style="width:0%;"></div>
+                </div>
+                <div class="progress-extended">&nbsp;</div>
+            </div>
+            <div class="col-lg-7">
+                <button style ="display:none" class="btn btn-sm btn-primary start" type="submit">{% trans %}Upload the file{% endtrans %}</button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,46 @@
+<form  action="{{path('wwsc_thalamus_project_selected_relations_task',{'project':oItem.task.project.slug,'task':oItem.task.id, 'item':oItem.id })}}"  method="Post" class="add-new-task">
+    <div class="form-group">
+        <label> {% trans %} Select Child {% endtrans %} </label>
+        <div>
+            <input type="hidden" class="url-form-add-child" value="{{path('wwsc_thalamus_project_form_add_child_task',{'project':oItem.task.project.slug,'task':oItem.task.id, 'item':oItem.id })}}">
+            <input type="hidden" name="child-task" class="child-task-input">
+            <div class="btn-group btn-input selected-child-task open-selectbox dropdown">
+                <button type="button" class="btn btn-default dropdown-toggle form-control" >
+                    <span class="label-active" data-bind="label">{% trans %} Select a task{% endtrans %}</span> <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu dropdown-filter"   role="menu" class="form-control">
+                    <li ><a class="create_new_task" href="#">{% trans %} Create a new task {% endtrans %}</a></li>
+                    <li><span class="disabled">----------</span></li>
+                    {% for childTasks in oItem.task.project.childTasks(oItem.id) %}
+                        <li><span class="disabled">{{ childTasks['name'] }} </span><ul class="tasks-select">
+                                {% if childTasks.tasks is defined %}
+                                {% if childTasks['tasks']['open'] is defined %}
+                                    {% for key,val in childTasks['tasks']['open'] %}
+                                        {% if key != oItem.id %}
+                                            <li> <a href="#" class="option" data-value="{{ key }}">#{{ key }} - {{ val }}</a></li>
+                                        {% endif %}
+                                    {%endfor%}
+                                {% endif %}
+                                {% if childTasks['tasks']['closed'] is defined %}
+                                    <li><span class="disabled"> </span></li>
+                                    {% for key,val in childTasks['tasks']['closed'] %}
+                                        {% if key != oItem.id %}
+                                            <li class="hidden closed-task"><a href="#" class="option" data-value="{{ key }}">#{{ key }} - {{ val }}</a></li>
+                                        {% endif %}
+                                    {%endfor%}
+                                    <li class="show-closed-task"><a href="#" data-status="hide">{% trans %}Show closed Task{% endtrans %}</a></li>
+                                {% endif %}
+                            </ul>
+                            {% endif %}
+                        <li><span class="disabled">----------</span></li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <button class="btn btn-sm btn-primary btn-save" type="submit">{% trans %}Create Relation{% endtrans %}</button>
+        <span>{% trans %}or{% endtrans %}</span>  <a class="btn-cancel close" href="#" data-dismiss="modal">  {% trans %}I'm done adding items{% endtrans %} </a>
+    </div>
+</form>
+

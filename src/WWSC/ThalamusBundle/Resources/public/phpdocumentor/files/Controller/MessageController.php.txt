@@ -1,0 +1,172 @@
+<?php
+
+namespace WWSC\ThalamusBundle\Controller;
+
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Session;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use WWSC\ThalamusBundle\Form\MessageForm;
+use WWSC\ThalamusBundle\Controller\FileController as atFile;
+/**
+ * Message controler
+ *
+ * In this controller describes the functions of describes the functions of adding, editing, deleting and display messages.
+ */
+class MessageController extends Controller {
+
+    /**
+     *  Method list
+     * 
+     *  This method is responsible for display tasks and persons on  the page "Messages"
+     */
+    public function listAction(Request $request) {
+        $oProject = $this->getDoctrine()->getRepository('WWSCThalamusBundle:Project')->findOneBy(array('slug' => $request->get('project')));
+        $this->getRequest()->getSession()->set('active_module', 'messages');
+        if (count($oProject->getMessages()) == 0) {
+            return $this->render('WWSCThalamusBundle:Message:empty-messages.html.twig', array('slugProject' => $oProject->getSlug()));
+        }
+        $aCategory = $this->getDoctrine()->getManager()->getRepository('WWSCThalamusBundle:Category')->findBy(array(
+            'is_deleted' => 0,
+            'account' => $this->getUser()->getCompany()->getAccount(),
+            'type' => 'MESSAGE'
+        ));
+        
+        return $this->render('WWSCThalamusBundle:Message:expanded-view.html.twig', array('slugProject' => $oProject->getSlug(), 'aCategory' => $aCategory, 'aMessages' => $oProject->getMessages($request->get('cat'))));
+    }
+    /**
+     *  Method add
+     *
+     *  This method is responsible for create new message
+     */
+    public function addAction(Request $request) {
+        $this->getRequest()->getSession()->set('active_module', 'messages');
+        $oProject = $this->getDoctrine()->getRepository('WWSCThalamusBundle:Project')->findOneBy(array('slug' => $request->get('project')));
+        $aCategory = $this->getDoctrine()->getManager()->getRepository('WWSCThalamusBundle:Category')->findBy(array(
+            'is_deleted' => 0,
+            'account' => $this->getUser()->getCompany()->getAccount(),
+            'type' => 'MESSAGE'
+        ));
+        $fMessage = $this->createForm(new MessageForm($aCategory));
+        $formView = $fMessage->createView();
+        $formView->children['category']->vars['choices'][] = new \Symfony\Component\Form\Extension\Core\View\ChoiceView (null, 'add!', '— add a new category —');
+        if ($request->getMethod() == 'POST') {
+            $fMessage->bind($request);
+            if ($fMessage->isValid()) {
+                $em = $this->getDoctrine()->getManager();
+                $fMessage = $fMessage->getData();
+                $fMessage->setProject($oProject);
+                $em->persist($fMessage);
+                $em->flush();
+                if($request->get('aFiles')){
+                    \WWSC\ThalamusBundle\Entity\Files::saveAttachmentFiles($request->get('aFiles'), $fMessage->getId(), $oProject, 'Message');
+                }
+                if($request->get('aSubspeople')){
+                   \WWSC\ThalamusBundle\Entity\SubscribeEmail::saveSubscribeEmail($request->get('aSubspeople'), $fMessage->getId(), 'Message');
+                   $this->sendSubscribeEmail($fMessage, 'Message','subscribe_message');
+                }
+                return $this->redirect($this->generateUrl('wwsc_thalamus_project_message_comments', array('project' => $request->get('project'), 'id' => $fMessage->getId() )));
+            }
+        }
+        return $this->render('WWSCThalamusBundle:Message:add.html.twig', array('form' => $formView, 'slugProject' => $oProject->getSlug(), 'aSubsCompanies' => $oProject->getSubspeople()));
+    }
+    
+    /**
+     *  Method edit
+     *
+     *  This method is responsible  for edit message
+     */
+    public function editAction(Request $request) {
+        $oMessage = $this->getDoctrine()->getRepository('WWSCThalamusBundle:Message')->find($request->get('id'));
+        $aCategoryFile = $this->getDoctrine()->getManager()->getRepository('WWSCThalamusBundle:Category')->findBy(array(
+            'is_deleted' => 0,
+            'account' => $this->getUser()->getCompany()->getAccount(),
+            'type' => 'MESSAGE'
+        ));
+        
+        $fMessage = $this->createForm(new MessageForm($aCategoryFile), $oMessage);
+        $formView = $fMessage->createView();
+        $formView->children['category']->vars['choices'][] = new \Symfony\Component\Form\Extension\Core\View\ChoiceView (null, 'add!', '— add a new category —');
+        if ($request->getMethod() == 'POST') {
+            $fMessage->bind($request);
+            if ($fMessage->isValid()) {
+                $em = $this->getDoctrine()->getManager();
+                $fMessage = $fMessage->getData();
+                $em->persist($fMessage);
+                $em->flush();     
+                if($request->get('aFiles')){
+                    \WWSC\ThalamusBundle\Entity\Files::saveAttachmentFiles($request->get('aFiles'), $oMessage->getId(), $oMessage->getProject(),'Message');
+                }
+                if($fMessage->getActiveSubscribed() != $request->get('aSubspeople')){
+                    \WWSC\ThalamusBundle\Entity\SubscribeEmail::saveSubscribeEmail($request->get('aSubspeople'), $fMessage->getId(), 'Message');
+                }
+                
+                if($request->get('notify_about_changes')){
+                    $this->sendSubscribeEmail($fMessage, 'Message','subscribe_change_message');
+                }
+                return $this->redirect($this->generateUrl('wwsc_thalamus_project_message_comments', array('project' => $request->get('project'), 'id' => $oMessage->getId() )));
+            }
+        }
+        return $this->render('WWSCThalamusBundle:Message:edit.html.twig', array('form' => $formView, 'slugProject' => $request->get('project'), 'oMessage' => $oMessage));
+    }
+    /**
+     *  Method delete
+     * 
+     *  This method is responsible for delete message
+     */
+    public function deleteAction(Request $request) {
+        $em = $this->getDoctrine()->getManager();
+        $oTask = $this->getDoctrine()->getRepository('WWSCThalamusBundle:Message')->find($request->get('id'));
+        $oTask->setIsDeleted(1);
+        $em->flush();
+        return $this->redirect($this->generateUrl('wwsc_thalamus_project_messages', array('project' => $request->get('project'))));
+    }
+    
+    /**
+     *  Method show comments for message
+     *
+     *  This method is responsible for display comments for message.
+     */
+    public function commentsAction(Request $request) {
+        $this->getRequest()->getSession()->set('active_module', 'messages');
+        $oMessage = $this->getDoctrine()->getRepository('WWSCThalamusBundle:Message')->find($request->get('id'));
+        return $this->render('WWSCThalamusBundle:Message:comments.html.twig', array('oMessage' => $oMessage));
+    }
+    
+    /**
+     *  Method show guid for message
+     *
+     *  This method is responsible for display guid for message.
+     */
+    public function guidMessagesAction(Request $request){
+        $oProject = $this->getDoctrine()->getRepository('WWSCThalamusBundle:Project')->findOneBy(array('slug' => $request->get('project')));
+        return $this->render('WWSCThalamusBundle:Message:guid-messages.html.twig', array('oProject' => $oProject));
+
+    }
+    
+     /**
+     *  Method send message to email
+     *
+     *  The method responsible for  sending  message  to users who have subscribed to message
+     */   
+    public function sendSubscribeEmail($object, $type, $template){
+         $subject = '['.$object->getProject()->getName().'] '.$type;
+         $aUsers = $object->getActiveSubscribed('info'); 
+         $message = \Swift_Message::newInstance()
+                        ->setSubject($subject)
+                        ->setReplyTo(
+                            $object->getReplyUID()
+                            . "@" . $this->container->getParameter('auto_reply_email_domain')
+                        )
+                        ->setFrom($this->container->getParameter('admin_email'))
+                        ->setContentType("text/html")
+                        ->setTo($aUsers['email'])
+                        ->setBody($this->renderView('WWSCThalamusBundle:Mail:'.$template.'.txt.twig', array(
+                            'oElement' => $object,
+                            'aUsers' => $aUsers['name']
+            )));
+         $this->get('mailer')->send($message);
+    }
+
+}
+

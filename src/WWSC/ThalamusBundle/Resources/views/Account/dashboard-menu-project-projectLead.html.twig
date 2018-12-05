@@ -1,0 +1,17 @@
+{% for aProjectleaderProject in aProjects %}
+    {% if aProjectleaderProject['projectleader'] is defined %} 
+        <div class="item-projectleader ">{{ aProjectleaderProject['projectleader'] }}:</div>
+    {% endif %}
+    {% for aCompProjects in aProjectleaderProject['company'] %}
+        <div class="item-compnay">{{ aCompProjects['company_name'] }}</div>
+            <div class="list-projects">
+                {% for aProject in  aCompProjects['projects'] %}
+                <div class="item-project">
+                    <a href="{{ path('wwsc_thalamus_project_overview',{'project': aProject['slug']} ) }}">
+                      {{ aProject['name'] }}
+                    </a>
+                </div>    
+                {% endfor%}
+        </div>
+    {% endfor%}        
+{% endfor%}

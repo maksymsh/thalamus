@@ -1,0 +1,11 @@
+<select required = "true" name="project-for-screenshot-tool" class="form-control">
+    <option></option>
+    {% for aCompanyProject in oUser.getProjectsForAccount(false, true, true, "alphabet") %}
+        <optgroup label="{{ aCompanyProject['name'] }}">
+            {% for idProject, nameProject in aCompanyProject['projects'] %}
+                <option {% if oUser.getProjectForScreenshotTool == idProject %} selected {% endif %}
+                        value="{{ idProject }}">{{ nameProject }}</option>
+            {% endfor %}
+        </optgroup>
+    {% endfor %}
+</select>

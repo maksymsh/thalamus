@@ -1,0 +1,14 @@
+<h2>{{ company_name }}</h2>
+<h3>Hi {{ first_name }}.</h3>
+<p>
+    {{ created_user.firstName }} {{ created_user.lastName }} has invited you to join Thalamus for {{ company_name }} at our online collaboration tool.
+</p>
+<p>
+    Accept invitation : <a href="{{ urlAcceptInvitation }}">{{ urlAcceptInvitation }}</a>
+    <br>
+    Reject invitation : <a href="{{ urlRejectInvitation }}">{{ urlRejectInvitation }}</a>
+<p>
+<hr>
+<p>    
+    Have questions? Contact {{ created_user.firstName }} {{ created_user.lastName }} at {{ created_user.email }}
+</p>

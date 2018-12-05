@@ -1,0 +1,114 @@
+{% extends "WWSCThalamusBundle:Content:layout.html.twig" %}
+{% block title %}
+    {{ oProject.name }} - {% trans %}Overview{% endtrans %}
+{% endblock %}    
+{% block content %}
+    <div class="row overview">
+        <div class="panel panel-default col-md-9">
+            {% if is_granted('ROLE_PROVIDER') and  oProject.checkBudgetData() == true %}
+                <div class="panel-heading  col-xs-12">
+                    <div class="col-xs-6">
+                        {% trans %}Budgetübersicht{% endtrans %}
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <div class="col-xs-12 total-billable-hours-month">
+                            {% trans %}Stunden verbraucht {% endtrans %} ({{ "now"|date("F") }})
+                            <span class="hours">{{ oProject.getTotalHours() }}</span>
+                    </div>
+                    <canvas id="canvas"  style="display: block;width: 100%;height: 400px;" ></canvas>
+                </div>
+            {% endif %}
+            <div class="panel-heading  col-xs-12">
+                <div class="col-xs-6">
+                    {% trans %}Project overview & activity{% endtrans %}
+                </div>
+                <div class="page_header_links col-xs-6 no-print-this-part">
+                    {% if is_granted('ROLE_PROVIDER')  %}
+                        <a href="{{ path('wwsc_thalamus_project_task_add',{project:oProject.slug})}}" >{% trans %}New to-do{% endtrans %}</a>|
+                    {% endif %}
+                    <a href="{{ path('wwsc_thalamus_project_file_add',{project:oProject.slug})}}">{% trans %}New file{% endtrans %}</a>|
+                    <a href="{{ path('wwsc_thalamus_project_todos',{project:oProject.slug})}}?filter_tasks[filter_responsible]=u_{{ app.user.id }}&filter_tasks[filter_due]=#">{% trans %}my To-DoS{% endtrans %}</a>
+                </div>
+            </div>
+            <div class="panel-body">
+                {% if oProject.isPublicDescription %}
+                    <div class="project_description">
+                        {{ oProject.description|markdown|purify  }}
+                    </div>
+                {% endif %}
+                <div>
+                    {% if is_granted('ROLE_PROVIDER') and (app.user.role == 'ROLE_ACCOUNTING' or oProject.projectleader('id') == app.user.id) and app.session.get('presentationMode') == false %}
+                        {% include 'WWSCThalamusBundle:Finance:date-range-filter.html.twig' with {'projectSlug':oProject.slug } %}
+                        {% if aFinancesProject is not empty  %}
+                            {% include 'WWSCThalamusBundle:Finance:header-finance.html.twig' with {'aFinancesProject':aFinancesProject} %}
+                        {% endif %}
+                    {% endif %}
+                </div>
+                <div class="row">
+                    <div class="col-sm-12 col-md-12 main">
+                        <div data-current-page="{{currentPage }}"  class="table-responsive log-table-box" data-url="{{ path('wwsc_thalamus_project_show_table',{project:oProject.slug})}}" id="items">
+                            <!-- list log begin -->
+                            {% include 'WWSCThalamusBundle:Project:table-log.html.twig' %}
+                            <!-- list log end -->
+                        </div>
+                        <p id="loader" ></p>
+                    </div><!--/span-->
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 sidebar">
+            <div class="col">
+                {% if( oProject.account.primaryCompany.id != app.user.company.id and oProject.account.primaryCompany.logo) %}
+                    <div class="info-panel box-company-logo">
+                        <img src="{{ (asset('uploads/company/') ~ oProject.account.primaryCompany.logo) | imagine_filter('my_thumb',{"thumbnail": {"size": [242, 242], "mode": "inset"}}) }}">
+                    </div>
+                {% endif %}
+                {% if(app.user.company.logo) %}
+                    <div class="info-panel box-company-logo">
+                        <img src="{{ (asset('uploads/company/') ~ app.user.company.logo) | imagine_filter('my_thumb',{"thumbnail": {"size": [242, 242], "mode": "inset" }}) }}">
+                    </div>
+                {% endif %}
+                <div class="title-panel">{% trans %}Stay up to date on this project{% endtrans %}</div>
+                <div class="info-panel global-feeds">
+                    <div>
+                        <img  src="{{ asset('bundles/wwscthalamus/images/feedIcon.png') }}"><a href="#">{% trans %}Global RSS Feed{% endtrans %}</a>
+                    </div>
+                    <div>
+                        <img  src="{{ asset('bundles/wwscthalamus/images/calendar-icon.png') }}"><a href="#">{% trans %}Global iCalendar{% endtrans %}</a>
+                    </div>
+                </div>
+                <div class="title-panel">{% trans %}People on this project{% endtrans %}</div>
+                <div class="info-panel sidebar-people-on-project">
+                    {% for oResponsibleCompany in oProject.subspeople %}
+                        <div class="item-compnay">{{ oResponsibleCompany['name'] }}</div>
+                        <div class="list-users">
+                            {% if oResponsibleCompany.people is defined %}
+                                {% for key,val in oResponsibleCompany['people'] %}
+                                    <div class="item-user">{{ val }}</div>
+                                {%endfor%}
+                            {% endif %}
+                        </div>
+                    {%endfor%}
+                </div>
+            </div>
+        </div><!--/span-->
+    </div>
+{% endblock %}
+{% block stylesheets %}
+    <link href="{{ asset('bundles/wwscthalamus/css/bootstrap-datepicker.css') }}" type="text/css" rel="stylesheet" />
+{% endblock %}
+{% block javascripts %}
+    <script src="{{ asset('bundles/wwscthalamus/js/bootstrap-datepicker.js') }}"></script>
+    <script src="{{ asset('bundles/wwscthalamus/js/bootstrap-datepicker.de.js') }}"></script>
+    <script src="{{ asset('bundles/wwscthalamus/js/paginationScript.js') }}"></script>
+    {% if is_granted('ROLE_PROVIDER') and  oProject.checkBudgetData() == true %}
+        <script src="{{ asset('bundles/wwscthalamus/chartjs/moment.min.js') }}"></script>
+        <script src="{{ asset('bundles/wwscthalamus/chartjs/Chart.js') }}"></script>
+        <script src="{{ asset('bundles/wwscthalamus/chartjs/utils.js') }}"></script>
+        <script>
+            var budgetData= {{ oProject.getConfig('json', 'budgets')|raw }};
+        </script>
+        <script src="{{ asset('bundles/wwscthalamus/chartjs/budget-chart.js') }}"></script>
+    {% endif %}
+{% endblock %}

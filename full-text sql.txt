@@ -1,0 +1,22 @@
+ALTER TABLE `task` ADD FULLTEXT(`description`);
+ALTER TABLE `task` ADD FULLTEXT(`name`);
+ALTER TABLE `task` ADD FULLTEXT(`name`,`description`);
+
+
+ALTER TABLE `message` ADD FULLTEXT(`description`);
+ALTER TABLE `message` ADD FULLTEXT(`title`);
+ALTER TABLE `message` ADD FULLTEXT(`title`,`description`);
+
+ALTER TABLE `taskitem` ADD FULLTEXT(`description`);
+
+ALTER TABLE `comment` ADD FULLTEXT(`description`);
+
+ALTER TABLE `files` ADD FULLTEXT(`description`);
+ALTER TABLE `files` ADD FULLTEXT(`name`);
+ALTER TABLE `files` ADD FULLTEXT(`name`,`description`);
+
+
+ALTER TABLE `writeboard` ADD FULLTEXT(`description`);
+ALTER TABLE `writeboard` ADD FULLTEXT(`name`);
+ALTER TABLE `writeboard` ADD FULLTEXT(`name`,`description`);
+

@@ -1,0 +1,46 @@
+{% set groupParent = false %}
+{% for aTrack in aTimeTracker %}
+    {%if groupByTask or groupByPublicId %} 
+        {% set hoursTrack =  app.user.formatHours(aTrack['total'])  %}
+        {% set dateTrack = aTrack['last_track'] %}
+        {% set compName = aTrack['count_comp'] == 1 ? aTrack['comp_name'] : '' %}
+        {% set personName = aTrack['count_person'] == 1 ? aTrack['person'] : '' %}
+        {% set description = aTrack['count_tt'] == 1 ? app.user.encodingString(aTrack['description']) : '' %}
+    {% else %}
+        {% set hoursTrack =  app.user.formatHours(aTrack['time']) %}
+        {% set dateTrack = aTrack['date'] %}
+        {% set compName = aTrack['comp_name'] %}
+        {% set personName = aTrack['person'] %}
+        {% set description = app.user.encodingString(aTrack['description']) %}
+    {% endif %}
+    {% set parentTask = aTrack['parent'] ? aTrack['parent'] : aTrack['task_id'] %}
+    {% set trClass = '' %} 
+    {% if integrateChild %}
+        {% if (groupParent) and (groupParent != parentTask) %}
+            {% set trClass = 'class=sort-by-parent' %}
+            {% set groupParent = parentTask %}
+        {% endif %}
+        {% if groupParent == false %}
+            {% set groupParent = parentTask %}
+        {% endif %}    
+    {% endif %}
+    <tr {{trClass}} > 
+        {% set uTask = url ('wwsc_thalamus_project_task_item_comments',{'project':projectSlug, 'task':aTrack['list_id'] ,'id':aTrack['task_id'] }) %}
+        <td><a href="{{ aTrack['parent'] ? url ('wwsc_thalamus_project_task_item_comments',{'project':projectSlug, 'task':aTrack['list_id'] ,'id':aTrack['parent'] }) : uTask }}" target="_blank">{{ aTrack['parent'] }}</a></td>
+        <td><a href="{{ uTask }}" target="_blank">{{ aTrack['task_id'] }}</a></td>
+        <td>{{ app.user.encodingString(aTrack['parent_name']) }}</td>
+        <td {{ aTrack['fast_track'] ? 'class="fast-track"' : '' }}>{{ aTrack['fast_track'] ? '[FAST-TRACK]' : '' }}{{ app.user.encodingString(aTrack['task_name']) }}  </td>   
+        <td>{{ description  }}</td>
+        <td>{{ aTrack['fast_track'] ? 'Yes' : 'No' }}</td>
+        <td>{{ dateTrack|date("d M Y") }}</td>
+        <td>{{ hoursTrack }}</td>
+        <td>{{ aTrack['billable'] ? 'Yes' : 'No'  }}</td>
+        <td>{{ app.user.encodingString(aTrack['list_name']) }}</td>
+        <td>{{ compName }}</td>
+        <td>{{ personName }}</td>
+        <td>{% if aTrack['state'] %}
+            {{ aStates[aTrack['state']] }}
+            {% endif %}
+            </td>
+        </tr>  
+        {% endfor %}                                           

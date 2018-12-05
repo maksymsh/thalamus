@@ -1,0 +1,94 @@
+<div class="task-item-form from-group col-md-12">
+    <div class="col-md-10">
+        <div class="alert-error"></div>
+        <form accept-charset="UTF-8" action="{{path('wwsc_thalamus_project_task_item_add',{'project':oTask.project.slug,'task':oTask.id})}}" class="todo_item" method="post">
+            <div class="col-md-12">
+                {% trans %}Enter a to-do item{% endtrans %}
+                {{ form_widget(form.description) }}
+            </div>
+            <div class="col-md-12 without-padding">
+                <div class="col-md-6">
+                    {% trans %}Who's responsible?{% endtrans %}
+                    <select id="wwsc_thalamusbundle_task_item_responsible" name="wwsc_thalamusbundle_task_item[responsible]" class="form-control">
+                        <option value="{{ app.user.id }}">{% trans %}Me{% endtrans %} ({{ app.user.firstName }} {{ app.user.lastName }})</option>
+                        <option disabled value="">----------</option>
+                        {% for oResponsibleCompany in oTask.project.subspeople %}
+                            {% if (oResponsibleCompany ['role'] == 'ROLE_PROVIDER') or  (oTask.visibleClient == 1 and oResponsibleCompany['role'] == 'ROLE_CLIENT') or (oTask.visibleFreelancer == 1 and oResponsibleCompany['role'] == 'ROLE_FREELANCER')%}
+                                {% if oResponsibleCompany.people is defined %}
+                                    {% if oResponsibleCompany['people']|length > 1 or (oResponsibleCompany['people']|length == 1 and app.user.id in oResponsibleCompany['people']|keys == false ) %}
+                                        <option disabled value="">{{ oResponsibleCompany['name'] }}</option>
+                                        {% for key,val in oResponsibleCompany['people'] %}
+                                            {% if app.user.id != key %}
+                                                <option  value={{ key }} >{{ val }}</option>
+                                            {% endif %}
+                                        {%endfor%}
+                                        <option disabled value="">----------</option>
+                                    {% endif %}
+                                {% endif %}
+                            {% endif %}    
+                        {%endfor%}
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    {% trans %}Status{% endtrans %}
+                    {{form_widget(form.state)}}
+                </div>
+                {% if oTask.recursive == 0 %}
+                    <div class="col-md-6">
+                        {% trans %}When is it due?{% endtrans %}
+                        {{form_widget(form.due_date_form)}}
+                    </div>
+                {% endif %}    
+                <div class="col-md-6">
+                    {% trans %}Estimated Time{% endtrans %}
+                    {{form_widget(form.estimated)}}
+                </div>
+                {% if oTask.recursive %}
+                    <div class="col-md-6">
+                        {% trans %}Task List:{% endtrans %}
+                        {{ form_widget(form.recurring_task_list) }}
+                    </div>                    
+                    <div class="col-md-12 recursive-task-item without-padding" >
+                        <div class="select-month-recurring col-md-8">
+                            <div class="col-md-12 without-padding">
+                                <input type="hidden" id="wwsc_thalamusbundle_task_item_show_description_recursive" name="wwsc_thalamusbundle_task_item[show_description_recursive]" value="1">
+                                <span class="left">{% trans %} Recurring Task  on {% endtrans %}  </span>
+                                {{form_widget(form.day_of_recursion, { 'attr': {'required': true } })}}  
+                                <span class="left">{% trans %} day {% endtrans %}</span>
+                                {{form_widget(form.month_of_recursion, { 'attr': {'required': true } })}} 
+                                <span class="left">{% trans %} month {% endtrans %} </span>
+                            </div>
+                        </div>
+                        <div id="wwsc_thalamusbundle_task_item_days_weekly_of_recursion" class="select-days-recurring col-md-8 radio-group">
+                        {% for key,val in aDaysWeekly %}
+                            <input type="checkbox"  name="days_weekly_of_recursion[{{key}}]" value="{{key}}">       
+                            <label>{{ val }}</label>
+                        {%endfor%}    
+                        </div>
+                        <div class="col-md-4">  
+                            {{form_widget(form.type_period_recursion)}}
+                        </div>
+                    </div>
+                    <div class="col-md-12 description-recursive">
+                        {% trans %}Description:{% endtrans %}
+                        {{ form_widget(form.description_recursive) }}
+                    </div>
+                <div class="col-md-12">     
+                    {% include 'WWSCThalamusBundle:SubscribeEmail:block-subscribed-people.html.twig'  with {'aSubsCompanies': oTask.project.subspeople , 'activeSubscribed':[], 'type': 'Task', 'oParent':oTask } %} 
+                </div>
+                {% endif %}
+                <div class="col-md-12 form-group">
+                    <div class="col-md-6 float-right">
+                       {{form_widget(form.fast_track)}} <span>{% trans %}Fast-track{% endtrans %}</span>
+                    </div>  
+                    <div class="col-md-6 without-padding">
+                        <button class="btn btn-sm btn-primary btn-save" type="submit">{% trans %}Add this item{% endtrans %}</button>
+                        <span>{% trans %}or{% endtrans %}</span>  <a class="btn-cancel" href="#"> {% trans %}I'm done adding items{% endtrans %} </a>
+                    </div>  
+                </div>
+            </div>   
+            {{ form_widget(form._token) }}
+        </form>
+    </div>
+</div>
+

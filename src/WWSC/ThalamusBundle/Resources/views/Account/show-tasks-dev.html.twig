@@ -1,0 +1,46 @@
+{% extends "WWSCThalamusBundle:Content:layout.html.twig" %}
+
+{% block title %}
+    {% trans %}Tasks{% endtrans %}
+{% endblock %}
+{% block content %}
+    <div class="row">
+        <div class="panel panel-default col-md-12">
+            <div class="panel-heading ">
+                {% trans %}Tasks{% endtrans %}
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-sm-12 col-md-12">
+                        <div class="table-responsive time-traker-list">
+                            <form id="filters-task-table" method="GET" action="{{ path ('wwsc_thalamus_account_tasks')}}">
+                                <table class="table table-striped tablesorter-table-tasks ">
+                                    <thead>
+                                    <tr>
+                                        <th>{% trans %}Last comment{% endtrans %}</th>
+                                        <th>{% trans %}Task-ID{% endtrans %}</th>
+                                        <th>{% trans %}Task title{% endtrans %}</th>
+                                        <th>{% trans %}Status{% endtrans %}</th>
+                                        <th>{% trans %}Project-Title{% endtrans %}</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                            </form>
+                            {% for oTaskItem in aTasks %}
+                                <tr class="{{ oTaskItem["ti_fast_track"] ? 'fast-track' : '' }}">
+                                    <td>{{date(("now"|date("Y-m-d"))).diff(date(oTaskItem['last_comment'])).format("%a")}}</td>
+                                    <td><a target="_blank" href="/project/{{ oTaskItem['p_slug'] }}/task/51/item/{{ oTaskItem['ti_id'] }}/comments">{{ oTaskItem['ti_id'] }}</a></td>
+                                    <td>{{oTaskItem["ti_fast_track"]? '[FAST-TRACK]' : '' }}  {{app.user.encodingString(oTaskItem['ti_name'])}}</td>
+                                    <td>{% if aStates[oTaskItem['ti_status']] is defined %} {{ aStates[oTaskItem['ti_status']] }}{% endif %}</td>
+                                    <td>{{oTaskItem['p_name']}}</td>
+                                </tr>
+                            {%endfor%}
+                            </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

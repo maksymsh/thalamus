@@ -1,0 +1,20 @@
+{% raw %} 
+<script id="template-upload" type="text/x-tmpl">
+{% for (var i=0, file; file=o.files[i]; i++) { %}
+    <div class="template-upload computer-files fade preview-upload col-md-12 ">
+           <img src="/bundles/wwscthalamus/images/attachment_icon.png">
+           <span> {%=file.name%} </span>
+           <strong class="error text-danger"> </strong>
+            {% if (!i) { %}
+                <img class="cancel" src="/bundles/wwscthalamus/images/remove_icon.png">
+            {% } %}
+            {% if (!i && !o.options.autoUpload) { %}
+                <button class="btn btn-primary start" style="display:none">
+                    <i class="glyphicon glyphicon-upload"></i>
+                    <span>Start</span>
+                </button>
+            {% } %}
+    </div>
+{% } %}
+</script>
+{% endraw %}

@@ -1,0 +1,248 @@
+<?php
+
+namespace WWSC\ThalamusBundle\Entity;
+
+use WWSC\ThalamusBundle\WWSCThalamusBundle;
+use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
+
+/**
+ * log
+ *
+ * @ORM\Entity
+ * @ORM\HasLifecycleCallbacks
+ * @ORM\Table(name="log")
+ */
+class Log
+{
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="id", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
+     */
+    private $id;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="description", type="string", length=250)
+     */
+    private $description;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="action", type="string", length=30)
+     */
+    private $action;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="object_type", type="string", length=100)
+     */
+    private $objectType;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="object_id", type="integer")
+     */
+    private $objectId;
+
+    /**
+     * Constructor
+     */ /**
+     * @var \DateTime $created
+     * @ORM\Column(type="datetime")
+     * @Gedmo\Timestampable(on="create")
+     */
+    private $created;
+
+    /**
+     * @var integer
+     *
+     * @ORM\ManyToOne(targetEntity="WWSC\ThalamusBundle\Entity\User")
+     */
+    private $user;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="WWSC\ThalamusBundle\Entity\Project", inversedBy="project")
+     */
+    private $project;
+
+    /**
+     * Get id
+     *
+     * @return integer 
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * Set description
+     *
+     * @param string $description
+     * @return Log
+     */
+    public function setDescription($description)
+    {
+        $this->description = $description;
+
+        return $this;
+    }
+
+    /**
+     * Get description
+     *
+     * @return string 
+     */
+    public function getDescription()
+    {
+        return $this->description;
+    }
+
+    /**
+     * Set action
+     *
+     * @param string $action
+     * @return Log
+     */
+    public function setAction($action)
+    {
+        $this->action = $action;
+
+        return $this;
+    }
+
+    /**
+     * Get action
+     *
+     * @return string 
+     */
+    public function getAction()
+    {
+        return $this->action;
+    }
+
+    /**
+     * Set objectType
+     *
+     * @param string $objectType
+     * @return Log
+     */
+    public function setObjectType($objectType)
+    {
+        $this->objectType = $objectType;
+
+        return $this;
+    }
+
+    /**
+     * Get objectType
+     *
+     * @return string 
+     */
+    public function getObjectType()
+    {
+        return $this->objectType;
+    }
+
+    /**
+     * Set objectId
+     *
+     * @param integer $objectId
+     * @return Log
+     */
+    public function setObjectId($objectId)
+    {
+        $this->objectId = $objectId;
+
+        return $this;
+    }
+
+    /**
+     * Get objectId
+     *
+     * @return integer 
+     */
+    public function getObjectId()
+    {
+        return $this->objectId;
+    }
+
+    /**
+     * Set created
+     *
+     * @param \DateTime $date
+     * @return Log
+     */
+    public function setCreated($created)
+    {
+        $this->created = $created;
+
+        return $this;
+    }
+
+    /**
+     * Get date
+     *
+     * @return \DateTime 
+     */
+    public function getCreated()
+    {
+        return $this->created;
+    }
+
+    /**
+     * Set project
+     *
+     * @param \WWSC\ThalamusBundle\Entity\Project $project
+     * @return Log
+     */
+    public function setProject(\WWSC\ThalamusBundle\Entity\Project $project = null)
+    {
+        $this->project = $project;
+
+        return $this;
+    }
+
+    /**
+     * Get project
+     *
+     * @return \WWSC\ThalamusBundle\Entity\Project 
+     */
+    public function getProject()
+    {
+        return $this->project;
+    }
+
+    /**
+     * Set user
+     *
+     * @ORM\PrePersist()
+     * @param \WWSC\ThalamusBundle\Entity\User $user
+     * @return Log
+     */
+    public function setUser($user)
+    {
+        $this->user = $this->user_created = WWSCThalamusBundle::getContainer()->get('security.context')->getToken()->getUser();;
+
+        return $this;
+    }
+
+    /**
+     * Get user
+     *
+     * @return \WWSC\ThalamusBundle\Entity\User 
+     */
+    public function getUser()
+    {
+        return $this->user;
+    }
+}
+

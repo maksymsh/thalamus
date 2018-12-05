@@ -1,0 +1,59 @@
+<?php
+
+namespace WWSC\ThalamusBundle\Entity;
+
+use WWSC\ThalamusBundle\WWSCThalamusBundle;
+use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Event\LifecycleEventArgs;
+
+class Base {
+     public function saveLog($data){
+        if(isset($data['object_id'])){
+            $rc = new \ReflectionClass(get_class($this));
+            $log = new Log();
+            $log->setAction($data['action']);
+            $log->setDescription($data['description']);
+            $log->setObjectId($data['object_id']);
+            $log->setCreated(new \DateTime('now'));
+            $log->setObjectType(
+                $rc->getShortName()
+            );
+            if(array_key_exists('project', $data)){
+                $log->setProject($data['project']);
+            }
+            $entityManager = WWSCThalamusBundle::getContainer()->get('doctrine')->getManager();
+            $entityManager->persist($log);
+            $entityManager->flush();
+        }
+    }
+
+    /**
+     * @ORM\PostUpdate
+     */
+    public function postUpdate(LifecycleEventArgs $args) {
+        if(isset($this->things)){
+            foreach($this->things as $thing){
+                $this->saveLog($thing);
+            }
+        }
+    }
+
+    public function truncation($str, $length){
+        if(strlen($str) > $length){
+            $str = substr($str, 0, $length - 4);
+            $words = explode(' ', $str);
+            array_splice($words,-1);
+            $last = array_pop($words);
+            while(true){
+                if (preg_match('/\W$/',mb_substr($last,-1,1))){
+                    $last = substr($last, 0, strlen($last) - 1);
+                } else {
+                    break;
+                }
+            }
+            $str = implode(' ', $words).' '.$last.' ...';
+        }
+
+        return htmlspecialchars($str);
+    }
+}
